@@ -2,9 +2,6 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import Homepage from './pages/Homepage';
-import UserPage from './pages/UserPage';
-import UserUpdate from './pages/UserPage/update';
-import UserCreate from './pages/UserPage/create';
 
 const PageLoading = () => (
   <div
@@ -39,10 +36,6 @@ export default function renderRoutes(isLogin: boolean) {
     <Switch>
       <Route exact path="/login" component={LoginPage} />
       <ProtectedRoute exact path="/" component={Homepage} isLogin={isLogin} />
-      <ProtectedRoute exact path="/users" component={UserPage} isLogin={isLogin} />
-      <ProtectedRoute exact path="/users/create" component={UserCreate} isLogin={isLogin} />
-      <ProtectedRoute exact path="/users/:type" component={UserPage} isLogin={isLogin} />
-      <ProtectedRoute exact path="/users/:id/edit" component={UserUpdate} isLogin={isLogin} />
       <ProtectedRoute exact path="/page-verifies/:type" component={Request} isLogin={isLogin} />\
       <Route exact path="*">
         <React.Suspense fallback={<PageLoading />}>
