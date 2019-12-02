@@ -1,0 +1,58 @@
+@import '~antd/es/style/themes/default.less';
+
+@primary-color: #1890ff;
+@input-height-base: 48px;
+@btn-height-base: 48px;
+@font-size-base: 14px;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+button.btn {
+  height: 48px;
+  font-size: 14px;
+  font-weight: 500 !important;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout {
+  min-height: 100vh;
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+@media (max-width: @screen-xs) {
+  .ant-table {
+    width: 100%;
+    overflow-x: auto;
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
+        white-space: pre;
+        > span {
+          display: block;
+        }
+      }
+    }
+  }
+}

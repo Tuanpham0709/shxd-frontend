@@ -1,0 +1,18 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#d8ce3c",
+    "activityBar.activeBorder": "#d00f6f",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#d00f6f",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "titleBar.activeBackground": "#0f73d0",
+    "titleBar.inactiveBackground": "#0f73d099",
+    "titleBar.activeForeground": "#f5faff",
+    "titleBar.inactiveForeground": "#15202b99",
+    "statusBar.background": "#d8ce3c",
+    "statusBarItem.hoverBackground": "#d8ce3c",
+    "statusBar.foreground": "#15202b"
+  },
+  "cSpell.words": ["GRAPHQL", "Sider", "comartek", "inmemory", "shipitfile", "shxd"]
+}
