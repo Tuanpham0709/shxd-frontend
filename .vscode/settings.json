@@ -14,5 +14,14 @@
     "statusBarItem.hoverBackground": "#d8ce3c",
     "statusBar.foreground": "#15202b"
   },
-  "cSpell.words": ["GRAPHQL", "Sider", "comartek", "inmemory", "shipitfile", "shxd"]
+  "cSpell.words": [
+    "GRAPHQL",
+    "Sider",
+    "comartek",
+    "inmemory",
+    "ixosoftware",
+    "shipitfile",
+    "shxd",
+    "zoominton"
+]
 }
