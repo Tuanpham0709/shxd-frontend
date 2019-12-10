@@ -1,7 +1,6 @@
-import { Popconfirm, Table, Icon } from 'antd';
 import React from 'react';
-import { EditableCell } from './EditableCell';
-import { EditableFormRow } from './EditableRow';
+import { Popconfirm, Table, Icon } from 'antd';
+import { Link } from 'react-router-dom'
 import { ColumnProps } from 'antd/lib/table';
 
 export const EditableContext = React.createContext({ form: {} });
@@ -95,73 +94,17 @@ export default class EditableTable extends React.Component<{}, State> {
                 title: '',
                 dataIndex: 'operation',
                 render: (text: string, record: any) => {
-                    const editable = this.isEditing(record);
                     return (
                         <div>
-                            {editable ? (
-                                <span>
-                                    <EditableContext.Consumer>
-                                        {form => (
-                                            <a
-                                                href="javascript:;"
-                                                onClick={() => this.save(form, record.key)}
-                                                style={{ marginRight: 8 }}
-                                                >
-                                                Save
-                                            </a>
-                                        )}
-                                    </EditableContext.Consumer>
-                                    <Popconfirm
-                                        title="Sure to cancel?"
-                                        onConfirm={() => this.cancel()}
-                                        >
-                                        <a>Cancel</a>
-                                    </Popconfirm>
-                                </span>
-                            ):(
-                                <div>
-                                    <a onClick={() => this.edit(record.key)}><Icon type="edit" /></a>
-                                    <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                                        <Icon type="delete" />
-                                    </Popconfirm>
-                                </div>
-                            )}
+                            <Link to="/customers/edit-customer"><Icon type="edit" /></Link>
+                            <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
+                                <Icon type="delete" />
+                            </Popconfirm>
                         </div>
                     );
                 }
             }
         ];
-    }
-
-    public isEditing = (record: any) => record.key === this.state.editingKey;
-
-    public cancel = () => {
-        this.setState({ editingKey: '' });
-    }
-
-    public save(form: any, key: any) {
-        form.validateFields((error: any, row: any) => {
-            if (error) {
-                return;
-            }
-            const newData = [...this.state.data];
-            const index = newData.findIndex(item => key === item.key);
-            if (index > -1) {
-                const item = newData[index];
-                newData.splice(index, 1, {
-                    ...item,
-                    ...row
-                });
-                this.setState({ data: newData, editingKey: '' });
-            } else {
-                newData.push(row);
-                this.setState({ data: newData, editingKey: '' });
-            }
-        });
-    }
-
-    public edit(key: any) {
-        this.setState({ editingKey: key });
     }
 
     public handleDelete = key => {
@@ -170,36 +113,21 @@ export default class EditableTable extends React.Component<{}, State> {
     }
 
     public render() {
-        const components = {
-            body: {
-                row: EditableFormRow,
-                cell: EditableCell
-            }
-        };
 
         const columns = this.columns.map((col: any) => {
             if (!col.editable) {
                 return col;
             }
             return {
-                ...col,
-                onCell: (record: any) => ({
-                    record,
-                    inputType: col.dataIndex === 'age' ? 'number' : 'text',
-                    dataIndex: col.dataIndex,
-                    title: col.title,
-                    editing: this.isEditing(record)
-                })
+                ...col
             };
         });
 
         return (
             <Table
-                components={components}
                 bordered
                 dataSource={this.state.data}
                 columns={columns}
-            // rowClassName="editable-row"
             />
         );
     }

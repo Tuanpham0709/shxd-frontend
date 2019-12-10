@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './style.module.less';
-import { Input, Select } from 'antd';
+import { Input, Select, Icon } from 'antd';
 import { Col, Row } from 'antd';
 import { Link } from 'react-router-dom'
 
@@ -12,52 +12,40 @@ const optionDataProps = [
   { keyword: 'Khách hàng C', value: 'C' },
   { keyword: 'Khách hàng D', value: 'D' },
 ];
-const btnDataProps = [
-  { text: 'Thêm', color: '#F9D74D', icon: 'plus-circle', padding: 20 },
-];
 interface OptionProps {
   keyword: string;
   value: string;
-}
-interface ButtonProps {
-  text: string;
-  color: string;
-  icon: string;
-  padding: number;
 }
 const { Search } = Input;
 const HeaderBarCustomer = () => {
   return (
     <div className={styles.container}>
-      <div className={styles.searchContainer}>
+      <div className={styles.toolbar}>
         <Row>
-          <Col md={12}>
-            <Search size="small" />
+          <Col md={7}>
+            <Search size="small" placeholder="Tìm kiếm" />
           </Col>
-          <Col md={12}>
+          <Col md={10}></Col>
+          <Col md={7}>
             <Row>
-              <Col md={18}>
+              <Col md={16}>
                 <Select placeholder="Lọc" showSearch style={{ width: '100%' }}>
                   {optionDataProps.map((item: OptionProps, index: number) => {
                     return <Option value={item.value}>{item.keyword}</Option>;
                   })}
                 </Select>
               </Col>
-              <Col md={6}>
-                <div className={styles.btnRight}>
-                  {btnDataProps.map((item: ButtonProps, index: number) => {
-                    return (
-                      // <Button
-                      //   className={`${styles.btnTool} ${styles.colorBlack} ${styles.btnHeight}`}
-                      //   style={{ background: item.color, paddingLeft: item.padding, paddingRight: item.padding }}
-                      //   icon={item.icon}
-                      // >
-                      //   {item.text}
-                      // </Button>
-                        <Link to="/projects">Redirect</Link>
-                    );
-                  })}
-                </div>
+              <Col md={8}>
+                  <Link
+                    className={`${styles.linkBtn}`}
+                    to="/customers/add-customer"
+                  >
+                    <Icon
+                      className={`${styles.mr1}`}
+                      type="plus-circle" theme="filled"
+                    />
+                      Thêm
+                  </Link>
               </Col>
             </Row>
           </Col>
