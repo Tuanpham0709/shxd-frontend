@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import Homepage from './pages/Homepage';
 import ProjectInfo from './pages/Projectpage/index';
+import CustomersPage from './pages/CustomersPage/index';
 const PageLoading = () => (
   <div
     style={{
@@ -38,6 +39,7 @@ export default function renderRoutes(isLogin: boolean) {
       <ProtectedRoute exact path="/" component={Homepage} isLogin={isLogin} />
       <ProtectedRoute exact path="/page-verifies/:type" component={Request} isLogin={isLogin} />
       <ProtectedRoute exact path="/projects" component={ProjectInfo} isLogin={isLogin} />
+      <ProtectedRoute exact path="/customers" component={CustomersPage} isLogin={isLogin} />
       <Route exact path="*">
         <React.Suspense fallback={<PageLoading />}>
           <h1>404</h1>

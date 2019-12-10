@@ -106,6 +106,11 @@ const Sidebar = React.memo((props: BaseProps) => {
                 <Menu.Item key="/users/create">Tạo mới</Menu.Item>
               </SubMenu>
 
+              <Menu.Item key="/customers">
+                <Icon type="user" />
+                <span>Quản lý khách hàng</span>
+              </Menu.Item>
+
               <Menu.Item key="/settings">
                 <Icon type="setting" />
                 <span>Cài đặt hệ thống</span>
