@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import CustomerHeader from './components/CustomerHeader';
-import CustomerContent from './components/Content/index';
+import EntryHeader from './components/EntryHeader';
+import EntryContent from './components/EntryContent/index';
 
 class Files extends Component {
   render() {
     return (
       <div>
-        <CustomerHeader />
-        <CustomerContent />
+        <EntryHeader />
+        <EntryContent />
       </div>
     );
   }
