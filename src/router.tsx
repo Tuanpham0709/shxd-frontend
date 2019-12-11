@@ -5,7 +5,7 @@ import Homepage from './pages/Homepage';
 import ProjectInfo from './pages/ProjectPage/index';
 import ProjectDetail from './pages/ProjectPage/ProjectDetail/index';
 import CustomersPage from './pages/CustomersPage/index';
-import CustomerEdit from './pages/CustomersPage/CustomerDetail/index';
+import CustomerDetail from './pages/CustomersPage/CustomerDetail/index';
 const PageLoading = () => (
   <div
     style={{
@@ -41,9 +41,9 @@ export default function renderRoutes(isLogin: boolean) {
       <ProtectedRoute exact path="/" component={Homepage} isLogin={isLogin} />
       <ProtectedRoute exact path="/page-verifies/:type" component={Request} isLogin={isLogin} />
       <ProtectedRoute exact path="/projects" component={ProjectInfo} isLogin={isLogin} />
-      <ProtectedRoute exact path="/projects/file" component={ProjectDetail} isLogin={isLogin} />
+      <ProtectedRoute exact path="/projects/detail" component={ProjectDetail} isLogin={isLogin} />
       <ProtectedRoute exact path="/customers" component={CustomersPage} isLogin={isLogin} />
-      <ProtectedRoute exact path="/customers/edit" component={CustomerEdit} isLogin={isLogin} />
+      <ProtectedRoute exact path="/customers/edit" component={CustomerDetail} isLogin={isLogin} />
       <Route exact path="*">
         <React.Suspense fallback={<PageLoading />}>
           <h1>404</h1>

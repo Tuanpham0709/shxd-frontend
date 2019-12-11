@@ -70,7 +70,7 @@ export default class EditableTable extends React.Component<{}, State> {
                 title: 'Số hóa tài liệu',
                 render: (text: string, record: any) => {
                     return (
-                        <Link to="/projects/file">Xem chi tiết</Link>
+                        <Link to="/projects/detail">Xem chi tiết</Link>
                     );
                 }
             },
@@ -78,7 +78,7 @@ export default class EditableTable extends React.Component<{}, State> {
                 title: 'Hồ sơ tài liệu còn thiếu hoặc tồn tại',
                 render: (text: string, record: any) => {
                     return (
-                        <Link to="/projects/file">Xem chi tiết</Link>
+                        <Link to="/projects/detail">Xem chi tiết</Link>
                     );
                 }
             },
