@@ -1,61 +1,57 @@
 import React from 'react';
-import { Button, Select } from 'antd';
 import styles from './style.module.less';
+import { Input, Select, Icon } from 'antd';
 import { Col, Row } from 'antd';
-import 'antd/dist/antd.css';
+import { Link } from 'react-router-dom'
+
 const { Option } = Select;
+
 const optionDataProps = [
-  { name: 'Nguyen Van A', value: 'Nguyen Van A' },
-  { name: 'Nguyen Van A', value: 'Nguyen Van A' },
-  { name: 'Nguyen Van A', value: 'Nguyen Van A' },
-  // { name: 'Nguyen Van A', value: 'Nguyen Van A' },
-];
-const btnDataProps = [
-  { text: 'In tài liệu', color: '#FFA200', icon: 'printer', padding: 20 },
-  { text: 'Xuất file Excel', color: '#00B894', icon: 'export', padding: 15 },
-  { text: 'Gửi phê duyệt', color: '#FF4D4F', icon: 'check', padding: 15 },
+  { keyword: 'Mã công trình', value: 'A' },
+  { keyword: 'Người duyệt', value: 'B' },
+  { keyword: 'Ngày gửi duyệt', value: 'C' },
+  { keyword: 'Tình trạng', value: 'D' },
 ];
 interface OptionProps {
-  name: string;
+  keyword: string;
   value: string;
 }
-interface ButtonProps {
-  text: string;
-  color: string;
-  icon: string;
-  padding: number;
-}
-const HeaderBar = () => {
+const { Search } = Input;
+const HeaderBarCustomer = () => {
   return (
-    <div className={styles.toolbar}>
-      <Row>
-        <Col xl={7}>
-          <Button className={`${styles.missingDocsBtn} ${styles.btnHeight}`}>Tài liệu thiếu</Button>
-        </Col>
-        <Col xl={6}>
-          <Select placeholder="Chọn người phê duyệt" showSearch style={{ width: '100%' }}>
-            {optionDataProps.map((item: OptionProps, index: number) => {
-              return <Option value={item.value}>{item.name}</Option>;
-            })}
-          </Select>
-        </Col>
-        <Col xl={11}>
-          <div className={styles.btnRight}>
-            {btnDataProps.map((item: ButtonProps, index: number) => {
-              return (
-                <Button
-                  className={`${styles.btnTool} ${styles.btnHeight}`}
-                  style={{ background: item.color, paddingLeft: item.padding, paddingRight: item.padding }}
-                  icon={item.icon}
-                >
-                  {item.text}
-                </Button>
-              );
-            })}
-          </div>
-        </Col>
-      </Row>
+    <div className={styles.container}>
+      <div className={styles.toolbar}>
+        <Row>
+          <Col md={7}>
+            <Search size="small" placeholder="Tìm kiếm" />
+          </Col>
+          <Col md={10}></Col>
+          <Col md={7}>
+            <Row>
+              <Col md={16}>
+                <Select placeholder="Lọc" showSearch style={{ width: '100%' }}>
+                  {optionDataProps.map((item: OptionProps, index: number) => {
+                    return <Option value={item.value}>{item.keyword}</Option>;
+                  })}
+                </Select>
+              </Col>
+              <Col md={8}>
+                  <Link
+                    className={`${styles.linkBtn}`}
+                    to="/projects/create"
+                  >
+                    <Icon
+                      className={`${styles.mr1}`}
+                      type="plus-circle" theme="filled"
+                    />
+                      Thêm
+                  </Link>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
-};
-export default HeaderBar;
+}
+export default HeaderBarCustomer;

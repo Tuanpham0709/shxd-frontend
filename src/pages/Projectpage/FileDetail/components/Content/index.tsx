@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import EditableTable from './EditableTable';
-import HeaderBar from './HeaderBar';
+import Content from './Content';
 import styles from './style.module.less';
-
-class ProjectCustomer extends Component {
+import HeaderBar from './HeaderBar';
+class ProjectContent extends Component {
   render() {
     return (
       <div className={styles.container}>
         <HeaderBar />
-        <EditableTable />
+        <Content />
       </div>
     );
   }
 }
-export default ProjectCustomer;
+export default ProjectContent;

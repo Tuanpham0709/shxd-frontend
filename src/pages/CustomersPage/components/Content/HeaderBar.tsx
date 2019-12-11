@@ -38,7 +38,7 @@ const HeaderBarCustomer = () => {
               <Col md={8}>
                   <Link
                     className={`${styles.linkBtn}`}
-                    to="/add-customer"
+                    to="/customers/create"
                   >
                     <Icon
                       className={`${styles.mr1}`}

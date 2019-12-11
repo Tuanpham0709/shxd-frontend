@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import Homepage from './pages/Homepage';
 import ProjectInfo from './pages/Projectpage/index';
+import FileDetail from './pages/Projectpage/FileDetail/index';
 import CustomersPage from './pages/CustomersPage/index';
 import CustomerEdit from './pages/CustomersPage/CustomerEdit/index';
 const PageLoading = () => (
@@ -40,8 +41,9 @@ export default function renderRoutes(isLogin: boolean) {
       <ProtectedRoute exact path="/" component={Homepage} isLogin={isLogin} />
       <ProtectedRoute exact path="/page-verifies/:type" component={Request} isLogin={isLogin} />
       <ProtectedRoute exact path="/projects" component={ProjectInfo} isLogin={isLogin} />
+      <ProtectedRoute exact path="/projects/file" component={FileDetail} isLogin={isLogin} />
       <ProtectedRoute exact path="/customers" component={CustomersPage} isLogin={isLogin} />
-      <ProtectedRoute exact path="/edit-customer" component={CustomerEdit} isLogin={isLogin} />
+      <ProtectedRoute exact path="/customers/edit" component={CustomerEdit} isLogin={isLogin} />
       <Route exact path="*">
         <React.Suspense fallback={<PageLoading />}>
           <h1>404</h1>
