@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import CustomerManage from './CustomerManage';
 import EditableTable from './EditableTable';
 import HeaderBar from './HeaderBar';
 import styles from './style.module.less';

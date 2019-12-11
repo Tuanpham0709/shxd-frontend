@@ -96,7 +96,7 @@ export default class EditableTable extends React.Component<{}, State> {
                 render: (text: string, record: any) => {
                     return (
                         <div>
-                            <Link to="/customers/edit-customer"><Icon type="edit" /></Link>
+                            <Link to="/edit-customer"><Icon type="edit" /></Link>
                             <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
                                 <Icon type="delete" />
                             </Popconfirm>
