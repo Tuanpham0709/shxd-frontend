@@ -1,15 +1,29 @@
 module.exports = shipit => {
   require('shipit-deploy')(shipit);
 
+  const branchParamsIndex = process.argv.indexOf('-b');
+  let branch = null;
+  if (branchParamsIndex !== -1 && branchParamsIndex < process.argv.length - 1) {
+    branch = process.argv[branchParamsIndex + 1];
+  }
+
   shipit.initConfig({
     default: {
       dirToCopy: './build',
-      deployTo: '/home/deployments/shxd/frontend',
+      deployTo: '/var/www/deployments/SHXD',
       repositoryUrl: 'git@bitbucket.org:ixosoftware/frontend-shxd.git',
       ignores: ['.git', 'node_modules'],
       keepReleases: 2,
       shallowClone: true,
-      branch: 'master',
+      branch: branch ? branch : 'master',
+    },
+    dev: {
+      servers: [
+        {
+          host: 'app.shxd.comartek.com',
+          user: 'root',
+        },
+      ],
     },
     staging: {
       servers: [
@@ -21,6 +35,10 @@ module.exports = shipit => {
     },
   });
 
+  shipit.blTask('deploy:init', () => {
+    shipit.config.deployTo = `${shipit.config.deployTo}/${shipit.config.branch}`;
+  });
+
   shipit.blTask('deploy:copy', () => {
     if (shipit.environment === 'uat') {
       return shipit.local(`cd ${shipit.workspace} && cp -r .env.uat ${shipit.workspace}/.env`);
@@ -28,7 +46,7 @@ module.exports = shipit => {
     if (shipit.environment === 'staging') {
       return shipit.local(`cd ${shipit.workspace} && cp -r .env.staging ${shipit.workspace}/.env`);
     }
-    return shipit.local(`cd ${shipit.workspace} && cp -r .env.prod ${shipit.workspace}/.env`);
+    return null;
   });
 
   shipit.blTask('deploy:install', () => {
@@ -37,10 +55,6 @@ module.exports = shipit => {
 
   shipit.blTask('deploy:build', () => {
     return shipit.local(`cd ${shipit.workspace} && yarn build`);
-  });
-
-  shipit.blTask('deploy:copy:bundles:to:active', () => {
-    return shipit.remote(`cp -r ${shipit.currentPath}/build/* ${shipit.config.deployTo}/active/build/`);
   });
 
   shipit.task('deploy', [
