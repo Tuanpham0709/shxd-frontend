@@ -5,6 +5,7 @@ import Homepage from './pages/Homepage';
 import ProjectInfo from './pages/ProjectPage/index';
 import ProjectDetail from './pages/ProjectPage/ProjectDetail/index';
 import CustomersPage from './pages/CustomersPage/index';
+import CustomerCreate from './pages/CustomersPage/CustomerCreate/index';
 import CustomerDetail from './pages/CustomersPage/CustomerDetail/index';
 const PageLoading = () => (
   <div
@@ -43,6 +44,7 @@ export default function renderRoutes(isLogin: boolean) {
       <ProtectedRoute exact path="/projects" component={ProjectInfo} isLogin={isLogin} />
       <ProtectedRoute exact path="/projects/detail" component={ProjectDetail} isLogin={isLogin} />
       <ProtectedRoute exact path="/customers" component={CustomersPage} isLogin={isLogin} />
+      <ProtectedRoute exact path="/customers/create" component={CustomerCreate} isLogin={isLogin} />
       <ProtectedRoute exact path="/customers/edit" component={CustomerDetail} isLogin={isLogin} />
       <Route exact path="*">
         <React.Suspense fallback={<PageLoading />}>

@@ -1,8 +1,7 @@
 import React from 'react';
-import styles from './style.module.less';
-import { Input, Select, Icon } from 'antd';
-import { Col, Row } from 'antd';
+import { Input, Select, Icon, Col, Row } from 'antd';
 import { Link } from 'react-router-dom'
+import styles from './style.module.less';
 
 const { Option } = Select;
 
