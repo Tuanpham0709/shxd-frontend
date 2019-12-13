@@ -138,7 +138,7 @@ const CollectionCreateForm = Form.create<Props>({ name: 'form_in_modal' })(
 
               <Col md={12} className={styles.pr1}>
                 <Form.Item label="Tên người thực hiện" hasFeedback>
-                  {getFieldDecorator('select', {
+                  {getFieldDecorator('select1', {
                     rules: [{
                       message: 'Chọn tên người thực hiện',
                       required: true,
@@ -155,7 +155,7 @@ const CollectionCreateForm = Form.create<Props>({ name: 'form_in_modal' })(
 
               <Col md={12} className={styles.pl1}>
                 <Form.Item label="Tên người phê duyệt" hasFeedback>
-                  {getFieldDecorator('select', {
+                  {getFieldDecorator('select2', {
                     rules: [{
                       message: 'Chọn tên người phê duyệt',
                       required: true,
