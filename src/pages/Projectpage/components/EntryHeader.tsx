@@ -1,27 +1,40 @@
-import React, {Component} from 'react';
-import { Icon, Col, Row, Modal } from 'antd';
-import FormCreate from './FormCreate';
+import React from 'react';
+import { Icon, Col, Row } from 'antd';
+import CollectionCreateForm from './FormCreateProject/CollectionCreateForm';
 import styles from '../style.module.less';
 
-class CustomerHeader extends Component {
+class CollectionsPage extends React.Component<any,any> {
   state = {
-    BtnText: 'Tạo hồ sơ',
     visible: false,
-    confirmLoading: false,
   };
+  formRef = null
+
   showModal = () => {
-    this.setState({
-      visible: true,
-    });
+    this.setState({ visible: true });
   };
+
   handleCancel = () => {
-    console.log('Clicked cancel button');
-    this.setState({
-      visible: false,
+    this.setState({ visible: false });
+  };
+
+  handleCreate = () => {
+    const { form } = this.formRef.props;
+    form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+
+      console.log('Received values of form: ', values);
+      form.resetFields();
+      this.setState({ visible: false });
     });
   };
+
+  saveFormRef = formRef => {
+    this.formRef = formRef;
+  };
+
   render() {
-    const { visible, BtnText } = this.state;
     return (
       <div className={styles.titleContainer}>
         <Row>
@@ -35,22 +48,19 @@ class CustomerHeader extends Component {
                   className={styles.mr1}
                   type="plus-circle" theme="filled"
                 />
-                {BtnText}
+                Tạo hồ sơ
               </div>
-              <Modal
-                title="Tạo hồ sơ"
-                visible={visible}
+              <CollectionCreateForm
+                wrappedComponentRef={this.saveFormRef}
+                visible={this.state.visible}
                 onCancel={this.handleCancel}
-                footer={null}
-                width={960}
-              >
-                <FormCreate />
-              </Modal>
+                onCreate={this.handleCreate}
+              />
             </div>
           </Col>
         </Row>
       </div>
     );
   }
-};
-export default CustomerHeader;
+}
+export default CollectionsPage;
