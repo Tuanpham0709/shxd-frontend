@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Row, Col } from 'antd';
+import { Form, Input, Select, Button, Row, Col, DatePicker } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import styled from 'styled-components';
 import styles from '../style.module.less';
+
+const { Option } = Select;
 
 const TitleForm = styled.div`
   padding: 1em;
@@ -34,99 +36,22 @@ class ModalForm extends Component<FormComponentProps,any> {
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
-        <TitleForm>Thông tin cơ bản</TitleForm>
         <Form>
+          <TitleForm>Thông tin cơ bản</TitleForm>
           <Row style={{display:'flex',flexWrap:'wrap',}}>
             <Col md={12} className={styles.pr1}>
-              <Form.Item label="Tên khách hàng">
+              <Form.Item label="Họ và Tên">
                 {getFieldDecorator('user-name', {
                   rules: [{
-                    message: 'Nhập tên của bạn',
+                    message: 'Nhập tên đầy đủ của bạn',
                     required: true,
                   }],
-                })(<Input placeholder="Nhập tên của bạn" />)}
+                })(<Input placeholder="Nhập tên đầy đủ của bạn" />)}
               </Form.Item>
             </Col>
 
             <Col md={12} className={styles.pl1}>
-              <Form.Item label="Mã khách hàng">
-                {getFieldDecorator('code-customer', {
-                  rules: [{
-                    message: 'Nhập mã khách hàng của bạn',
-                    required: true,
-                  }],
-                })(<Input placeholder="Nhập mã khách hàng của bạn" />)}
-              </Form.Item>
-            </Col>
-
-            <Col md={12} className={styles.pr1}>
-              <Form.Item label="Tên công trình">
-                {getFieldDecorator('name-project', {
-                  rules: [{
-                    message: 'Nhập tên công trình',
-                    required: true,
-                  }],
-                })(<Input placeholder="Nhập tên công trình" />)}
-              </Form.Item>
-            </Col>
-
-            <Col md={12} className={styles.pl1}>
-              <Form.Item label="Mã công trình">
-                {getFieldDecorator('code-project', {
-                  rules: [{
-                    message: 'Nhập mã công trình',
-                    required: true,
-                  }],
-                })(<Input placeholder="Nhập mã công trình" />)}
-              </Form.Item>
-            </Col>
-
-            <Col md={12} className={styles.pr1}>
-              <Form.Item label="Chủ tịch">
-                {getFieldDecorator('chairman', {
-                  rules: [{
-                    message: 'Nhập tên chủ tịch',
-                    required: true,
-                  }],
-                })(<Input placeholder="Nhập tên chủ tich" />)}
-              </Form.Item>
-            </Col>
-
-            <Col md={12} className={styles.pl1}>
-              <Form.Item label="Giám đốc">
-                {getFieldDecorator('manager', {
-                  rules: [{
-                    message: 'Nhập tên giám đốc',
-                    required: true,
-                  }],
-                })(<Input placeholder="Nhập tên giám đốc" />)}
-              </Form.Item>
-            </Col>
-
-            <Col md={12} className={styles.pr1}>
-              <Form.Item label="Phòng/CN/VP QL">
-                {getFieldDecorator('room', {
-                  rules: [{
-                    message: 'Nhập tên Phòng/CN/VP QL',
-                    required: true,
-                  }],
-                })(<Input placeholder="Nhập tên Phòng/CN/VP QL" />)}
-              </Form.Item>
-            </Col>
-
-            <Col md={12} className={styles.pl1}>
-              <Form.Item label="Kế toán trưởng">
-                {getFieldDecorator('accountant', {
-                  rules: [{
-                    message: 'Nhập tên Kế toán trưởng',
-                    required: true,
-                  }],
-                })(<Input placeholder="Nhập tên Kế toán trưởng" />)}
-              </Form.Item>
-            </Col>
-
-            <Col md={12} className={styles.pr1}>
-              <Form.Item label="Hotline">
+              <Form.Item label="Số điện thoại">
                 {getFieldDecorator('hotline', {
                   rules: [{
                     message: 'Chỉ nhập số',
@@ -136,7 +61,7 @@ class ModalForm extends Component<FormComponentProps,any> {
               </Form.Item>
             </Col>
 
-            <Col md={12} className={styles.pl1}>
+            <Col md={12} className={styles.pr1}>
               <Form.Item label="E-mail">
                 {getFieldDecorator('email', {
                   rules: [
@@ -153,7 +78,7 @@ class ModalForm extends Component<FormComponentProps,any> {
               </Form.Item>
             </Col>
 
-            <Col md={12} className={styles.pr1}>
+            <Col md={12} className={styles.pl1}>
               <Form.Item label="Địa chỉ">
                 {getFieldDecorator('address', {
                   rules: [{
@@ -161,12 +86,6 @@ class ModalForm extends Component<FormComponentProps,any> {
                     required: true,
                   }],
                 })(<Input placeholder="Nhập địa chỉ" />)}
-              </Form.Item>
-            </Col>
-
-            <Col md={12} className={styles.pl1}>
-              <Form.Item label="Số lượng tài liệu">
-                <Input type="number" disabled placeholder="0" />
               </Form.Item>
             </Col>
 
@@ -182,15 +101,91 @@ class ModalForm extends Component<FormComponentProps,any> {
             </Col>
 
             <Col md={12} className={styles.pl1}>
-              <Form.Item label="Password" hasFeedback>
+              <Form.Item label="Mật khẩu" hasFeedback>
                 {getFieldDecorator('password', {
                   rules: [
                     {
                       required: true,
-                      message: 'Please input your password!',
+                      message: 'Nhập mật khẩu',
                     }
                   ],
                 })(<Input.Password />)}
+              </Form.Item>
+            </Col>
+
+            <Col md={12} className={styles.pr1}>
+              <Form.Item label="Loại người dùng" hasFeedback>
+                {getFieldDecorator('user-type', {
+                  rules: [{
+                    message: 'Chọn loại kiểu người dùng',
+                    required: true,
+                  }],
+                })(
+                  <Select placeholder="Chọn">
+                    <Option value="Quản ký">Quản lý</Option>
+                    <Option value="Nhân viên">Nhân viên</Option>
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <TitleForm>Thông tin mở rộng</TitleForm>
+          <Row style={{display:'flex',flexWrap:'wrap',}}>
+
+            <Col md={12} className={styles.pr1}>
+              <Form.Item label="Chứng minh nhân dân">
+                {getFieldDecorator('passport', {
+                  rules: [{
+                    message: 'Nhập CMTND',
+                    required: true,
+                  }],
+                })(<Input placeholder="Nhập CMTND" />)}
+              </Form.Item>
+            </Col>
+
+            <Col md={12} className={styles.pl1}>
+              <Form.Item label="Tình trạng hôn nhân" hasFeedback>
+                {getFieldDecorator('matrimony', {
+                  rules: [{
+                    message: 'Chọn tình trạng hôn nhân',
+                    required: true,
+                  }],
+                })(
+                  <Select placeholder="Chọn">
+                    <Option value="Độc thân">Độc thân</Option>
+                    <Option value="Đã kết hôn">Đã kết hôn</Option>
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+
+            <Col md={12} className={styles.pr1}>
+              <Form.Item label="Ngày sinh" hasFeedback>
+              {getFieldDecorator('year-of-birth', {
+                  rules: [{
+                    message: 'Chọn ngày sinh',
+                    required: true,
+                  }],
+                })(<DatePicker placeholder="Chọn ngày sinh" style={{ width: '100%' }} />)}
+              </Form.Item>
+            </Col>
+
+            <Col md={12} className={styles.pl1}>
+              <Form.Item label="Học vấn" hasFeedback>
+                {getFieldDecorator('matrimony', {
+                  rules: [{
+                    message: 'Chọn học vấn',
+                    required: true,
+                  }],
+                })(
+                  <Select placeholder="Chọn">
+                    <Option value="THPT">THPT</Option>
+                    <Option value="Trung cấp">Trung cấp</Option>
+                    <Option value="Cao đẳng">Cao đẳng</Option>
+                    <Option value="Đại học">Đại học</Option>
+                  </Select>,
+                )}
               </Form.Item>
             </Col>
 

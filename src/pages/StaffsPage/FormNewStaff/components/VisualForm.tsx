@@ -15,9 +15,9 @@ class WorkingTree extends React.Component {
   render() {
     return (
       <div className={styles.filterContainer}>
-        <Title className={`${styles.textCenter}`}>THÔNG TIN KHÁCH HÀNG</Title>
+        <Title className={`${styles.textCenter}`}>THÔNG TIN NHÂN VIÊN</Title>
         <VisualImage>
-          <img src={require('./img/visualphoto.png')} alt="THÔNG TIN KHÁCH HÀNG" />
+          <img src={require('./img/visualphoto.png')} alt="Tông tin nhân viên" />
         </VisualImage>
       </div>
     );
