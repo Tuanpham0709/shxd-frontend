@@ -44,7 +44,7 @@ export default function renderRoutes(isLogin: boolean) {
       <Route exact path="/login" component={LoginPage} />
       <ProtectedRoute exact path="/" component={Homepage} isLogin={isLogin} />
       <ProtectedRoute exact path="/page-verifies/:type" component={Request} isLogin={isLogin} />
-      <ProtectedRoute exact path="/project" component={ProjectPageInfo} isLogin={isLogin} />
+      <ProtectedRoute exact path="/projects/detail" component={ProjectPageInfo} isLogin={isLogin} />
       <ProtectedRoute exact path="/projects" component={ProjectPagesList} isLogin={isLogin} />
       <ProtectedRoute exact path="/staffs" component={StaffsPage} isLogin={isLogin} />
       <ProtectedRoute exact path="/staffs/create" component={FormNewStaff} isLogin={isLogin} />
