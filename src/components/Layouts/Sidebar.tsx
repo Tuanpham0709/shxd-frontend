@@ -6,7 +6,7 @@ import { AppContext } from '../../contexts/AppContext';
 
 const { Sider } = Layout;
 
-const { SubMenu } = Menu;
+// const { SubMenu } = Menu;
 
 const StyledLogo = styled.div`
   position: relative;
@@ -88,7 +88,23 @@ const Sidebar = React.memo((props: BaseProps) => {
                 <Icon type="home" />
                 <span>Trang chủ</span>
               </Menu.Item>
-              <SubMenu
+
+              <Menu.Item key="/projects">
+                <Icon type="file" />
+                <span>Quản lý hồ sơ</span>
+              </Menu.Item>
+
+              <Menu.Item key="/staffs">
+                <Icon type="user" />
+                <span>Quản lý nhân viên</span>
+              </Menu.Item>
+
+              <Menu.Item key="/customers">
+                <Icon type="user" />
+                <span>Quản lý khách hàng</span>
+              </Menu.Item>
+
+              {/* <SubMenu
                 key="files"
                 title={
                   <span>
@@ -100,8 +116,9 @@ const Sidebar = React.memo((props: BaseProps) => {
               >
                 <Menu.Item key="/projects">Danh sách hồ sơ</Menu.Item>
                 <Menu.Item key="/projects/create">Thêm hồ sơ</Menu.Item>
-              </SubMenu>
-              <SubMenu
+              </SubMenu> */}
+
+              {/* <SubMenu
                 key="users"
                 title={
                   <span>
@@ -132,7 +149,7 @@ const Sidebar = React.memo((props: BaseProps) => {
               <Menu.Item key="/settings">
                 <Icon type="setting" />
                 <span>Cài đặt hệ thống</span>
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu>
           </Sider>
         )}

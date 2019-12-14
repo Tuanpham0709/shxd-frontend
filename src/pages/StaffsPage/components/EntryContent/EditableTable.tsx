@@ -8,16 +8,14 @@ const data: any[] = [];
 for (let i = 0; i < 50; i++) {
     data.push({
         key: i.toString(),
-        code: `${i + 1}`,
-        name: `Chris ${i + 1}`,
+        id: `${i + 1}`,
+        name: `Trương Ánh Tuyết ${i + 1}`,
         phone: `(+84)3 123456${i}`,
-        email: `xiemnguyen${i + 1}@tomochain.com`,
-        address: `Số 97, Trần Quốc Toản, Quận Hoàn Kiếm, Hà Nội ${i + 1}`,
-        room: `XD${i + 1}`,
-        manager: `Trần Văn Thi ${i + 1}`,
-        chairman: `Nguyễn Ngọc Quang ${i + 1}`,
-        accountant: `Nguyễn Thị Hà ${i + 1}`,
-        operation: ``,
+        email: `nam.nguyen-${i + 1}@tomochain.com`,
+        address: `Số nhà 089, đường Nhạc Sơn, Phường Kim Tân, Thành phố Lào Cai, Lào Cai ${i + 1}`,
+        usertype: `Quản lý ${i + 1}`,
+        startdate: `22/10/2019 ${i + 1}`,
+        updatedate: `28/08/2019 ${i + 1}`,
     });
 }
 
@@ -37,57 +35,43 @@ export default class EditableTable extends React.Component<{}, State> {
         this.state = { data, editingKey: '', deleteKey: '' };
         this.columns = [
             {
-                title: 'Mã KH',
-                dataIndex: 'code',
-                // width: '25%',
+                title: 'ID',
+                dataIndex: 'id',
                 editable: true
             },
             {
-                title: 'Tên khách hàng',
+                title: 'Tên nhân viên',
                 dataIndex: 'name',
-                // width: '15%',
                 editable: true
             },
             {
                 title: 'Số điện thoại',
                 dataIndex: 'phone',
-                // width: '40%',
                 editable: true
             },
             {
                 title: 'Email',
                 dataIndex: 'email',
-                // width: '40%',
                 editable: true
             },
             {
                 title: 'Địa chỉ',
                 dataIndex: 'address',
-                // width: '40%',
                 editable: true
             },
             {
-                title: 'Phòng/ CN/ VP QL',
-                dataIndex: 'room',
-                // width: '40%',
+                title: 'Loại người dùng',
+                dataIndex: 'usertype',
                 editable: true
             },
             {
-                title: 'Giám đốc',
-                dataIndex: 'manager',
-                // width: '40%',
+                title: 'Ngày tạo',
+                dataIndex: 'startdate',
                 editable: true
             },
             {
-                title: 'Chủ tịch',
-                dataIndex: 'chairman',
-                // width: '40%',
-                editable: true
-            },
-            {
-                title: 'Kế toán trưởng',
-                dataIndex: 'accountant',
-                // width: '40%',
+                title: 'Ngày cập nhật',
+                dataIndex: 'updatedate',
                 editable: true
             },
             {
@@ -96,7 +80,7 @@ export default class EditableTable extends React.Component<{}, State> {
                 render: (text: string, record: any) => {
                     return (
                         <div>
-                            <Link to="/customers/edit"><Icon type="edit" /></Link>
+                            <Link to="/staffs/edit"><Icon type="edit" /></Link>
                         </div>
                     );
                 }
