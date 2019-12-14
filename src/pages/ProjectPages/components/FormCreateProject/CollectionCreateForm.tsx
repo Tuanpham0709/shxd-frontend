@@ -26,6 +26,13 @@ const CollectionCreateForm = Form.create<Props>({ name: 'form_in_modal' })(
           onCancel={onCancel}
           onOk={onCreate}
           width={960}
+          // footer ={()=> (
+          //   <div>
+          //     <Button className={`${styles.borderBtn} ${styles.btnSmall}`} onClick={onCancel}>Huỷ bỏ</Button>
+          //     <Button className={`${styles.imageBtn} ${styles.btnSmall}`} onClick={onCreate}>Đồng ý</Button>
+          //   </div>
+          // )
+          // }
         >
           <Form>
             <Row>
