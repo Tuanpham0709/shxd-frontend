@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from '../style.module.less';
 
-const CustomerHeader = (props: any) => {
+const CustomerHeader = ({ title }) => {
   return (
     <div className={styles.titleContainer}>
-      <span className={styles.title}>Nguyễn Trọng Phùng Hưng</span>
+      <span className={styles.title}>{title}</span>
     </div>
   );
 };
