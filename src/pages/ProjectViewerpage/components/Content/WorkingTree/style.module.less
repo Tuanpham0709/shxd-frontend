@@ -19,21 +19,12 @@
   min-height: 70px;
   max-height: 350px;
 }
-:global {
-  .ant-input {
-    height: 35px;
-  }
-  .ant-btn {
-    border-radius: 5px;
-    border: 0;
-  }
-}
+
 .filterContainer {
   background-color: #ececec;
-  max-height: 797px;
+  height: 782px;
 }
 .chooseAll {
-  float: right;
   margin-right: 15px;
 }
 .chooseAll > span {
@@ -54,14 +45,14 @@
   border: solid 1px #ffffff;
 }
 .miniToolbar {
-  margin-top: 10px;
+  margin: 10px 0;
 }
 .right {
   float: right;
 }
 .treeContainer {
-  max-height: 650px;
-  overflow: scroll;
+  height: 691px;
+  overflow: auto;
   padding-left: 10px;
 }
 .searchContainer {
@@ -71,4 +62,16 @@
 }
 .workingTree {
   background-color: #ececec;
+}
+.avatarContainer {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  justify-content: center;
+}
+:global {
+  .ant-input {
+    height: 40px !important;
+  }
 }
