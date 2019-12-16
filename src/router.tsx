@@ -2,7 +2,14 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import Homepage from './pages/Homepage';
-import ProjectInfo from './pages/Projectpage/index';
+import ProjectPagesList from './pages/ProjectPages';
+import StaffsPage from './pages/StaffsPage';
+import FormEditStaff from './pages/StaffsPage/FormEditStaff';
+import FormNewStaff from './pages/StaffsPage/FormNewStaff';
+import CustomersPage from './pages/CustomersPage';
+import FormNewCustomer from './pages/CustomersPage/FormNewCustomer';
+import FormEditCustomer from './pages/CustomersPage/FormEditCustomer';
+import ProjectViewer from './pages/ProjectViewerpage';
 const PageLoading = () => (
   <div
     style={{
@@ -37,7 +44,14 @@ export default function renderRoutes(isLogin: boolean) {
       <Route exact path="/login" component={LoginPage} />
       <ProtectedRoute exact path="/" component={Homepage} isLogin={isLogin} />
       <ProtectedRoute exact path="/page-verifies/:type" component={Request} isLogin={isLogin} />
-      <ProtectedRoute exact path="/projects" component={ProjectInfo} isLogin={isLogin} />
+      <ProtectedRoute exact path="/projects" component={ProjectPagesList} isLogin={isLogin} />
+      <ProtectedRoute exact path="/project/detail" component={ProjectViewer} isLogin={isLogin} />
+      <ProtectedRoute exact path="/staffs" component={StaffsPage} isLogin={isLogin} />
+      <ProtectedRoute exact path="/staffs/create" component={FormNewStaff} isLogin={isLogin} />
+      <ProtectedRoute exact path="/staffs/edit" component={FormEditStaff} isLogin={isLogin} />
+      <ProtectedRoute exact path="/customers" component={CustomersPage} isLogin={isLogin} />
+      <ProtectedRoute exact path="/customers/create" component={FormNewCustomer} isLogin={isLogin} />
+      <ProtectedRoute exact path="/customers/edit" component={FormEditCustomer} isLogin={isLogin} />
       <Route exact path="*">
         <React.Suspense fallback={<PageLoading />}>
           <h1>404</h1>

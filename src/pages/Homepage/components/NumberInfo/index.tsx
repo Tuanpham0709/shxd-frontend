@@ -24,7 +24,7 @@ const NumberInfo: React.FC<NumberInfoProps> = ({
   suffix,
   gap,
   // @ts-ignore
-  ...props,
+  ...props
 }) => (
   <div
     className={classNames(styles.numberInfo, {

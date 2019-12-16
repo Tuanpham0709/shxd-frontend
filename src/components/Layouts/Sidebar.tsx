@@ -6,7 +6,7 @@ import { AppContext } from '../../contexts/AppContext';
 
 const { Sider } = Layout;
 
-const { SubMenu } = Menu;
+// const { SubMenu } = Menu;
 
 const StyledLogo = styled.div`
   position: relative;
@@ -88,11 +88,37 @@ const Sidebar = React.memo((props: BaseProps) => {
                 <Icon type="home" />
                 <span>Trang chủ</span>
               </Menu.Item>
-              <Menu.Item key="projects">
+
+              <Menu.Item key="/projects">
                 <Icon type="file" />
                 <span>Quản lý hồ sơ</span>
               </Menu.Item>
-              <SubMenu
+
+              <Menu.Item key="/staffs">
+                <Icon type="user" />
+                <span>Quản lý nhân viên</span>
+              </Menu.Item>
+
+              <Menu.Item key="/customers">
+                <Icon type="user" />
+                <span>Quản lý khách hàng</span>
+              </Menu.Item>
+
+              {/* <SubMenu
+                key="files"
+                title={
+                  <span>
+                    <Icon type="file" />
+                    <span>Quản lý hồ sơ</span>
+                  </span>
+                }
+                onTitleClick={item => setActivePath(['files'])}
+              >
+                <Menu.Item key="/projects">Danh sách hồ sơ</Menu.Item>
+                <Menu.Item key="/projects/create">Thêm hồ sơ</Menu.Item>
+              </SubMenu> */}
+
+              {/* <SubMenu
                 key="users"
                 title={
                   <span>
@@ -103,13 +129,27 @@ const Sidebar = React.memo((props: BaseProps) => {
                 onTitleClick={item => setActivePath(['users'])}
               >
                 <Menu.Item key="/users">Danh sách người dùng</Menu.Item>
-                <Menu.Item key="/users/create">Tạo mới</Menu.Item>
+                <Menu.Item key="/users/create">Thêm người dùng</Menu.Item>
+              </SubMenu>
+
+              <SubMenu
+                key="customers"
+                title={
+                  <span>
+                    <Icon type="user" />
+                    <span>Quản lý khách hàng</span>
+                  </span>
+                }
+                onTitleClick={item => setActivePath(['customers'])}
+              >
+                <Menu.Item key="/customers">Danh sách khách hàng</Menu.Item>
+                <Menu.Item key="/customers/create">Thêm khách hàng</Menu.Item>
               </SubMenu>
 
               <Menu.Item key="/settings">
                 <Icon type="setting" />
                 <span>Cài đặt hệ thống</span>
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu>
           </Sider>
         )}
