@@ -100,7 +100,7 @@ const Sidebar = React.memo((props: BaseProps) => {
               </Menu.Item>
 
               <Menu.Item key="/customers">
-                <Icon type="user" />
+                <i className="icon-customer"></i>
                 <span>Quản lý khách hàng</span>
               </Menu.Item>
 
