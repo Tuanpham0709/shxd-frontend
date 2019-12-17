@@ -6,9 +6,9 @@ interface Info {
 }
 const ProjectInfo = (props: any) => {
   const infoClient = [
-    { type: 'Mã công trình', content: 'NQ 307 NPCP' },
-    { type: 'Tên khách hàng', content: 'Ban QLDA thành phố Đồng Hới' },
-    { type: 'Người thực hiện', content: 'Nguyễn Văn A' },
+    { type: 'Mã công trình', content: 'QĐ 783/QĐ-UBND' },
+    { type: 'Tên khách hàng', content: 'UBND phường Thanh Nhàn' },
+    { type: 'Người thực hiện', content: 'Nguyễn Văn B' },
     { type: 'Ngày bắt đầu lập hồ sơ', content: '03/12/2016' },
   ];
   return (
