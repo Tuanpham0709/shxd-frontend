@@ -14,14 +14,19 @@ class ShowProject extends React.Component {
   render() {
     return (
       <AppContext.Consumer>
-        {({ pdfUrl }) => (
+        {({ pages, onUpdateContext }) => (
           <div className={styles.showProject}>
             <Toolbar />
             <div>
               <div style={{ position: 'relative' }}>
                 <div>
                   {/* <PDFReader showAllPage={true} width={500} url="compressed.tracemonkey-pldi-09.pdf"></PDFReader> */}
-                  <PdfRender url={pdfUrl}></PdfRender>
+                  <PdfRender
+                    onRenderSucess={() => {
+                      onUpdateContext({ loading: false });
+                    }}
+                    pages={pages}
+                  ></PdfRender>
                 </div>
                 <div className={styles.pdfBtnContainer}>
                   <Button

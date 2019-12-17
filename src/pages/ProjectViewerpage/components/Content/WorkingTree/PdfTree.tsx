@@ -4,19 +4,33 @@ const { TreeNode } = Tree;
 import { AppContext } from '../../../../../contexts/AppContext';
 import styles from './style.module.less';
 import 'antd/dist/antd.css';
+const child = [
+  { title: '1.1. QĐ 783/QĐ-UBND ngày 17/02/2016', key: '0-1', pages: [3, 4, 5] },
+  { title: '1.2. QĐ 76/QĐ-UBND ngày 12/03/2016', key: '0-2', pages: [11, 12] },
+  { title: '1.3. QĐ 46/QĐ-UBND ngày 19/02/2016', key: '0-3', pages: [1, 2] },
+  { title: '1.4. QĐ 873/QĐ-UBND ngày 29/02/2016', key: '0-4', pages: [8, 9] },
+  { title: '1.5. VB 31/BC-UBND ngày 17/03/2016', key: '0-5', pages: [13, 14, 15, 16] },
+  { title: '1.6. VB 51/QLĐT-TĐ ngày 23/03/2016', key: '0-6', pages: [17, 18, 19, 20] },
+  { title: '1.7. VB 41/BC-UBND ngày 30/03/2016', key: '0-7', pages: [21, 22, 23, 24] },
+  { title: '1.8. QĐ 1233/QĐ-UBND ngày 31/03/2016', key: '0-8', pages: [25, 26, 27, 28] },
+  { title: '1.9. Biên bản họp ngày 6/5/2016', key: '0-9', pages: [29, 30, 31] },
+];
+const child2 = [
+  { title: '2.1. QĐ 142B', key: '0-11', pages: [40] },
+  { title: '2.2. QĐ 125/TB-UBND ngày 23/06/2016', key: '0-12', pages: [42] },
+  { title: '2.3. 06/2016/HĐXD ngày 23/06/2016', key: '0-13', pages: [43, 44] },
+  { title: '2.4. Untitled', key: '0-14', pages: [46, 47, 48, 50, 51] },
+  { title: '2.5. 158/QĐ-UBND ngày 23/06/2016', key: '0-15', pages: [52, 53] },
+  { title: '2.6. Phụ lục hợp đồng, cải tạo trụ sở UBND phường thanh nhàn', key: '0-16', pages: [74, 75, 76] },
+];
 const gData = [
   {
-    title: 'Bảng xác định giá trị khối',
+    title: '1. Hồ sơ pháp lý chung',
     key: '0-0',
-    children: [],
-    pdfUrl: '/pdf_sample_abc.pdf',
+    children: [...child],
+    pages: [2],
   },
-  { title: 'Gói thầu tư', key: '0-1', children: [], pdfUrl: '/sample.pdf' },
-  { title: '25/2016/HĐ/TVGS', key: '0-2', children: [], pdfUrl: '/file-sample_150kB.pdf' },
-  { title: 'Biên bản thanh lý hợp đồng giám sát', key: '0-3', children: [], pdfUrl: '/sample.pdf' },
-  { title: 'Biên bản thanh lý hợp đồng', key: '0-4', children: [], pdfUrl: '/pdf_sample_abc.pdf' },
-  { title: '301/QĐ-UBND', key: '0-5', children: [], pdfUrl: '/file-sample_150kB.pdf' },
-  { title: 'Hợp đồng kiểm toán', key: '0-6', children: [], pdfUrl: '/sample.pdf' },
+  { title: '2. Gói thầu xây lắp', key: '0-10', children: [...child2], pages: [40] },
 ];
 const users = [
   { treeNodeId: '0-0', avatar: 'https://img.icons8.com/doodle/344/user-male--v1.png' },
@@ -35,30 +49,6 @@ for (let i = 0; i < gData.length; i++) {
     }
   }
 }
-// const generateData = (_level, _preKey, _tns) => {
-//   const preKey = _preKey || '0';
-//   const tns = _tns || gData;
-
-//   const children = [];
-//   for (let i = 0; i < x; i++) {
-//     const key = `${preKey}-${i}`;
-//     tns.push({ title: key, key });
-//     if (i < y) {
-//       children.push(key);
-//     }
-//   }
-//   if (_level < 0) {
-//     console.log('tns generate,', tns);
-
-//     return tns;
-//   }
-//   const level = _level - 1;
-//   children.forEach((key, index) => {
-//     tns[index].children = [];
-//     return generateData(level, key, tns[index].children);
-//   });
-// };
-// generateData(1, '0', []);
 interface NodeObject {
   title: string;
   key: string;
@@ -171,7 +161,7 @@ class PdfTree extends Component {
         console.log('add to data of insert parent');
       }
     }
-    // console.log('dataa after handle', data);
+    console.log('dataa after handle', data);
 
     this.setState({
       gData: data,
@@ -181,11 +171,36 @@ class PdfTree extends Component {
     if (keyItem.length < 1) {
       return;
     }
-    let index = gData.findIndex(item => item.key == keyItem[0]);
-    console.log('item', gData[index]);
+    let index;
+    let pages;
+    if (keyItem[0].length < 4) {
+      index = gData.findIndex(item => item.key == keyItem[0]);
+      if (index < 0) {
+        index = gData[0].children.findIndex(item => item.key == keyItem[0]);
+        pages = gData[0].children[index].pages;
+        console.log('pages ind < 0 ', pages);
+        onUpdateContext({ pages, loading: true });
+        return;
+      }
+      pages = gData[0].pages;
+      console.log('obje', gData[index]);
+      onUpdateContext({ pages, loading: true });
 
-    let pdfUrl = gData[index].pdfUrl;
-    onUpdateContext({ pdfUrl });
+      return;
+    }
+    index = gData.findIndex(item => item.key == keyItem[0]);
+
+    if (index < 0) {
+      index = gData[1].children.findIndex(item => item.key == keyItem[0]);
+      pages = gData[1].children[index].pages;
+      onUpdateContext({ pages, loading: true });
+      return;
+    }
+    pages = gData[1].pages;
+    console.log('pages parent 4', pages);
+    onUpdateContext({ pages, loading: true });
+
+    // let index = gData.findIndex(item);
   };
   _renderAvatar = item => {
     if (item.avatar) {
@@ -207,13 +222,13 @@ class PdfTree extends Component {
     data.map(item => {
       if (item.children && item.children.length) {
         return (
-          <TreeNode key={item.key} icon={this._renderAvatar(item)} title={item.title}>
+          <TreeNode key={item.key} title={item.title}>
             {this._renderTreeNode(item.children)}
           </TreeNode>
         );
       }
       return (
-        <TreeNode style={{ height: 40 }} icon={this._renderAvatar(item)} key={item.key} title={item.title} />
+        <TreeNode style={{ height: 40 }} key={item.key} title={item.title} />
         //   {/* <img src={'https://img.icons8.com/plasticine/344/user.png'} style={{ width: 20, height: 20 }}></img>
         // </div> */}
       );
@@ -222,8 +237,8 @@ class PdfTree extends Component {
     const { gData, checkedKeys, isCheckedAll } = this.state;
     return (
       <AppContext.Consumer>
-        {({ onUpdateContext }) => (
-          <div>
+        {({ onUpdateContext, loading }) => (
+          <div className={styles.treeContainer}>
             <div className={styles.hozLine}>
               <div className={styles.chooseAll}>
                 <Checkbox checked={isCheckedAll} onChange={this._onCheckedAll}>
@@ -232,6 +247,7 @@ class PdfTree extends Component {
               </div>
             </div>
             <Tree
+              disabled={loading}
               showIcon
               checkable
               className="draggable-tree"

@@ -9,11 +9,11 @@ const ProjectInfo = (props: any) => {
     { type: 'Mã công trình', content: 'NQ 307 NPCP' },
     { type: 'Tên khách hàng', content: 'Ban QLDA thành phố Đồng Hới' },
     { type: 'Người thực hiện', content: 'Nguyễn Văn A' },
-    { type: 'Ngày bắt đầu lập hồ sơ', content: '03/12/2019' },
+    { type: 'Ngày bắt đầu lập hồ sơ', content: '03/12/2016' },
   ];
   return (
     <div className={styles.titleContainer}>
-      <span className={styles.title}>Cải thiện chụ sở UBND tỉnh Quảng Bình</span>
+      <span className={styles.title}>HỒ SƠ QUYẾT TOÁN DỰ ÁN HOÀN THÀNH</span>
       <div className={styles.flRight}>
         {infoClient.map((item: Info, index: number) => {
           return (

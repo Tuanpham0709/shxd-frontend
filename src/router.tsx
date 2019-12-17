@@ -45,13 +45,13 @@ export default function renderRoutes(isLogin: boolean) {
       <ProtectedRoute exact path="/" component={Homepage} isLogin={isLogin} />
       <ProtectedRoute exact path="/page-verifies/:type" component={Request} isLogin={isLogin} />
       <ProtectedRoute exact path="/projects" component={ProjectPagesList} isLogin={isLogin} />
-      <ProtectedRoute exact path="/project/detail" component={ProjectViewer} isLogin={isLogin} />
       <ProtectedRoute exact path="/staffs" component={StaffsPage} isLogin={isLogin} />
       <ProtectedRoute exact path="/staffs/create" component={FormNewStaff} isLogin={isLogin} />
       <ProtectedRoute exact path="/staffs/edit" component={FormEditStaff} isLogin={isLogin} />
       <ProtectedRoute exact path="/customers" component={CustomersPage} isLogin={isLogin} />
       <ProtectedRoute exact path="/customers/create" component={FormNewCustomer} isLogin={isLogin} />
       <ProtectedRoute exact path="/customers/edit" component={FormEditCustomer} isLogin={isLogin} />
+      <ProtectedRoute exact path="/project/detail" component={ProjectViewer} isLogin={isLogin} />
       <Route exact path="*">
         <React.Suspense fallback={<PageLoading />}>
           <h1>404</h1>
