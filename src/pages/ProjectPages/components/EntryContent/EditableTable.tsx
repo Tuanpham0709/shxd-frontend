@@ -206,7 +206,7 @@ export default class EditableTable extends React.Component<{}, State> {
       {
         title: 'Hồ sơ tài liệu còn thiếu hoặc tồn tại',
         render: (text: string, record: any) => {
-          return <Link to="/projects/detail">Xem chi tiết</Link>;
+          return <Link to="/project/detail">Xem chi tiết</Link>;
         },
       },
       {

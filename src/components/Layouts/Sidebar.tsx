@@ -94,12 +94,12 @@ const Sidebar = React.memo((props: BaseProps) => {
                 <span>Quản lý hồ sơ</span>
               </Menu.Item>
 
-              <Menu.Item key="/staffs">
+              <Menu.Item disabled key="/staffs">
                 <Icon type="user" />
                 <span>Quản lý nhân viên</span>
               </Menu.Item>
 
-              <Menu.Item key="/customers">
+              <Menu.Item disabled key="/customers">
                 <Icon type="user" />
                 <span>Quản lý khách hàng</span>
               </Menu.Item>

@@ -4,14 +4,14 @@ import pdfjs from 'pdfjs-dist';
 import styles from './style.module.less';
 import PageCanvas from './PageCanvas';
 interface IProps {
-  pages: any;
+  pages: number[];
   onRenderSucess: () => void;
 }
 interface IStates {
   pdf: any;
   scale: any;
   url: string;
-  pages: any;
+  pages: number[];
   loading: boolean;
 }
 const DEFAUT_SCALE = 1.4;
