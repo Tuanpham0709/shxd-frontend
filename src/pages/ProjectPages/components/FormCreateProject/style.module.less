@@ -1,27 +1,36 @@
 @import '~antd/es/style/themes/default.less';
 .imageBtn {
-    background-color: #007bd7 !important;
-    color: #ffffff !important;
+  background-color: #007bd7 !important;
+  color: #ffffff !important;
 }
 :global {
-    .borderBtn {
-        border: 1px solid #D1D3D4!important;
-        color: #949494 !important;
-    }
+  .borderBtn {
+    border: 1px solid #d1d3d4 !important;
+    color: #949494 !important;
+  }
 }
 .textRight {
-    text-align: right;
+  text-align: right;
 }
 .pr1 {
-    padding-right: 15px!important;
+  padding-right: 15px !important;
 }
 .pl1 {
-    padding-left: 15px!important;
+  padding-left: 15px !important;
 }
 .btnSmall {
+  height: 35px !important;
+  margin-right: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: #fff;
+}
+:global {
+  .ant-modal-footer > div > .ant-btn {
     height: 35px !important;
-    margin-right: 5px;
-    padding-left: 20px;
-    padding-right: 20px;
-    color: #fff;
+    border: 1px solid #d1d3d4 !important;
+  }
+  .ant-modal-footer > div > .ant-btn-primary {
+    background-color: #007bd7 !important;
+  }
 }

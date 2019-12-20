@@ -1,23 +1,18 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import pdfjs from 'pdfjs-dist';
 import styles from './style.module.less';
-import Page from './Page';
+import PageCanvas from './PageCanvas';
 interface IProps {
-  url?: string;
-  data?: string;
-  scale?: string | number;
-  showAllPage?: boolean;
-  onDocumentComplete?: any;
-  getPageNumber?: any;
-  pageScroll?: number;
-  width?: number;
+  pages: number[];
+  onRenderSucess: () => void;
 }
 interface IStates {
   pdf: any;
-  totalPage: number;
   scale: any;
   url: string;
+  pages: number[];
+  loading: boolean;
 }
 const DEFAUT_SCALE = 1.4;
 const MAX_SCALE = 2.4;
@@ -26,18 +21,18 @@ pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pd
 class PdfRender extends React.Component<IProps, IStates> {
   state: IStates = {
     pdf: null,
-    totalPage: 0,
     scale: 1.5,
-    url: null,
+    url: '/01._hs_d______n.pdf',
+    pages: [1],
+    loading: false,
   };
   refContainer = null;
   public constructor(props: IProps) {
     super(props);
   }
   componentWillReceiveProps(nextProps, nexState) {
-    if (nextProps.url !== this.state.url) {
-      this.getDocument(nextProps.url);
-      // window.scrollTo(0, 0);
+    if (nextProps.pages !== this.state.pages) {
+      this.getDocument(this.state.url);
       this.refContainer.scrollTo(0, 0);
       this.setState({
         scale: DEFAUT_SCALE,
@@ -45,22 +40,22 @@ class PdfRender extends React.Component<IProps, IStates> {
     }
   }
   componentDidMount() {
-    this.getDocument(this.props.url);
+    this.getDocument(this.state.url);
   }
   getDocument = async url => {
     let obj = {
       url: null,
     };
     obj.url = url;
-    // console.log('props url', obj);
-
-    pdfjs
+    this.setState({
+      loading: true,
+    });
+    await pdfjs
       .getDocument(obj)
       .then(pdf => {
         console.log('pdf', pdf);
-
         this.setState({
-          totalPage: pdf.numPages,
+          pages: this.props.pages,
           pdf,
         });
       })
@@ -83,11 +78,16 @@ class PdfRender extends React.Component<IProps, IStates> {
     }
     this.setState({ scale: newScale });
   };
+  onLoadSuccess = () => {
+    this.setState(
+      {
+        loading: false,
+      },
+      () => this.props.onRenderSucess(),
+    );
+  };
   render() {
-    const { totalPage, scale, pdf } = this.state;
-    let tempArr = new Array(totalPage);
-
-    tempArr.fill(0);
+    const { pages, scale, pdf, loading } = this.state;
     return (
       <div
         className={styles.viewer}
@@ -107,12 +107,32 @@ class PdfRender extends React.Component<IProps, IStates> {
           <Button icon="zoom-out" className={styles.btn} size="small" onClick={this.onZoomOut} />
         </div>
         <div className={styles.pdf_container}>
-          <React.Fragment>
-            {tempArr.map((item, i) => {
+          <Spin
+            className={styles.spin}
+            size="large"
+            style={{
+              visibility: loading ? 'visible' : 'hidden',
+              marginTop: loading ? 200 : 0,
+              marginLeft: 500,
+              position: 'absolute',
+            }}
+          />
+          <div style={{ visibility: loading ? 'hidden' : 'visible' }}>
+            {pages.map((item, i) => {
               var index = i + 1;
-              return <Page key={index + ''} pageNum={index} pdf={pdf} scaleProp={scale} />;
+              return (
+                <PageCanvas
+                  pageSum={pages.length}
+                  index={i}
+                  onLoadSuccess={this.onLoadSuccess}
+                  key={index + ''}
+                  pageNum={item}
+                  pdf={pdf}
+                  scaleProp={scale}
+                />
+              );
             })}
-          </React.Fragment>
+          </div>
         </div>
       </div>
     );

@@ -90,7 +90,7 @@ const Sidebar = React.memo((props: BaseProps) => {
               </Menu.Item>
 
               <Menu.Item key="/projects">
-                <Icon type="file" />
+                <Icon type="file-text"></Icon>
                 <span>Quản lý hồ sơ</span>
               </Menu.Item>
 

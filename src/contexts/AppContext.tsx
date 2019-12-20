@@ -4,16 +4,17 @@ export interface AppContextInterface {
   dummy: any;
   collapsedSidebar: boolean;
   onUpdateContext: (...params: any) => void;
-  pdfUrl: string;
+  pages: number[];
+  loading: boolean;
 }
 
 export const AppContext = React.createContext<AppContextInterface>({
   dummy: null,
   collapsedSidebar: false,
   onUpdateContext: context => context,
-  pdfUrl: '/file-sample_150kB.pdf',
+  pages: [2],
+  loading: false,
 });
-
 export class AppProvider extends Component {
   onUpdateContext = context => {
     const newContext = { ...this.state, ...context };
@@ -23,7 +24,8 @@ export class AppProvider extends Component {
     dummy: null,
     collapsedSidebar: false,
     onUpdateContext: this.onUpdateContext,
-    pdfUrl: '/file-sample_150kB.pdf',
+    pages: [2],
+    loading: false,
   };
   render() {
     return <AppContext.Provider value={{ ...this.state }}>{this.props.children}</AppContext.Provider>;

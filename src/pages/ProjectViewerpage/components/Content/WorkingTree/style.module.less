@@ -38,12 +38,26 @@
   border-bottom: solid 1px #cfcfcf;
 }
 .btnIcon {
-  margin: auto;
-  margin: 0 auto;
-  box-sizing: border-box;
-  display: inline;
-  border: solid 1px #ffffff;
+  background-color: #dfdfdf;
+  border-radius: 3px;
+  display: inline-block;
+  color: #666666;
+  font-size: 15px;
+  font-weight: bold;
+  text-decoration: none;
+  width: '14.24%';
+  text-align: center;
+  padding: 6px 0;
+  border: solid 0.4px #ffffff;
 }
+.btnIcon:hover {
+  background-color: #f6f6f6;
+}
+.btnIcon:active {
+  position: relative;
+  top: 1px;
+}
+
 .miniToolbar {
   margin: 10px 0;
 }
@@ -51,7 +65,7 @@
   float: right;
 }
 .treeContainer {
-  height: 691px;
+  height: 681px;
   overflow: auto;
   padding-left: 10px;
 }
@@ -73,5 +87,10 @@
 :global {
   .ant-input {
     height: 40px !important;
+  }
+}
+:global {
+  .ant-tree > .ant-tree-treenode-switcher-open > .ant-tree-node-content-wrapper > .ant-tree-title {
+    font: Bold 14px/21px Roboto !important;
   }
 }
