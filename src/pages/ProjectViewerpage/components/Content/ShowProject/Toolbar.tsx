@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Input, Button } from 'antd';
+import { Row, Col, Input } from 'antd';
 import styles from './style.module.less';
 const Toolbar = () => {
   return (
@@ -34,11 +34,11 @@ const Toolbar = () => {
         </Col>
         <Col xl={5}>
           <div className={styles.btnContainer}>
-            <Button className={`${styles.imageBtn} ${styles.btnSmall}`} type="primary" size="small" icon="file-image" />
-            <Button className={`${styles.fileBtn} ${styles.btnSmall}`} type="default" size="small" icon="file"></Button>
+            <a className={`${styles.imageBtn} ${styles.btnSmall} ${styles.btnIcon}`}> <i className  = ""></i></a>
+            <a className={`${styles.fileBtn} ${styles.btnSmall} ${styles.btnIcon}`}></a>
             <div className={styles.doubleBtn}>
-              <Button className={styles.editBtn} type="default" size="small" icon="edit"></Button>
-              <Button className={styles.completedBtn} disabled type="default" size="small" icon="check"></Button>
+              <a className={`${styles.editBtn} ${styles.btnIcon}`}></a>
+              <a className={`${styles.completedBtn} ${styles.btnIcon}`}></a>
             </div>
           </div>
         </Col>

@@ -3,12 +3,12 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import Homepage from './pages/Homepage';
 import ProjectPagesList from './pages/ProjectPages';
-// import StaffsPage from './pages/StaffsPage';
-// import FormEditStaff from './pages/StaffsPage/FormEditStaff';
-// import FormNewStaff from './pages/StaffsPage/FormNewStaff';
-// import CustomersPage from './pages/CustomersPage';
-// import FormNewCustomer from './pages/CustomersPage/FormNewCustomer';
-// import FormEditCustomer from './pages/CustomersPage/FormEditCustomer';
+import Staffs from './pages/StaffsPage';
+import FormEditStaff from './pages/StaffsPage/FormEditStaff';
+import FormNewStaff from './pages/StaffsPage/FormNewStaff';
+import CustomersPage from './pages/CustomersPage';
+import FormNewCustomer from './pages/CustomersPage/FormNewCustomer';
+import FormEditCustomer from './pages/CustomersPage/FormEditCustomer';
 import ProjectViewer from './pages/ProjectViewerpage';
 const PageLoading = () => (
   <div
@@ -45,12 +45,12 @@ export default function renderRoutes(isLogin: boolean) {
       <ProtectedRoute exact path="/" component={Homepage} isLogin={isLogin} />
       <ProtectedRoute exact path="/page-verifies/:type" component={Request} isLogin={isLogin} />
       <ProtectedRoute exact path="/projects" component={ProjectPagesList} isLogin={isLogin} />
-      {/* <ProtectedRoute exact path="/staffs" component={StaffsPage} isLogin={isLogin} />
+      <ProtectedRoute exact path="/staffs" component={Staffs} isLogin={isLogin} />
       <ProtectedRoute exact path="/staffs/create" component={FormNewStaff} isLogin={isLogin} />
-      <ProtectedRoute exact path="/staffs/edit" component={FormEditStaff} isLogin={isLogin} /> */}
-      {/* <ProtectedRoute exact path="/customers" component={CustomersPage} isLogin={isLogin} /> */}
-      {/* <ProtectedRoute exact path="/customers/create" component={FormNewCustomer} isLogin={isLogin} /> */}
-      {/* <ProtectedRoute exact path="/customers/edit" component={FormEditCustomer} isLogin={isLogin} /> */}
+      <ProtectedRoute exact path="/staffs/edit" component={FormEditStaff} isLogin={isLogin} />
+      <ProtectedRoute exact path="/customers" component={CustomersPage} isLogin={isLogin} />
+      <ProtectedRoute exact path="/customers/create" component={FormNewCustomer} isLogin={isLogin} />
+      <ProtectedRoute exact path="/customers/edit" component={FormEditCustomer} isLogin={isLogin} />
       <ProtectedRoute exact path="/project/detail" component={ProjectViewer} isLogin={isLogin} />
       <Route exact path="*">
         <React.Suspense fallback={<PageLoading />}>

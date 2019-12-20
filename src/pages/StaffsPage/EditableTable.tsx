@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Popconfirm, Table, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { ColumnProps } from 'antd/lib/table';
@@ -215,120 +215,105 @@ const dataSource: Array<DataSource> = [
     password: 'tuyenanh0935',
   },
 ];
-console.log('datasor ', dataSource[0]);
-
 interface State {
-  data: Array<DataSource>;
-  editingKey: any;
-  deleteKey: any;
+  data?: Array<DataSource>;
+  editingKey?: string;
+  deleteKey?: string;
 }
 interface ColumnPropsEditable<T> extends ColumnProps<T> {
   editable?: boolean;
 }
-
-export default class EditableTable extends React.Component<{}, State> {
-  private columns: Array<ColumnPropsEditable<any>>;
-  constructor(props: {}) {
-    super(props);
-    this.state = { data: dataSource, editingKey: '', deleteKey: '' };
-    this.columns = [
-      {
-        title: 'ID',
-        dataIndex: 'id',
-        editable: true,
-      },
-      {
-        title: 'Tên nhân viên',
-        dataIndex: 'name',
-        editable: true,
-      },
-      {
-        title: 'Số điện thoại',
-        dataIndex: 'phone',
-        editable: true,
-      },
-      {
-        title: 'Email',
-        dataIndex: 'email',
-        editable: true,
-      },
-      {
-        title: 'Địa chỉ',
-        dataIndex: 'address',
-        editable: true,
-      },
-      {
-        title: 'Loại người dùng',
-        dataIndex: 'userType',
-        editable: true,
-      },
-      {
-        title: 'Ngày tạo',
-        dataIndex: 'startDate',
-        editable: true,
-      },
-      {
-        title: 'Ngày cập nhật',
-        dataIndex: 'updateDate',
-        editable: true,
-      },
-      {
-        title: '',
-        dataIndex: 'edit',
-        render: (text: string, record: any) => {
-          return (
-            <div>
-              <Link
-                to={{
-                  pathname: '/staffs/edit',
-                  state: {
-                    item: dataSource.filter((item, index) => record.key === item.key),
-                  },
-                }}
-              >
-                <Icon type="edit" />
-              </Link>
-            </div>
-          );
-        },
-      },
-      {
-        title: '',
-        dataIndex: 'delete',
-        render: (text: string, record: any) => {
-          return (
-            <div>
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <Icon type="delete" />
-              </Popconfirm>
-            </div>
-          );
-        },
-      },
-    ];
-  }
-
-  public handleDelete = key => {
-    let data = [...this.state.data];
-    this.setState({ data: data.filter(item => item.key !== key) });
+const COLUMN_PROPS: Array<ColumnPropsEditable<any>> = [
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    editable: true,
+  },
+  {
+    title: 'Tên nhân viên',
+    dataIndex: 'name',
+    editable: true,
+  },
+  {
+    title: 'Số điện thoại',
+    dataIndex: 'phone',
+    editable: true,
+  },
+  {
+    title: 'Email',
+    dataIndex: 'email',
+    editable: true,
+  },
+  {
+    title: 'Địa chỉ',
+    dataIndex: 'address',
+    editable: true,
+  },
+  {
+    title: 'Loại người dùng',
+    dataIndex: 'userType',
+    editable: true,
+  },
+  {
+    title: 'Ngày tạo',
+    dataIndex: 'startDate',
+    editable: true,
+  },
+  {
+    title: 'Ngày cập nhật',
+    dataIndex: 'updateDate',
+    editable: true,
+  },
+  {
+    title: '',
+    dataIndex: 'edit',
+  },
+  {
+    title: '',
+    dataIndex: 'delete',
+  },
+];
+const initialState: State = {
+  data: dataSource,
+  editingKey: '',
+  deleteKey: '',
+};
+const EditableTable = () => {
+  const [state, setState] = useState(initialState);
+  const linkToComponent = (text: string, record) => (
+    <div>
+      <Link
+        to={{
+          pathname: '/staffs/edit',
+          state: {
+            item: dataSource.filter((item, index) => record.key === item.key),
+          },
+        }}
+      >
+        <Icon type="edit" />
+      </Link>
+    </div>
+  );
+  const deleteComponent = (text: string, record: any) => (
+    <div>
+      <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+        <Icon type="delete" />
+      </Popconfirm>
+    </div>
+  );
+  const handleDelete = key => {
+    let newData = [...state.data].filter(item => item.key !== key);
+    setState({ data: newData });
   };
-
-  public render() {
-    const columns = this.columns.map((col: any) => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-      };
-    });
-
-    return (
-      <Table
-        // bordered
-        dataSource={this.state.data}
-        columns={columns}
-      />
-    );
-  }
-}
+  const handleColumnProps = COLUMN_PROPS.map((item: any, index: number) => {
+    const columnLength = COLUMN_PROPS.length;
+    if (index === columnLength - 1) {
+      return { ...item, render: deleteComponent };
+    } else if (index === columnLength - 2) {
+      return { ...item, render: linkToComponent };
+    }
+    return { ...item };
+  });
+  return <Table bordered dataSource={state.data} columns={handleColumnProps} />;
+};
+export default EditableTable;
