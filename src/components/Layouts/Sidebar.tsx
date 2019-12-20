@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu } from 'antd';
 import styled from 'styled-components';
 import history from '../../history';
 import { AppContext } from '../../contexts/AppContext';
+import styles from './style.module.less';
 
 const { Sider } = Layout;
 
@@ -76,6 +77,7 @@ const Sidebar = React.memo((props: BaseProps) => {
               </a>
             </StyledLogo>
             <Menu
+              className={styles.FlexAlignItems}
               style={{ marginTop: -5 }}
               defaultSelectedKeys={[props.pathname]}
               mode="inline"
@@ -85,17 +87,17 @@ const Sidebar = React.memo((props: BaseProps) => {
               openKeys={activePath}
             >
               <Menu.Item key="/">
-                <Icon type="home" />
+                <i className="icon-customer"></i>
                 <span>Trang chủ</span>
               </Menu.Item>
 
               <Menu.Item key="/projects">
-                <Icon type="file" />
+                <i className="icon-customer"></i>
                 <span>Quản lý hồ sơ</span>
               </Menu.Item>
 
               <Menu.Item key="/staffs">
-                <Icon type="user" />
+                <i className="icon-customer"></i>
                 <span>Quản lý nhân viên</span>
               </Menu.Item>
 
