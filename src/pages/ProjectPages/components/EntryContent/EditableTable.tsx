@@ -160,34 +160,42 @@ export default class EditableTable extends React.Component<{}, State> {
       {
         title: 'Mã công trình',
         dataIndex: 'code',
+        width: '8%',
       },
       {
         title: 'Tên công trình',
         dataIndex: 'project',
+        width: '14%'
       },
       {
         title: 'Tên khách hàng',
         dataIndex: 'namecustomer',
+        width: '8%'
       },
       {
         title: 'Người thực hiện',
         dataIndex: 'confectioner',
+        width: '8%'
       },
       {
         title: 'Người phê duyệt',
         dataIndex: 'manager',
+        width: '10%'
       },
       {
-        title: 'Ngày bắt đầu lập Hs',
+        title: 'Ngày bắt đầu lập hồ sơ',
         dataIndex: 'startdate',
+        width: '8%'
       },
       {
         title: 'Ngày gửi duyệt',
         dataIndex: 'submitdate',
+        width: '8%'
       },
       {
         title: 'Tình trạng',
         dataIndex: 'status',
+        width: '5%',
         render: status => {
           const sta = STATUS[status];
           return (
@@ -199,12 +207,14 @@ export default class EditableTable extends React.Component<{}, State> {
       },
       {
         title: 'Số hóa tài liệu',
+        width: '10%',
         render: (text: string, record: any) => {
           return <Link to="/projects/detail">Xem chi tiết</Link>;
         },
       },
       {
-        title: 'Hồ sơ tài liệu còn thiếu hoặc tồn tại',
+        title: "Hồ sơ tài liệu còn thiếu hoặc tồn tại",
+        width: '10%',
         render: (text: string, record: any) => {
           return <Link to="/projects/detail">Xem chi tiết</Link>;
         },
@@ -231,6 +241,6 @@ export default class EditableTable extends React.Component<{}, State> {
       };
     });
 
-    return <Table bordered dataSource={this.state.data} columns={columns} />;
+    return <Table dataSource={this.state.data} columns={columns} />;
   }
 }
