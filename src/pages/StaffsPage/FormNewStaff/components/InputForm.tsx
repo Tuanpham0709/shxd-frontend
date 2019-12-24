@@ -137,8 +137,7 @@ class ModalForm extends Component<FormComponentProps,any> {
               <Form.Item label="Chứng minh nhân dân">
                 {getFieldDecorator('passport', {
                   rules: [{
-                    message: 'Nhập CMTND',
-                    required: true,
+                    message: 'Nhập CMTND'
                   }],
                 })(<Input placeholder="Nhập CMTND" />)}
               </Form.Item>
@@ -149,7 +148,6 @@ class ModalForm extends Component<FormComponentProps,any> {
                 {getFieldDecorator('matrimony', {
                   rules: [{
                     message: 'Chọn tình trạng hôn nhân',
-                    required: true,
                   }],
                 })(
                   <Select placeholder="Chọn">
@@ -162,21 +160,15 @@ class ModalForm extends Component<FormComponentProps,any> {
 
             <Col md={12} className={styles.pr1}>
               <Form.Item label="Ngày sinh" hasFeedback>
-              {getFieldDecorator('year-of-birth', {
-                  rules: [{
-                    message: 'Chọn ngày sinh',
-                    required: true,
-                  }],
-                })(<DatePicker placeholder="Chọn ngày sinh" style={{ width: '100%' }} />)}
+                <DatePicker placeholder="Chọn ngày sinh" style={{ width: '100%' }} />
               </Form.Item>
             </Col>
 
             <Col md={12} className={styles.pl1}>
               <Form.Item label="Học vấn" hasFeedback>
-                {getFieldDecorator('matrimony', {
+                {getFieldDecorator('edu', {
                   rules: [{
-                    message: 'Chọn học vấn',
-                    required: true,
+                    message: 'Chọn học vấn'
                   }],
                 })(
                   <Select placeholder="Chọn">

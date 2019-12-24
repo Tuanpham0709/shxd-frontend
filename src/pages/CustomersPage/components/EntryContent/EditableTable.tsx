@@ -1,7 +1,8 @@
 import React from 'react';
-import { Popconfirm, Table, Icon } from 'antd';
+import { Popconfirm, Table } from 'antd';
 import { Link } from 'react-router-dom'
 import { ColumnProps } from 'antd/lib/table';
+import styles from './style.module.less'
 
 export const EditableContext = React.createContext({ form: {} });
 const data: any[] = [];
@@ -9,7 +10,7 @@ for (let i = 0; i < 50; i++) {
     data.push({
         key: i.toString(),
         code: `${i + 1}`,
-        name: `Chris ${i + 1}`,
+        name: `Tổng Công ty Kinh doanh và đầu tư vốn nhà nước ${i + 1}`,
         phone: `(+84)3 123456${i}`,
         email: `xiemnguyen${i + 1}@tomochain.com`,
         address: `Số 97, Trần Quốc Toản, Quận Hoàn Kiếm, Hà Nội ${i + 1}`,
@@ -39,64 +40,64 @@ export default class EditableTable extends React.Component<{}, State> {
             {
                 title: 'Mã KH',
                 dataIndex: 'code',
-                // width: '25%',
+                width: '5%',
                 editable: true
             },
             {
                 title: 'Tên khách hàng',
                 dataIndex: 'name',
-                // width: '15%',
+                width: '10%',
                 editable: true
             },
             {
                 title: 'Số điện thoại',
                 dataIndex: 'phone',
-                // width: '40%',
+                width: '10%',
                 editable: true
             },
             {
                 title: 'Email',
                 dataIndex: 'email',
-                // width: '40%',
+                width: '10%',
                 editable: true
             },
             {
                 title: 'Địa chỉ',
                 dataIndex: 'address',
-                // width: '40%',
                 editable: true
             },
             {
                 title: 'Phòng/ CN/ VP QL',
                 dataIndex: 'room',
-                // width: '40%',
+                width: '7%',
                 editable: true
             },
             {
                 title: 'Giám đốc',
                 dataIndex: 'manager',
-                // width: '40%',
+                width: '10%',
                 editable: true
             },
             {
                 title: 'Chủ tịch',
                 dataIndex: 'chairman',
-                // width: '40%',
+                width: '10%',
                 editable: true
             },
             {
                 title: 'Kế toán trưởng',
                 dataIndex: 'accountant',
-                // width: '40%',
+                width: '10%',
                 editable: true
             },
             {
                 title: '',
                 dataIndex: 'edit',
+                width: '3%',
                 render: (text: string, record: any) => {
                     return (
                         <div>
-                            <Link to="/customers/edit"><Icon type="edit" /></Link>
+                            <Link className={styles.colorBlue} to="/customers/edit"><i className="icon-edit"></i></Link>
                         </div>
                     );
                 }
@@ -104,11 +105,12 @@ export default class EditableTable extends React.Component<{}, State> {
             {
                 title: '',
                 dataIndex: 'delete',
+                width: '3%',
                 render: (text: string, record: any) => {
                     return (
                         <div>
-                            <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                                <Icon type="delete" />
+                            <Popconfirm className={styles.colorRed} title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
+                                <i className="icon-delete"></i>
                             </Popconfirm>
                         </div>
                     );

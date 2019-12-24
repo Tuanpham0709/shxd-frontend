@@ -2,6 +2,7 @@ import React from 'react';
 import { Table, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { ColumnProps } from 'antd/lib/table';
+import styles from './style.module.less';
 export const EditableContext = React.createContext({ form: {} });
 const STATUS = {
   await: { color: '#E65A4D66', text: 'chờ phê duyêt' },
@@ -209,14 +210,14 @@ export default class EditableTable extends React.Component<{}, State> {
         title: 'Số hóa tài liệu',
         width: '10%',
         render: (text: string, record: any) => {
-          return <Link to="/projects/detail">Xem chi tiết</Link>;
+          return <Link className={styles.colorLinkBlack} to="/project/detail">Xem chi tiết</Link>;
         },
       },
       {
         title: "Hồ sơ tài liệu còn thiếu hoặc tồn tại",
         width: '10%',
         render: (text: string, record: any) => {
-          return <Link to="/projects/detail">Xem chi tiết</Link>;
+          return <Link className={styles.colorLinkBlack} to="/project/detail">Xem chi tiết</Link>;
         },
       },
       {

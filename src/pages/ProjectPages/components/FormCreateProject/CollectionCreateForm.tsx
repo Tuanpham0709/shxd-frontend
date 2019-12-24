@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Select, Row, Col, Modal } from 'antd';
+import { Form, Input, Select, Row, Col, Modal, Button } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import styles from './style.module.less';
 
@@ -26,16 +26,15 @@ const CollectionCreateForm = Form.create<Props>({ name: 'form_in_modal' })(
           onCancel={onCancel}
           onOk={onCreate}
           width={960}
-          // footer ={()=> (
-          //   <div>
-          //     <Button className={`${styles.borderBtn} ${styles.btnSmall}`} onClick={onCancel}>Huỷ bỏ</Button>
-          //     <Button className={`${styles.imageBtn} ${styles.btnSmall}`} onClick={onCreate}>Đồng ý</Button>
-          //   </div>
-          // )
-          // }
+          footer ={(
+            <div>
+              <Button className={`${styles.borderBtn} ${styles.btnSmall}`} onClick={onCancel}>Huỷ bỏ</Button>
+              <Button className={`${styles.imageBtn} ${styles.btnSmall}`} onClick={onCreate}>Đồng ý</Button>
+            </div>
+          )}
         >
           <Form>
-            <Row>
+            <Row style={{display:'flex',flexWrap:'wrap',}}>
               <Col md={12} className={styles.pr1}>
                 <Form.Item label="Tên khách hàng">
                   {getFieldDecorator('user-name', {

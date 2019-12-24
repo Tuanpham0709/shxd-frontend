@@ -1,7 +1,8 @@
 import React from 'react';
-import { Popconfirm, Table, Icon } from 'antd';
+import { Popconfirm, Table } from 'antd';
 import { Link } from 'react-router-dom';
 import { ColumnProps } from 'antd/lib/table';
+import styles from './style.module.less'
 
 export const EditableContext = React.createContext({ form: {} });
 
@@ -236,21 +237,25 @@ export default class EditableTable extends React.Component<{}, State> {
         title: 'ID',
         dataIndex: 'id',
         editable: true,
+        width: '5%',
       },
       {
         title: 'Tên nhân viên',
         dataIndex: 'name',
         editable: true,
+        width: '10%',
       },
       {
         title: 'Số điện thoại',
         dataIndex: 'phone',
         editable: true,
+        width: '10%',
       },
       {
         title: 'Email',
         dataIndex: 'email',
         editable: true,
+        width: '15%',
       },
       {
         title: 'Địa chỉ',
@@ -261,24 +266,29 @@ export default class EditableTable extends React.Component<{}, State> {
         title: 'Loại người dùng',
         dataIndex: 'userType',
         editable: true,
+        width: '10%',
       },
       {
         title: 'Ngày tạo',
         dataIndex: 'startDate',
         editable: true,
+        width: '10%',
       },
       {
         title: 'Ngày cập nhật',
         dataIndex: 'updateDate',
         editable: true,
+        width: '10%',
       },
       {
         title: '',
         dataIndex: 'edit',
+        width: '3%',
         render: (text: string, record: any) => {
           return (
             <div>
               <Link
+                className={styles.colorBlue}
                 to={{
                   pathname: '/staffs/edit',
                   state: {
@@ -286,7 +296,7 @@ export default class EditableTable extends React.Component<{}, State> {
                   },
                 }}
               >
-                <Icon type="edit" />
+                <i className="icon-edit"></i>
               </Link>
             </div>
           );
@@ -295,11 +305,12 @@ export default class EditableTable extends React.Component<{}, State> {
       {
         title: '',
         dataIndex: 'delete',
+        width: '3%',
         render: (text: string, record: any) => {
           return (
             <div>
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <Icon type="delete" />
+              <Popconfirm className={styles.colorRed} title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
+                <i className="icon-delete"></i>
               </Popconfirm>
             </div>
           );

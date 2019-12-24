@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Row, Col, Select } from 'antd';
+import { Form, Input, Button, Row, Col, Select, DatePicker } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import styled from 'styled-components';
 import styles from '../style.module.less';
@@ -153,55 +153,52 @@ class ModalForm extends Component<IProps> {
               </Form.Item>
             </Col>
           </Row>
-          <Col md={24}>
-            <TitleForm>Thông tin mở rộng</TitleForm>
-          </Col>
-          <Row>
+
+          <TitleForm>Thông tin mở rộng</TitleForm>
+          <Row style={{display:'flex',flexWrap:'wrap',}}>
             <Col md={12} className={styles.pr1}>
               <Form.Item label="Chứng minh nhân dân">
-                {getFieldDecorator('user-name', {
-                  rules: [
-                    {
-                      required: false,
-                    },
-                  ],
-                })(<Input placeholder="Nhập chứng minh thư nhân dân" />)}
+                {getFieldDecorator('passport', {
+                  rules: [{
+                    message: 'Nhập CMTND'
+                  }],
+                })(<Input placeholder="Nhập CMTND" />)}
               </Form.Item>
             </Col>
 
             <Col md={12} className={styles.pl1}>
-              <Form.Item label="Tình trạng quan hệ" hasFeedback>
-                {getFieldDecorator('elationship-status', {
-                  rules: [{ required: false }],
+              <Form.Item label="Tình trạng hôn nhân" hasFeedback>
+                {getFieldDecorator('matrimony', {
+                  rules: [{
+                    message: 'Chọn tình trạng hôn nhân',
+                  }],
                 })(
-                  <Select placeholder="Chọn">
-                    <Option value="marry">Kết hôn</Option>
-                    <Option value="fa">Độc thân</Option>
+                  <Select placeholder="Chọn">
+                    <Option value="Độc thân">Độc thân</Option>
+                    <Option value="Đã kết hôn">Đã kết hôn</Option>
                   </Select>,
                 )}
               </Form.Item>
             </Col>
-          </Row>
-          <Row>
+
             <Col md={12} className={styles.pr1}>
-              <Form.Item label="Nhập ngày sinh">
-                {getFieldDecorator('r', {
-                  rules: [
-                    {
-                      required: false,
-                    },
-                  ],
-                })(<Input placeholder="Nhập ngày sinh của bạn" />)}
+              <Form.Item label="Ngày sinh" hasFeedback>
+                <DatePicker placeholder="Chọn ngày sinh" style={{ width: '100%' }} />
               </Form.Item>
             </Col>
+
             <Col md={12} className={styles.pl1}>
               <Form.Item label="Học vấn" hasFeedback>
-                {getFieldDecorator('education', {
-                  rules: [{ required: false }],
+                {getFieldDecorator('edu', {
+                  rules: [{
+                    message: 'Chọn học vấn'
+                  }],
                 })(
-                  <Select placeholder="Chọn">
-                    <Option value="university">Đại học</Option>
-                    <Option value="college">Cao đẳng</Option>
+                  <Select placeholder="Chọn">
+                    <Option value="THPT">THPT</Option>
+                    <Option value="Trung cấp">Trung cấp</Option>
+                    <Option value="Cao đẳng">Cao đẳng</Option>
+                    <Option value="Đại học">Đại học</Option>
                   </Select>,
                 )}
               </Form.Item>

@@ -17,12 +17,7 @@
 .missingDocsBtn {
   background-color: #ffcf0e !important;
   color: #333132 !important;
-}
-:global {
-  .ant-btn {
-    border-width: 0 !important;
-    border-radius: 5px !important;
-  }
+  border: 0!important;
 }
 .btnHeight {
   height: 35px !important;
@@ -63,14 +58,11 @@
 .btnSearch {
   height: 33px;
 }
-// .btnLeft {
-//   margin-left: 20px;
-//   background-color: ' #FFCF0E';
-//   border-width: 0;
-//   color: '#000';
-
-//   height: 35;
-//   margin-top: 15;
-//   align-self: 'flex-end';
-//   margin-bottom: 15;
-// }
+.colorLinkBlack {
+  color: #333132;
+  text-decoration: underline;
+  transition: all .3s;
+  &:hover {
+    color: #007bd7;
+  }
+}

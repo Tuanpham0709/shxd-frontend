@@ -76,7 +76,7 @@ const Sidebar = React.memo((props: BaseProps) => {
           >
             <StyledLogo>
               <a href="/">
-                <img src={require('../../logo.png')} alt="" />
+                <img src={require('../../logo.svg')} alt="" />
               </a>
             </StyledLogo>
             <Menu
