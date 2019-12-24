@@ -59,13 +59,6 @@ class WorkingTree extends React.Component {
           {toolBtnDataProps.map((item: any, index: number) => (
             <Button
               className={styles.btnIcon}
-              style={{
-                height: 40,
-                backgroundColor: '#DFDFDF',
-                width: '14.26%',
-                borderWidth: 1,
-                borderColor: '#ECECEC',
-              }}
               size="small"
               icon={item.icon}
             ></Button>

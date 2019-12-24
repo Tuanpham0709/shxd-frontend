@@ -17,6 +17,21 @@
 }
 .btnContainer {
   float: right;
+  display: flex;
+  button {
+    padding: 0;
+    i {
+      margin: 0;
+      color: #ffffff;
+    }
+    &:hover,
+    &:active,
+    &:focus {
+      i {
+        color: #ffffff;
+      }
+    }
+  }
 }
 .marginRight {
   margin-right: 10px;
@@ -76,7 +91,7 @@
   overflow: scroll;
 }
 .inputHeight {
-  height: 40px !important;
+  height: 35px !important;
 }
 .react-pdf__Page {
   margin: 10px;
@@ -88,7 +103,7 @@
 }
 .btn {
   width: 40px !important;
-  height: 40px !important;
+  height: 35px !important;
   background-color: #ffffff !important;
   color: gray !important;
 }

@@ -38,14 +38,34 @@
   border-bottom: solid 1px #cfcfcf;
 }
 .btnIcon {
-  margin: auto;
-  margin: 0 auto;
-  box-sizing: border-box;
-  display: inline;
-  border: solid 1px #ffffff;
+  background-color: #DFDFDF !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  height: 35px !important;
+  margin-left: 1px;
+  width: 100%;
+  &:first-child {
+    margin-left: 0;
+  }
+  i {
+    color: #808080;
+    margin: 0;
+    font-size: 28px;
+  }
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: #007bd7!important;
+    i {
+      color: #ffffff;
+    }
+  }
 }
 .miniToolbar {
+  background-color: #FFFFFF;
   margin: 10px 0;
+  display: flex;
 }
 .right {
   float: right;
@@ -72,6 +92,6 @@
 }
 :global {
   .ant-input {
-    height: 40px !important;
+    height: 35px !important;
   }
 }

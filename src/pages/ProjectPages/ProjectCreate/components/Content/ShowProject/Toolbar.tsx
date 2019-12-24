@@ -34,11 +34,19 @@ const Toolbar = () => {
         </Col>
         <Col xl={5}>
           <div className={styles.btnContainer}>
-            <Button className={`${styles.imageBtn} ${styles.btnSmall}`} type="primary" size="small" icon="file-image" />
-            <Button className={`${styles.fileBtn} ${styles.btnSmall}`} type="default" size="small" icon="file"></Button>
+            <Button className={`${styles.imageBtn} ${styles.btnSmall}`} type="primary">
+              <i className="icon-image"></i>
+            </Button>
+            <Button className={`${styles.fileBtn} ${styles.btnSmall}`} type="default">
+              <i className="icon-note"></i>
+            </Button>
             <div className={styles.doubleBtn}>
-              <Button className={styles.editBtn} type="default" size="small" icon="edit"></Button>
-              <Button className={styles.completedBtn} disabled type="default" size="small" icon="check"></Button>
+              <Button className={styles.editBtn} type="default">
+                <i className="icon-edit"></i>
+              </Button>
+              <Button className={styles.completedBtn} disabled type="default">
+                <i className="icon-done"></i>
+              </Button>
             </div>
           </div>
         </Col>

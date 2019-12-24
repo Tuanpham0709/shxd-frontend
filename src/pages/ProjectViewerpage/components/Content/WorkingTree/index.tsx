@@ -3,13 +3,13 @@ import { Input, Button } from 'antd';
 import styles from './style.module.less';
 import PdfTree from './PdfTree';
 const toolBtnDataProps = [
-  { icon: 'unordered-list' },
-  { icon: 'file-image' },
-  { icon: 'share-alt' },
-  { icon: 'mail' },
-  { icon: 'file' },
-  { icon: 'save' },
-  { icon: 'fullscreen' },
+  { icon: 'icon-them-dau-muc' },
+  { icon: 'icon-them-tai-lieu' },
+  { icon: 'icon-share' },
+  { icon: 'icon-send-mail' },
+  { icon: 'icon-copy' },
+  { icon: 'icon-vi-tri-luu' },
+  { icon: 'icon-tai-lieu-thieu' },
 ];
 // const filterDataProps = [{ label: 'Bản xác định hợp đồng abcd ' }, { label: 'Bản xác định hợp đồng abcd ' }];
 const { Search } = Input;
@@ -27,19 +27,9 @@ class WorkingTree extends React.Component {
         </div>
         <div className={styles.miniToolbar}>
           {toolBtnDataProps.map((item: any, index: number) => (
-            <Button
-              key={index + ''}
-              className={styles.btnIcon}
-              style={{
-                height: 35,
-                backgroundColor: '#DFDFDF',
-                width: '14.24%',
-                borderWidth: 2,
-                borderColor: '#fff',
-              }}
-              size="small"
-              icon={item.icon}
-            ></Button>
+            <Button key={index + ''} className={styles.btnIcon}>
+              <i className={item.icon}></i>
+            </Button>
           ))}
         </div>
 

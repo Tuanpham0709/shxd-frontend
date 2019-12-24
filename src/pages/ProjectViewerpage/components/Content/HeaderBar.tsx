@@ -9,9 +9,9 @@ const optionDataProps = [
   // { name: 'Nguyen Van A', value: 'Nguyen Van A' },
 ];
 const btnDataProps = [
-  { text: 'In tài liệu', color: '#FFA200', icon: 'printer', padding: 15 },
-  { text: 'Xuất file Excel', color: '#00B894', icon: 'export', padding: 15 },
-  { text: 'Gửi phê duyệt', color: '#FF4D4F', icon: 'check', padding: 15 },
+  { text: 'Gửi phê duyệt', color: '#FF4D4F', icon: 'icon-submit', padding: 15 },
+  { text: 'Xuất file Excel', color: '#00B894', icon: 'icon-file-export', padding: 15 },
+  { text: 'In tài liệu', color: '#FFA200', icon: 'icon-save', padding: 20 },
 ];
 interface OptionProps {
   name: string;
@@ -46,9 +46,8 @@ const HeaderBar = () => {
                 key={index + ''}
                 className={`${styles.btnTool} ${styles.btnHeight}`}
                 style={{ background: item.color, paddingLeft: item.padding, paddingRight: item.padding, border: '0' }}
-                icon={item.icon}
               >
-                {item.text}
+                <i className={item.icon}></i>{item.text}
               </Button>
             );
           })}
