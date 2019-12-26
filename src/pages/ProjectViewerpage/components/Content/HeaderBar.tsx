@@ -47,7 +47,8 @@ const HeaderBar = () => {
                 className={`${styles.btnTool} ${styles.btnHeight}`}
                 style={{ background: item.color, paddingLeft: item.padding, paddingRight: item.padding, border: '0' }}
               >
-                <i className={item.icon}></i>{item.text}
+                <i className={item.icon}></i>
+                {item.text}
               </Button>
             );
           })}

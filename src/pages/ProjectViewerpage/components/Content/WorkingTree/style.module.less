@@ -38,7 +38,7 @@
   border-bottom: solid 1px #cfcfcf;
 }
 .btnIcon {
-  background-color: #DFDFDF !important;
+  background-color: #dfdfdf !important;
   padding: 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -56,14 +56,22 @@
   &:hover,
   &:active,
   &:focus {
-    background-color: #007bd7!important;
+    background-color: #007bd7 !important;
     i {
       color: #ffffff;
     }
   }
 }
+.btnIcon:hover {
+  background-color: #f6f6f6;
+}
+.btnIcon:active {
+  position: relative;
+  top: 1px;
+}
+
 .miniToolbar {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   margin: 10px 0;
   display: flex;
 }
@@ -71,7 +79,7 @@
   float: right;
 }
 .treeContainer {
-  height: 691px;
+  height: 681px;
   overflow: auto;
   padding-left: 10px;
 }
@@ -93,5 +101,10 @@
 :global {
   .ant-input {
     height: 35px !important;
+  }
+}
+:global {
+  .ant-tree > .ant-tree-treenode-switcher-open > .ant-tree-node-content-wrapper > .ant-tree-title {
+    font: Bold 14px/21px Roboto !important;
   }
 }

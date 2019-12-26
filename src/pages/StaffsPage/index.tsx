@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import EntryHeader from './components/EntryHeader';
-import EntryContent from './components/EntryContent/index';
-
-class Files extends Component {
-  render() {
-    return (
+import EditableTable from './EditableTable';
+import HeaderBar from './HeaderBar';
+const Staffs = () => {
+  return (
+    <div style={{ flex: 1 }}>
+      <EntryHeader />
       <div>
-        <EntryHeader />
-        <EntryContent />
+        <HeaderBar />
+        <EditableTable />
       </div>
-    );
-  }
-}
-export default Files;
+    </div>
+  );
+};
+export default Staffs;

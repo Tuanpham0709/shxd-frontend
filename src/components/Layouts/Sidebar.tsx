@@ -108,7 +108,6 @@ const Sidebar = React.memo((props: BaseProps) => {
                 <i className="icon-customer"></i>
                 <span>Quản lý khách hàng</span>
               </Menu.Item>
-
             </Menu>
           </Sider>
         )}

@@ -1,20 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
 import InputForm from './InputForm';
-import VisualForm from './VisualForm';
+import styled from 'styled-components';
 import { Col, Row } from 'antd';
 import styles from '../style.module.less';
-
-class EditCustomer extends Component {
-  render() {
-    return (
-      <div className={`${styles.bgWhite} ${styles.pd3}`}>
-        <Row>
-          <Col md={10}><VisualForm /></Col>
-          <Col md={2}></Col>
-          <Col md={12}><InputForm /></Col>
-        </Row>
-      </div>
-    );
+const VisualImage = styled.div`
+  text-align: center;
+  img {
+    display: inline-block;
   }
-}
+`;
+const Title = styled.h2`
+  margin: 100px 0;
+`;
+const EditCustomer = () => {
+  return (
+    <div className={`${styles.bgWhite} ${styles.pd3}`}>
+      <Row>
+        <Col md={12}>
+          <div className={styles.filterContainer}>
+            <Title className={`${styles.textCenter}`}>THÔNG TIN KHÁCH HÀNG</Title>
+            <VisualImage>
+              <img src={require('./img/visualphoto.png')} alt="THÔNG TIN KHÁCH HÀNG" />
+            </VisualImage>
+          </div>
+        </Col>
+        <Col md={12}>
+          <InputForm />
+        </Col>
+      </Row>
+    </div>
+  );
+};
 export default EditCustomer;

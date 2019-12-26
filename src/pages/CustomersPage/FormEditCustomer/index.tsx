@@ -1,15 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 import HeaderForm from './HeaderForm';
 import MainForm from './components/MainForm';
 
-class Files extends Component {
-  render() {
-    return (
-      <div>
-        <HeaderForm />
-        <MainForm />
-      </div>
-    );
-  }
-}
-export default Files;
+const FormEditCustom = () => {
+  return (
+    <div>
+      <HeaderForm />
+      <MainForm />
+    </div>
+  );
+};
+export default FormEditCustom;

@@ -56,7 +56,7 @@ class ModalForm extends Component<IProps> {
             <Col md={12} className={styles.pr1}>
               <Form.Item label="Họ và tên">
                 {getFieldDecorator('name', {
-                  initialValue: userInfo.name,
+                  initialValue: userInfo && userInfo.name,
 
                   rules: [
                     {
@@ -64,21 +64,21 @@ class ModalForm extends Component<IProps> {
                       required: true,
                     },
                   ],
-                })(<Input defaultValue={userInfo.address} placeholder="Nhập tên của bạn" />)}
+                })(<Input defaultValue={userInfo && userInfo.username} placeholder="Nhập tên của bạn" />)}
               </Form.Item>
             </Col>
 
             <Col md={12} className={styles.pl1}>
               <Form.Item label="Số điện thoại">
                 {getFieldDecorator('phone-number', {
-                  initialValue: userInfo.phone,
+                  initialValue: userInfo && userInfo.phone,
                   rules: [
                     {
                       message: 'Nhập số điện thoại của bạn',
                       required: true,
                     },
                   ],
-                })(<Input defaultValue={userInfo.phone} placeholder="Nhập số điện thoại của bạn" />)}
+                })(<Input defaultValue={userInfo && userInfo.phone} placeholder="Nhập số điện thoại của bạn" />)}
               </Form.Item>
             </Col>
           </Row>
@@ -86,7 +86,7 @@ class ModalForm extends Component<IProps> {
             <Col md={12} className={styles.pr1}>
               <Form.Item label="Email">
                 {getFieldDecorator('email', {
-                  initialValue: userInfo.email,
+                  initialValue: userInfo && userInfo.email,
                   rules: [
                     {
                       message: 'Nhập email của bạn',
@@ -99,7 +99,7 @@ class ModalForm extends Component<IProps> {
             <Col md={12} className={styles.pl1}>
               <Form.Item label="Địa chỉ">
                 {getFieldDecorator('address', {
-                  initialValue: userInfo.address,
+                  initialValue: userInfo && userInfo.address,
                   rules: [
                     {
                       message: 'Nhập đỉa chỉ của bạn ',
@@ -114,7 +114,7 @@ class ModalForm extends Component<IProps> {
             <Col md={12} className={styles.pr1}>
               <Form.Item label="Tên đăng nhập vào hệ thống">
                 {getFieldDecorator('username', {
-                  initialValue: userInfo.username,
+                  initialValue: userInfo && userInfo.username,
                   rules: [
                     {
                       message: 'Nhập tên đăng nhập vào hệ thống',
@@ -127,7 +127,7 @@ class ModalForm extends Component<IProps> {
             <Col md={12} className={styles.pl1}>
               <Form.Item label="Mật khẩu">
                 {getFieldDecorator('password', {
-                  initialValue: userInfo.password,
+                  initialValue: userInfo && userInfo.password,
                   rules: [
                     {
                       message: 'Nhập mật khẩu của bạn',
@@ -142,7 +142,7 @@ class ModalForm extends Component<IProps> {
             <Col md={12} className={styles.pr1}>
               <Form.Item label="Loại người đùng" hasFeedback>
                 {getFieldDecorator('userType', {
-                  initialValue: userInfo.userType,
+                  initialValue: userInfo ? userInfo.userType : '',
                   rules: [{ required: true, message: 'Chọn loại người dùng' }],
                 })(
                   <Select placeholder="Loại người dùng">
@@ -155,13 +155,15 @@ class ModalForm extends Component<IProps> {
           </Row>
 
           <TitleForm>Thông tin mở rộng</TitleForm>
-          <Row style={{display:'flex',flexWrap:'wrap',}}>
+          <Row style={{ display: 'flex', flexWrap: 'wrap' }}>
             <Col md={12} className={styles.pr1}>
               <Form.Item label="Chứng minh nhân dân">
                 {getFieldDecorator('passport', {
-                  rules: [{
-                    message: 'Nhập CMTND'
-                  }],
+                  rules: [
+                    {
+                      message: 'Nhập CMTND',
+                    },
+                  ],
                 })(<Input placeholder="Nhập CMTND" />)}
               </Form.Item>
             </Col>
@@ -169,9 +171,11 @@ class ModalForm extends Component<IProps> {
             <Col md={12} className={styles.pl1}>
               <Form.Item label="Tình trạng hôn nhân" hasFeedback>
                 {getFieldDecorator('matrimony', {
-                  rules: [{
-                    message: 'Chọn tình trạng hôn nhân',
-                  }],
+                  rules: [
+                    {
+                      message: 'Chọn tình trạng hôn nhân',
+                    },
+                  ],
                 })(
                   <Select placeholder="Chọn">
                     <Option value="Độc thân">Độc thân</Option>
@@ -190,9 +194,11 @@ class ModalForm extends Component<IProps> {
             <Col md={12} className={styles.pl1}>
               <Form.Item label="Học vấn" hasFeedback>
                 {getFieldDecorator('edu', {
-                  rules: [{
-                    message: 'Chọn học vấn'
-                  }],
+                  rules: [
+                    {
+                      message: 'Chọn học vấn',
+                    },
+                  ],
                 })(
                   <Select placeholder="Chọn">
                     <Option value="THPT">THPT</Option>

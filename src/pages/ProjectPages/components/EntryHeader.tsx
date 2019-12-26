@@ -1,24 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Icon, Col, Row } from 'antd';
 import CollectionCreateForm from './FormCreateProject/CollectionCreateForm';
 import styles from '../style.module.less';
-
-class CollectionsPage extends React.Component<any,any> {
-  state = {
-    visible: false,
-  };
-  formRef = null
-
-  showModal = () => {
-    this.setState({ visible: true });
-  };
-
-  handleCancel = () => {
-    this.setState({ visible: false });
+const initialState = {
+  visible: false,
+};
+const CollectionsPage = () => {
+  const [state, setState] = useState(initialState);
+  let formRef = null;
+  const showModal = () => {
+    setState({ visible: true });
   };
 
-  handleCreate = () => {
-    const { form } = this.formRef.props;
+  const handleCancel = () => {
+    setState({ visible: false });
+  };
+
+  const handleCreate = () => {
+    const { form } = formRef.props;
     form.validateFields((err, values) => {
       if (err) {
         return;
@@ -26,41 +25,36 @@ class CollectionsPage extends React.Component<any,any> {
 
       console.log('Received values of form: ', values);
       form.resetFields();
-      this.setState({ visible: false });
+      setState({ visible: false });
     });
   };
 
-  saveFormRef = formRef => {
-    this.formRef = formRef;
+  const saveFormRef = formRef => {
+    formRef = formRef;
   };
 
-  render() {
-    return (
-      <div className={styles.titleContainer}>
-        <Row>
-          <Col md={18}>
-            <span className={styles.title}>Quản lý hồ sơ</span>
-          </Col>
-          <Col md={6}>
-            <div className={styles.textRight}>
-              <div className={`${styles.linkBtn}`} onClick={this.showModal}>
-                <Icon
-                  className={styles.mr1}
-                  type="plus-circle" theme="filled"
-                />
-                Tạo hồ sơ
-              </div>
-              <CollectionCreateForm
-                wrappedComponentRef={this.saveFormRef}
-                visible={this.state.visible}
-                onCancel={this.handleCancel}
-                onCreate={this.handleCreate}
-              />
+  return (
+    <div className={styles.titleContainer}>
+      <Row>
+        <Col md={18}>
+          <span className={styles.title}>Quản lý hồ sơ</span>
+        </Col>
+        <Col md={6}>
+          <div className={styles.textRight}>
+            <div className={`${styles.linkBtn}`} onClick={showModal}>
+              <Icon className={styles.mr1} type="plus-circle" theme="filled" />
+              Tạo hồ sơ
             </div>
-          </Col>
-        </Row>
-      </div>
-    );
-  }
-}
+            <CollectionCreateForm
+              wrappedComponentRef={saveFormRef}
+              visible={state.visible}
+              onCancel={handleCancel}
+              onCreate={handleCreate}
+            />
+          </div>
+        </Col>
+      </Row>
+    </div>
+  );
+};
 export default CollectionsPage;

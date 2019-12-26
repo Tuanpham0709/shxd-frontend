@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './style.module.less';
 import { Input, Select, Icon } from 'antd';
 import { Col, Row } from 'antd';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 const { Option } = Select;
 
@@ -31,21 +31,19 @@ const HeaderBarCustomer = () => {
               <Col md={16}>
                 <Select placeholder="Lọc" showSearch style={{ width: '100%' }}>
                   {optionDataProps.map((item: OptionProps, index: number) => {
-                    return <Option value={item.value}>{item.keyword}</Option>;
+                    return (
+                      <Option key={index + ''} value={item.value}>
+                        {item.keyword}
+                      </Option>
+                    );
                   })}
                 </Select>
               </Col>
               <Col md={8}>
-                  <Link
-                    className={`${styles.linkBtn}`}
-                    to="/projects/create"
-                  >
-                    <Icon
-                      className={`${styles.mr1}`}
-                      type="plus-circle" theme="filled"
-                    />
-                      Thêm
-                  </Link>
+                <Link className={`${styles.linkBtn}`} to="/projects/create">
+                  <Icon className={`${styles.mr1}`} type="plus-circle" theme="filled" />
+                  Thêm
+                </Link>
               </Col>
             </Row>
           </Col>
@@ -53,5 +51,5 @@ const HeaderBarCustomer = () => {
       </div>
     </div>
   );
-}
+};
 export default HeaderBarCustomer;
