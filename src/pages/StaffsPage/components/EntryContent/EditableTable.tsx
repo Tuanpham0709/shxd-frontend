@@ -315,6 +315,6 @@ const EditableTable = () => {
     }
     return { ...item };
   });
-  return <Table bordered dataSource={state.data} columns={handleColumnProps} />;
+  return <Table size="middle" dataSource={state.data} columns={handleColumnProps} />;
 };
 export default EditableTable;

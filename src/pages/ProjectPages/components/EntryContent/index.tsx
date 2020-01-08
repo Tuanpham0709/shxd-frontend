@@ -2,11 +2,12 @@ import React from 'react';
 import { Table, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { ColumnProps } from 'antd/lib/table';
+import './style.module.less'
 export const EditableContext = React.createContext({ form: {} });
 const STATUS = {
-  await: { color: '#E65A4D66', text: 'chờ phê duyêt' },
-  done: { color: ' #00B89466 ', text: 'đã hoàn thành' },
-  processing: { color: '#007BD766', text: 'đang thực hiên ' },
+  await: { color: '#E65A4D66', text: 'Chờ phê duyêt' },
+  done: { color: ' #00B89466 ', text: 'Hoàn thành' },
+  processing: { color: '#007BD766', text: 'Đang thực hiên ' },
 };
 const DATA = [
   {
@@ -146,58 +147,69 @@ const COLUMNS = [
   {
     title: 'Mã công trình',
     dataIndex: 'code',
+    width: "6%",
   },
   {
     title: 'Tên công trình',
     dataIndex: 'project',
+    width: "10%",
   },
   {
     title: 'Tên khách hàng',
     dataIndex: 'namecustomer',
+    width: "9%",
   },
   {
     title: 'Người thực hiện',
     dataIndex: 'confectioner',
+    width: "9%",
   },
   {
     title: 'Người phê duyệt',
     dataIndex: 'manager',
+    width: "9%",
   },
   {
     title: 'Ngày bắt đầu lập Hs',
     dataIndex: 'startdate',
+    width: "9%",
   },
   {
     title: 'Ngày gửi duyệt',
     dataIndex: 'submitdate',
+    width: "9%",
   },
   {
     title: 'Tình trạng',
     dataIndex: 'status',
+    width: "9%",
     render: status => {
       const sta = STATUS[status];
       return (
         <span>
-          <Tag color={sta.color}>{sta.text}</Tag>
+          <Tag style={{ width: '100%', textAlign: "center" }} color={sta.color}>{sta.text}</Tag>
         </span>
       );
     },
   },
   {
     title: 'Số hóa tài liệu',
+    width: "9%",
     render: (text: string, record: any) => {
-      return <Link to="/project/detail">Xem chi tiết</Link>;
+      return <Link to="/project/detail" style={{ textDecoration: "underline", color: "#333132" }}>Xem chi tiết</Link>;
     },
   },
   {
     title: 'Hồ sơ tài liệu còn thiếu hoặc tồn tại',
+    width: "9%",
     render: (text: string, record: any) => {
-      return <Link to="/project/detail">Xem chi tiết</Link>;
+      return <Link to="/project/detail" style={{ textDecoration: "underline", color: "#333132" }}>Xem chi tiết</Link>;
     },
   },
   {
     title: 'Ghi chú',
     dataIndex: 'note',
+    width: "9%",
   },
 ];
 // interface DataObject {
@@ -237,6 +249,6 @@ const EditableTable: React.FC = () => {
     };
   });
 
-  return <Table bordered dataSource={DATA} columns={format_col} />;
+  return <Table dataSource={DATA} columns={format_col} />;
 };
 export default EditableTable;

@@ -8,10 +8,10 @@ const Toolbar = () => {
         <Col xl={8} lg={8}>
           <span>Tên văn bản</span>
         </Col>
-        <Col xl={6} lg={6}>
+        <Col xl={7} lg={7}>
           <span>Ký hiệu, ngày tháng năm ban hành</span>
         </Col>
-        <Col xl={6} lg={6}>
+        <Col xl={5} lg={5}>
           <span>Cơ quan ban hành</span>
         </Col>
         <Col xl={4} lg={4} />
@@ -22,7 +22,7 @@ const Toolbar = () => {
             <Input placeholder="Nhập tên văn bản" className={styles.inputHeight} style={{ marginRight: 10 }}></Input>
           </div>
         </Col>
-        <Col xl={6}>
+        <Col xl={7}>
           <div className={styles.marginRight}>
             <Input placeholder="Nhập ký hiệu, ngày tháng năm ban hành" className={styles.inputHeight}></Input>
           </div>
@@ -32,7 +32,7 @@ const Toolbar = () => {
             <Input placeholder="Nhập cơ quan ban hành" className={styles.inputHeight}></Input>
           </div>
         </Col>
-        <Col xl={5}>
+        <Col xl={4}>
           <div className={styles.btnContainer}>
             <Button className={`${styles.imageBtn} ${styles.btnSmall}`} type="primary">
               <i className="icon-image"></i>

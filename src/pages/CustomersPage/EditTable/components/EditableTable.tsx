@@ -5,7 +5,7 @@ import { ColumnProps } from 'antd/lib/table';
 // import styles from './style.module.less';
 
 export const EditableContext = React.createContext({ form: {} });
-const DATA: DataObject[] = [];
+const DATA: DataType[] = [];
 for (let i = 0; i < 50; i++) {
   DATA.push({
     key: i.toString(),
@@ -22,7 +22,7 @@ for (let i = 0; i < 50; i++) {
   });
 }
 
-interface DataObject {
+interface DataType {
   key: string;
   code: string;
   name: string;
@@ -36,7 +36,7 @@ interface DataObject {
   operation: ``;
 }
 interface State {
-  data?: Array<DataObject>;
+  data?: Array<DataType>;
   editingKey?: string;
   deleteKey?: string;
 }
@@ -48,7 +48,7 @@ const initialState: State = {
   editingKey: '',
   deleteKey: '',
 };
-const columnsProps: Array<ColumnPropsEditable<any>> = [
+const columnsProps: Array<ColumnPropsEditable<Object>> = [
   {
     title: 'Mã KH',
     dataIndex: 'code',
@@ -58,11 +58,12 @@ const columnsProps: Array<ColumnPropsEditable<any>> = [
     title: 'Tên khách hàng',
     dataIndex: 'name',
     editable: true,
+    width: "10%",
   },
   {
     title: 'Số điện thoại',
     dataIndex: 'phone',
-    // width: '40%',
+    width: "10%",
     editable: true,
   },
   {
@@ -74,25 +75,25 @@ const columnsProps: Array<ColumnPropsEditable<any>> = [
   {
     title: 'Địa chỉ',
     dataIndex: 'address',
-    // width: '40%',
+    width: "15%",
     editable: true,
   },
   {
     title: 'Phòng/ CN/ VP QL',
     dataIndex: 'room',
-    // width: '40%',
+    width: "7%",
     editable: true,
   },
   {
     title: 'Giám đốc',
     dataIndex: 'manager',
-    // width: '40%',
+    width: "11%",
     editable: true,
   },
   {
     title: 'Chủ tịch',
     dataIndex: 'chairman',
-    // width: '40%',
+    width: "11%",
     editable: true,
   },
   {
@@ -140,6 +141,6 @@ const EditableTable = () => {
     return { ...item };
   });
 
-  return <Table bordered dataSource={state.data} columns={handleColomnProps} />;
+  return <Table dataSource={state.data} columns={handleColomnProps} />;
 };
 export default EditableTable;

@@ -1,12 +1,13 @@
 import React from 'react';
 import EntryHeader from './components/EntryHeader';
-import EditableTable from './EditableTable';
-import HeaderBar from './HeaderBar';
+import EditableTable from './components/EntryContent/EditableTable';
+import HeaderBar from './components/EntryContent/HeaderBar';
+import styles from './style.module.less'
 const Staffs = () => {
   return (
     <div style={{ flex: 1 }}>
       <EntryHeader />
-      <div>
+      <div className = {styles.border}>
         <HeaderBar />
         <EditableTable />
       </div>

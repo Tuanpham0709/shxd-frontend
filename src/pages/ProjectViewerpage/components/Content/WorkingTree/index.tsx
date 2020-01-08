@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from 'antd';
+import { Input, Button } from 'antd';
 import styles from './style.module.less';
 import PdfTree from './PdfTree';
 const toolBtnDataProps = [
@@ -20,17 +20,9 @@ const WorkingTree = () => {
       </div>
       <div className={styles.miniToolbar}>
         {toolBtnDataProps.map((item: any, index: number) => (
-          <a
-            key={index + ''}
-            className={styles.btnIcon}
-            style={{
-              height: 35,
-              backgroundColor: '#DFDFDF',
-              width: '14.24%',
-            }}
-          >
-            <i className={item.icon} />
-          </a>
+          <Button key={index + ''} className={styles.btnIcon}>
+            <i className={item.icon}></i>
+          </Button>
         ))}
       </div>
       <div>
