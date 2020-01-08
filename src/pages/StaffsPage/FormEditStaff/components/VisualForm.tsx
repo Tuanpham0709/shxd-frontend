@@ -11,16 +11,14 @@ const VisualImage = styled.div`
 const Title = styled.h2`
   margin: 100px 0;
 `;
-class WorkingTree extends React.Component {
-  render() {
-    return (
-      <div className={styles.filterContainer}>
-        <Title className={`${styles.textCenter}`}>THÔNG TIN NHÂN VIÊN</Title>
-        <VisualImage>
-          <img src={require('./img/visualphoto.png')} alt="THÔNG TIN KHÁCH HÀNG" />
-        </VisualImage>
-      </div>
-    );
-  }
-}
-export default WorkingTree;
+const VisualForm = () => {
+  return (
+    <div className={styles.filterContainer}>
+      <Title className={`${styles.textCenter}`}>THÔNG TIN NHÂN VIÊN</Title>
+      <VisualImage>
+        <img src={require('./img/visualphoto.png')} alt="THÔNG TIN KHÁCH HÀNG" />
+      </VisualImage>
+    </div>
+  );
+};
+export default VisualForm;

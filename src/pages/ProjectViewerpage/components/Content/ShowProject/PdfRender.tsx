@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button, Spin } from 'antd';
+import { Button } from 'antd';
 import pdfjs from 'pdfjs-dist';
 import styles from './style.module.less';
 import PageCanvas from './PageCanvas';
+import PageLoading from '../../../../../components/PageLoading/index'
 interface IProps {
   pages: number[];
   onRenderSucess: () => void;
@@ -14,7 +15,7 @@ interface IStates {
   pages: number[];
   loading: boolean;
 }
-const DEFAUT_SCALE = 1.4;
+const DEFAULT_SCALE = 1.4;
 const MAX_SCALE = 2.4;
 const MIN_SCALE = 0.4;
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.228/pdf.worker.js';
@@ -35,7 +36,7 @@ class PdfRender extends React.Component<IProps, IStates> {
       this.getDocument(this.state.url);
       this.refContainer.scrollTo(0, 0);
       this.setState({
-        scale: DEFAUT_SCALE,
+        scale: DEFAULT_SCALE,
       });
     }
   }
@@ -107,16 +108,9 @@ class PdfRender extends React.Component<IProps, IStates> {
           <Button icon="zoom-out" className={styles.btn} size="small" onClick={this.onZoomOut} />
         </div>
         <div className={styles.pdf_container}>
-          <Spin
-            className={styles.spin}
-            size="large"
-            style={{
-              visibility: loading ? 'visible' : 'hidden',
-              marginTop: loading ? 200 : 0,
-              marginLeft: 500,
-              position: 'absolute',
-            }}
-          />
+          <div style={{ visibility: loading ? 'visible' : 'hidden' }}>
+            <PageLoading />
+          </div>
           <div style={{ visibility: loading ? 'hidden' : 'visible' }}>
             {pages.map((item, i) => {
               var index = i + 1;

@@ -31,10 +31,15 @@ const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, onLoadSuccess, 
       viewport: viewport,
     };
     const renderTask = page.render(renderContext);
-    await renderTask.promise;
-    if (index == pageSum - 1) {
-      onLoadSuccess();
-    }
+    console.log("visible");
+    renderTask.promise.then(async () => {
+      if (index > pageSum / 2) {
+        console.log("done");
+
+        onLoadSuccess();
+      }
+    }).catch((err) => console.log("eror", err)
+    )
   };
   return <canvas ref={canvasRef} className={styles.pdfPage} />;
 };

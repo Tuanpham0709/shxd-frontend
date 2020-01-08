@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import InputForm from './InputForm';
 import VisualForm from './VisualForm';
 import { Col, Row } from 'antd';
@@ -17,23 +17,21 @@ interface UserInfo {
 interface IProps {
   userInfo?: UserInfo;
 }
-class EditCustomer extends Component<IProps> {
-  render() {
-    console.log('props', this.props.userInfo);
+const EditCustomer: React.FC<IProps> = ({ userInfo }) => {
+  console.log('props', userInfo);
 
-    return (
-      <div className={`${styles.bgWhite} ${styles.pd3}`}>
-        <Row>
-          <Col md={10}>
-            <VisualForm />
-          </Col>
-          <Col md={2}></Col>
-          <Col md={12}>
-            <InputForm userInfo={this.props.userInfo} />
-          </Col>
-        </Row>
-      </div>
-    );
-  }
-}
+  return (
+    <div className={`${styles.bgWhite} ${styles.pd3}`}>
+      <Row>
+        <Col md={10}>
+          <VisualForm />
+        </Col>
+        <Col md={2}></Col>
+        <Col md={12}>
+          <InputForm userInfo={userInfo} />
+        </Col>
+      </Row>
+    </div>
+  );
+};
 export default EditCustomer;

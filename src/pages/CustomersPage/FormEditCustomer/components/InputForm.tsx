@@ -3,6 +3,9 @@ import { Form, Input, Button, Row, Col } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import styled from 'styled-components';
 import styles from '../style.module.less';
+import { useMutation } from '@apollo/react-hooks';
+import { CreatePartner, CreatePartnerVariables, CreatePartnerInput } from '../../../../graphql/types';
+import { CREATE_PARTNER } from '../../../../graphql/partner/createPartner'
 // import { any } from 'prop-types';
 
 const TitleForm = styled.div`
@@ -19,15 +22,43 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
   // const handleChange = e => {
   //   setState({ checkNick: e.target.checked });
   // };
+  const [createPartner] = useMutation<CreatePartner, CreatePartnerVariables>(CREATE_PARTNER);
   const handleReset = () => {
     form.resetFields();
   };
   const check = () => {
-    form.validateFields(err => {
+    form.validateFieldsAndScroll((err, value) => {
       if (!err) {
-        console.info('success');
+        console.log("valune able", value);
+        const infoPartner: CreatePartnerInput = {
+          name: value.name,
+          code: value.code,
+          address: value.address,
+          phone: value.phone,
+          fax: value.room,
+          admin: {
+            adminName: value.username,
+            adminPhoneNumber: value.phone,
+            adminPassword: value.password
+          }
+        }
+
+        createPartner({
+          variables: {
+            data: infoPartner
+          }
+        }).then((data) => {
+          console.log("created", data);
+
+        }).catch((error) => {
+          console.log("error", error);
+
+        })
       }
+
+
     });
+    form.getFieldsValue()
   };
   const { getFieldDecorator } = form;
   return (
@@ -37,7 +68,7 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
         <Row style={{ display: 'flex', flexWrap: 'wrap' }}>
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Tên khách hàng">
-              {getFieldDecorator('user-name', {
+              {getFieldDecorator('name', {
                 rules: [
                   {
                     message: 'Nhập tên của bạn',
@@ -50,7 +81,7 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
 
           <Col md={12} className={styles.pl1}>
             <Form.Item label="Mã khách hàng">
-              {getFieldDecorator('code-customer', {
+              {getFieldDecorator('code', {
                 rules: [
                   {
                     message: 'Nhập mã khách hàng của bạn',
@@ -63,7 +94,7 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
 
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Tên công trình">
-              {getFieldDecorator('name-project', {
+              {getFieldDecorator('projectName', {
                 rules: [
                   {
                     message: 'Nhập tên công trình',
@@ -76,7 +107,7 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
 
           <Col md={12} className={styles.pl1}>
             <Form.Item label="Mã công trình">
-              {getFieldDecorator('code-project', {
+              {getFieldDecorator('projectCode', {
                 rules: [
                   {
                     message: 'Nhập mã công trình',
@@ -141,11 +172,12 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
 
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Hotline">
-              {getFieldDecorator('hotline', {
+              {getFieldDecorator('phone', {
                 rules: [
                   {
                     message: 'Chỉ nhập số',
                     required: true,
+
                   },
                 ],
               })(<Input type="number" placeholder="84-8-38410088" />)}
