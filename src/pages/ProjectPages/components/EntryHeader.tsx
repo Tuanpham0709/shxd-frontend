@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, createRef } from 'react';
 import { Icon, Col, Row } from 'antd';
-import CollectionCreateForm from './FormCreateProject/CollectionCreateForm';
+import CreateFileModal from './FormCreateProject/CreateFileModal';
 import styles from '../style.module.less';
-const initialState = {
+import { FormComponentProps } from 'antd/lib/form';
+interface IState {
+  visible: boolean
+}
+const initialState: IState = {
   visible: false,
 };
 const CollectionsPage = () => {
   const [state, setState] = useState(initialState);
-  let formRef = null;
+  const formRef = createRef<FormComponentProps>();
   const showModal = () => {
     setState({ visible: true });
   };
@@ -17,20 +21,17 @@ const CollectionsPage = () => {
   };
 
   const handleCreate = () => {
-    const { form } = formRef.props;
+    console.log("inhearn");
+
+    const { form } = formRef.current
     form.validateFields((err, values) => {
       if (err) {
         return;
       }
-
       console.log('Received values of form: ', values);
       form.resetFields();
       setState({ visible: false });
     });
-  };
-
-  const saveFormRef = formRef => {
-    formRef = formRef;
   };
 
   return (
@@ -45,8 +46,8 @@ const CollectionsPage = () => {
               <Icon className={styles.mr1} type="plus-circle" theme="filled" />
               Tạo hồ sơ
             </div>
-            <CollectionCreateForm
-              wrappedComponentRef={saveFormRef}
+            <CreateFileModal
+              wrappedComponentRef={formRef}
               visible={state.visible}
               onCancel={handleCancel}
               onCreate={handleCreate}

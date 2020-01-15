@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tree, Checkbox, Icon } from 'antd';
 const { TreeNode } = Tree;
-import { AppContext } from '../../../../../contexts/AppContext';
+import { AppContext } from '../../../contexts/AppContext';
 import styles from './style.module.less';
 import 'antd/dist/antd.css';
 const child = [
@@ -67,7 +67,7 @@ class PdfTree extends Component {
     checkedKeys: [],
     isCheckedAll: false,
   };
-  componentDidMount() {}
+  componentDidMount() { }
   _onChecked = (keys: any) => {
     console.log('checked key', typeof keys);
     console.log('checked key', keys);

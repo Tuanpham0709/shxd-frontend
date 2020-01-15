@@ -1,52 +1,98 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Form, Input, Button, Row, Col, Select, DatePicker } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import styled from 'styled-components';
 import styles from '../style.module.less';
+import { AppContext } from '../../../../contexts/AppContext';
+import { RelationshipStatus, CreateCMSUser, CreateCMSUserVariables, UpdateUserInfo, UpdateUserInfoVariables, GetCMSUser_cmsGetUsers_users, Level, UserGroup } from '../../../../graphql/types';
+import { CREATE_CMS_USER } from '../../../../graphql/cmsUser/createCMSUser'
+import { UPDATE_CMS_USER } from '../../../../graphql/cmsUser/updateCMSUser'
+import { useMutation } from '@apollo/react-hooks';
+import { ToastError, ToastSuccess } from '../../../../components/Toast';
+import history from '../../../../history';
+import moment from 'moment';
 const { Option } = Select;
 const TitleForm = styled.div`
   padding: 1em;
-  margin-top: 20px
+  margin-top: 20px;
   margin-bottom: 20px;
   background: #ebebeb;
   font-weight: Bold;
   display: block
 `;
-interface UserInfo {
-  key: string;
-  id: string;
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  username: string;
-  password: string;
-  userType: string;
+enum MutationType {
+  update = "update",
+  create = "create"
 }
-interface IProps extends FormComponentProps<UserInfo> {
-  userInfo: UserInfo;
+const handleMutationAPI = (mutationType: MutationType) => {
+  let requestCMSUser: any;
+  let loading: boolean;
+  if (mutationType === MutationType.create) {
+    const [createCMSUser, options] = useMutation<CreateCMSUser, CreateCMSUserVariables>(CREATE_CMS_USER);
+    requestCMSUser = createCMSUser;
+    loading = options.loading;
+    return {
+      requestCMSUser,
+      loading
+    }
+  }
+  const [updateUserInfo, options] = useMutation<UpdateUserInfo, UpdateUserInfoVariables>(UPDATE_CMS_USER);
+  requestCMSUser = updateUserInfo;
+  loading = options.loading
+  return {
+    requestCMSUser,
+    loading
+  }
 }
+const validatorPhoneNumber = (rule, value, callback) => {
+  if (value && !phoneRegExp.test(value)) callback("PhoneNumber is not valid");
+  callback();
+}
+const phoneRegExp = new RegExp(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im);
+const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
+  let mutationType: MutationType = MutationType.create;
+  const { staffContext } = useContext(AppContext);
+  if (staffContext) {
+    mutationType = MutationType.update
+  }
+  console.log("staffContext", staffContext);
 
-const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
-  // const [state, setState]  = useState()
-  // const handleChange = e => {
-  //   setState({
-  //     checkNick: e.target.checked,
-  //   });
-  // };
+  const { requestCMSUser, loading } = handleMutationAPI(mutationType);
   const handleReset = () => {
     form.resetFields();
   };
   const check = () => {
-    form.validateFields(err => {
+    form.validateFieldsAndScroll((err, cmsUser: GetCMSUser_cmsGetUsers_users) => {
       if (!err) {
-        console.info('success');
+
+        console.log("cmsUserInfp", cmsUser);
+
+        if (mutationType === MutationType.create) {
+          requestCMSUser({ variables: { data: cmsUser } }).then(() => {
+            handleReset();
+            ToastSuccess({ message: "Thêm nhân viên thành công!" })
+          }).catch((errre) => {
+            ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau!" })
+            console.log("errre", errre);
+
+          });
+          return;
+        }
+        delete cmsUser.phoneNumber;
+        requestCMSUser({ variables: { id: staffContext._id, data: cmsUser } })
+          .then(() => {
+            ToastSuccess({ message: "Cập nhật nhân viên thành công !" });
+            history.goBack();
+          })
+          .catch((error) => {
+            console.log("error", error);
+            ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau !" });
+          })
       }
     });
+    form.getFieldsValue();
   };
   const { getFieldDecorator } = form;
-  console.log('userInfo', userInfo);
-
   return (
     <div>
       <TitleForm>Thông tin cơ bản</TitleForm>
@@ -54,30 +100,30 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
         <Row>
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Họ và tên">
-              {getFieldDecorator('name', {
-                initialValue: userInfo && userInfo.name,
-
+              {getFieldDecorator('fullName', {
+                initialValue: staffContext && staffContext.fullName,
                 rules: [
                   {
                     message: 'Nhập tên của bạn',
                     required: true,
                   },
                 ],
-              })(<Input defaultValue={userInfo && userInfo.username} placeholder="Nhập tên của bạn" />)}
+              })(<Input placeholder="Nhập tên của bạn" />)}
             </Form.Item>
           </Col>
 
           <Col md={12} className={styles.pl1}>
             <Form.Item label="Số điện thoại">
-              {getFieldDecorator('phone-number', {
-                initialValue: userInfo && userInfo.phone,
+              {getFieldDecorator('phoneNumber', {
+                initialValue: staffContext && staffContext.phoneNumber,
                 rules: [
                   {
                     message: 'Nhập số điện thoại của bạn',
                     required: true,
                   },
+                  { validator: validatorPhoneNumber, }
                 ],
-              })(<Input defaultValue={userInfo && userInfo.phone} placeholder="Nhập số điện thoại của bạn" />)}
+              })(<Input placeholder="Nhập số điện thoại của bạn" />)}
             </Form.Item>
           </Col>
         </Row>
@@ -85,11 +131,12 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Email">
               {getFieldDecorator('email', {
-                initialValue: userInfo && userInfo.email,
+                initialValue: staffContext && staffContext.email,
                 rules: [
                   {
                     message: 'Nhập email của bạn',
                     required: true,
+                    type: "email"
                   },
                 ],
               })(<Input placeholder="Nhập email của bạn" />)}
@@ -98,7 +145,7 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
           <Col md={12} className={styles.pl1}>
             <Form.Item label="Địa chỉ">
               {getFieldDecorator('address', {
-                initialValue: userInfo && userInfo.address,
+                initialValue: staffContext && staffContext.address,
                 rules: [
                   {
                     message: 'Nhập đỉa chỉ của bạn ',
@@ -113,7 +160,7 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Tên đăng nhập vào hệ thống">
               {getFieldDecorator('username', {
-                initialValue: userInfo && userInfo.username,
+                initialValue: staffContext && staffContext.username,
                 rules: [
                   {
                     message: 'Nhập tên đăng nhập vào hệ thống',
@@ -126,27 +173,26 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
           <Col md={12} className={styles.pl1}>
             <Form.Item label="Mật khẩu">
               {getFieldDecorator('password', {
-                initialValue: userInfo && userInfo.password,
                 rules: [
                   {
                     message: 'Nhập mật khẩu của bạn',
                     required: true,
                   },
                 ],
-              })(<Input placeholder="Nhập mật khẩu của bạn" />)}
+              })(<Input.Password placeholder="Nhập mật khẩu của bạn" />)}
             </Form.Item>
           </Col>
         </Row>
         <Row>
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Loại người đùng" hasFeedback>
-              {getFieldDecorator('userType', {
-                initialValue: userInfo ? userInfo.userType : '',
+              {getFieldDecorator('group', {
+                initialValue: staffContext ? staffContext.group : undefined,
                 rules: [{ required: true, message: 'Chọn loại người dùng' }],
               })(
-                <Select placeholder="Loại người dùng">
-                  <Option value="manager">Quản lý</Option>
-                  <Option value="employee">Nhân viên</Option>
+                <Select placeholder="Chọn">
+                  <Option value={UserGroup.MANAGER}>Quản lý</Option>
+                  <Option value={UserGroup.STAFF}>Nhân viên</Option>
                 </Select>,
               )}
             </Form.Item>
@@ -157,7 +203,8 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
         <Row style={{ display: 'flex', flexWrap: 'wrap' }}>
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Chứng minh nhân dân">
-              {getFieldDecorator('passport', {
+              {getFieldDecorator('identityNumber', {
+                initialValue: staffContext && staffContext.identityNumber,
                 rules: [
                   {
                     message: 'Nhập CMTND',
@@ -169,16 +216,12 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
 
           <Col md={12} className={styles.pl1}>
             <Form.Item label="Tình trạng hôn nhân" hasFeedback>
-              {getFieldDecorator('matrimony', {
-                rules: [
-                  {
-                    message: 'Chọn tình trạng hôn nhân',
-                  },
-                ],
+              {getFieldDecorator('relationshipStatus', {
+                initialValue: staffContext ? staffContext.relationshipStatus : undefined,
               })(
                 <Select placeholder="Chọn">
-                  <Option value="Độc thân">Độc thân</Option>
-                  <Option value="Đã kết hôn">Đã kết hôn</Option>
+                  <Option value={RelationshipStatus.SINGLE}>Độc thân</Option>
+                  <Option value={RelationshipStatus.MARRIED}>Đã kết hôn</Option>
                 </Select>,
               )}
             </Form.Item>
@@ -186,13 +229,21 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
 
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Ngày sinh" hasFeedback>
-              <DatePicker placeholder="Chọn ngày sinh" style={{ width: '100%' }} />
+              {
+                getFieldDecorator('dateOfBirth', {
+                  initialValue: staffContext && moment(staffContext.dateOfBirth, "DD-MM-YYYY")
+                })(
+                  <DatePicker placeholder="Chọn ngày sinh" format="DD-MM-YYYY" style={{ width: '100%' }} />
+                )
+              }
+
             </Form.Item>
           </Col>
 
           <Col md={12} className={styles.pl1}>
             <Form.Item label="Học vấn" hasFeedback>
-              {getFieldDecorator('edu', {
+              {getFieldDecorator('level', {
+                initialValue: staffContext ? staffContext.level : undefined,
                 rules: [
                   {
                     message: 'Chọn học vấn',
@@ -200,10 +251,10 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
                 ],
               })(
                 <Select placeholder="Chọn">
-                  <Option value="THPT">THPT</Option>
-                  <Option value="Trung cấp">Trung cấp</Option>
-                  <Option value="Cao đẳng">Cao đẳng</Option>
-                  <Option value="Đại học">Đại học</Option>
+                  <Option value={Level.HIGHSCHOOL}>THPT</Option>
+                  <Option value={Level.MIDDLE}>Trung cấp</Option>
+                  <Option value={Level.COLLEGE}>Cao đẳng</Option>
+                  <Option value={Level.BACHELOR}>Đại học</Option>
                 </Select>,
               )}
             </Form.Item>
@@ -211,10 +262,10 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
         </Row>
 
         <Form.Item className={styles.textRight}>
-          <Button className={`${styles.redBtn} ${styles.btnSmall}`} onClick={handleReset}>
+          <Button disabled={loading} className={`${styles.redBtn} ${styles.btnSmall}`} onClick={handleReset}>
             Huỷ bỏ
           </Button>
-          <Button className={`${styles.imageBtn} ${styles.btnSmall}`} onClick={check}>
+          <Button disabled={loading} className={`${styles.imageBtn} ${styles.btnSmall}`} onClick={check}>
             Đồng ý
           </Button>
         </Form.Item>
@@ -222,5 +273,5 @@ const ModalForm: React.FC<IProps> = ({ userInfo, form }) => {
     </div>
   );
 };
-const WrappedModalForm = Form.create<IProps>({})(ModalForm);
+const WrappedModalForm = Form.create<FormComponentProps>({})(ModalForm);
 export default WrappedModalForm;

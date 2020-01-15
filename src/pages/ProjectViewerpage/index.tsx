@@ -1,7 +1,11 @@
 import React from 'react';
 // import { Button, Layout } from 'antd';
-import ProjectInfo from './components/ProjectInfo';
-import ProjectContent from './components/Content/index';
+import styles from './style.module.less'
+import ProjectInfo from './ProjectInfo';
+import HeaderBar from './HeaderBar'
+import WorkingTree from './WorkingTree/index'
+import ShowProject from './ShowProject/index'
+import { Col, Row } from 'antd'
 const infoClient = [
   { type: 'Mã công trình', content: 'NQ 307 NPCP' },
   { type: 'Tên khách hàng', content: 'Ban QLDA thành phố Đồng Hới' },
@@ -13,7 +17,19 @@ const Files = () => {
   return (
     <div>
       <ProjectInfo {...infoClient} />
-      <ProjectContent />
+      <div className={styles.container}>
+        <HeaderBar />
+        <div>
+          <Row>
+            <Col xl={7}>
+              <WorkingTree />
+            </Col>
+            <Col xl={17}>
+              <ShowProject />
+            </Col>
+          </Row>
+        </div>
+      </div>
     </div>
   );
 };

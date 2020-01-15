@@ -1,7 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Input, Button } from 'antd';
 import styles from './style.module.less';
+import UploadFile from '../components/UploadFile';
+const initialState = {
+  visible: false
+}
 const Toolbar = () => {
+  const [state, setState] = useState(initialState);
+  const showModal = () => {
+    setState({ visible: !state.visible });
+  }
+  const onDismiss = () => {
+    setState({ visible: false })
+  }
+  const onSubmit = () => {
+    setState({ visible: false })
+  }
   return (
     <div className={styles.toolbar}>
       <Row>
@@ -34,7 +48,9 @@ const Toolbar = () => {
         </Col>
         <Col xl={4}>
           <div className={styles.btnContainer}>
-            <Button className={`${styles.imageBtn} ${styles.btnSmall}`} type="primary">
+            <Button
+              onClick={showModal}
+              className={`${styles.imageBtn} ${styles.btnSmall}`} type="primary">
               <i className="icon-image"></i>
             </Button>
             <Button className={`${styles.fileBtn} ${styles.btnSmall}`} type="default">
@@ -52,6 +68,7 @@ const Toolbar = () => {
         </Col>
       </Row>
       <div className={styles.docsContainer}></div>
+      <UploadFile onDismiss={onDismiss} onSubmit={onSubmit} visible={state.visible}></UploadFile>
     </div>
   );
 };

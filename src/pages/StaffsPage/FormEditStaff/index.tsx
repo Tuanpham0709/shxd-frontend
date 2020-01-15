@@ -1,31 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import HeaderForm from './HeaderForm';
 import MainForm from './components/MainForm';
-// interface UserInfo {
-//   key: string;
-//   id: string;
-//   name: string;
-//   phone: string;
-//   email: string;
-//   address: string;
-//   username: string;
-//   password: string;
-//   userType: string;
-// }
-// interface IProps {
-//   userInfo?: UserInfo;
-//   location?: any;
-// }
+import { AppContext } from '../../../contexts/AppContext';
+const onUpdateContextStaff = (staff, onUpdateContext) => {
+  if (staff && onUpdateContext) {
+    useEffect(() => {
+      onUpdateContext({ staffContext: staff })
+    }, [])
+  }
+
+}
+const onResetContextStaff = (onUpdateContext) => {
+  useEffect(() => {
+    onUpdateContext({ staffContext: null })
+  }, [])
+}
 const Form: React.FC<any> = ({ location }) => {
-  console.log('loca', location);
+  const { onUpdateContext } = React.useContext(AppContext);
   if (location.state) {
+    onUpdateContextStaff(location.state.staff, onUpdateContext)
     return (
       <div>
-        <HeaderForm title={location.state.item[0].name} />
-        <MainForm userInfo={location.state.item[0]} />
+        <HeaderForm title={location.state.staff.name} />
+        <MainForm />
       </div>
     );
   }
+  onResetContextStaff(onUpdateContext);
   return (
     <div>
       <HeaderForm />

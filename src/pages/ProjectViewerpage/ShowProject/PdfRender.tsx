@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import pdfjs from 'pdfjs-dist';
 import styles from './style.module.less';
 import PageCanvas from './PageCanvas';
-import PageLoading from '../../../../../components/PageLoading/index'
+import PageLoading from '../../../components/PageLoading/index'
 interface IProps {
   pages: number[];
   onRenderSucess: () => void;
