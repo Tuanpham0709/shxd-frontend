@@ -25,7 +25,7 @@ interface ButtonProps {
 }
 const HeaderBar = () => {
   return (
-    <div className={styles.toolbar}>
+    <div className={styles.headerBar}>
       <Button icon="eye" className={`${styles.missingDocsBtn} ${styles.btnHeight}`}>
         Tài liệu thiếu
       </Button>

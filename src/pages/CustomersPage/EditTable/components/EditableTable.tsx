@@ -1,146 +1,71 @@
 import React, { useState } from 'react';
 import { Popconfirm, Table } from 'antd';
 import { Link } from 'react-router-dom';
-import { ColumnProps } from 'antd/lib/table';
 // import styles from './style.module.less';
-
-export const EditableContext = React.createContext({ form: {} });
-const DATA: DataType[] = [];
-for (let i = 0; i < 50; i++) {
-  DATA.push({
-    key: i.toString(),
-    code: `${i + 1}`,
-    name: `Chris ${i + 1}`,
-    phone: `(+84)3 123456${i}`,
-    email: `xiemnguyen${i + 1}@tomochain.com`,
-    address: `Số 97, Trần Quốc Toản, Quận Hoàn Kiếm, Hà Nội ${i + 1}`,
-    room: `XD${i + 1}`,
-    manager: `Trần Văn Thi ${i + 1}`,
-    chairman: `Nguyễn Ngọc Quang ${i + 1}`,
-    accountant: `Nguyễn Thị Hà ${i + 1}`,
-    operation: ``,
-  });
-}
-
-interface DataType {
-  key: string;
-  code: string;
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  room: string;
-  manager: string;
-  chairman: string;
-  accountant: string;
-  operation: ``;
-}
+import { partnerColumnProps } from '../../../DefinePropsTable'
+import { useMutation } from '@apollo/react-hooks';
+import { REMOVE_PARTNER } from '../../../../graphql/partner/removePartner';
+import { DeletePartner, DeletePartnerVariables } from '../../../../graphql/types'
+import { PartnerInterface } from '../../../../contexts/type';
+import { ToastError } from '../../../../components/Toast'
 interface State {
-  data?: Array<DataType>;
+  data?: Array<PartnerInterface>;
   editingKey?: string;
   deleteKey?: string;
 }
-interface ColumnPropsEditable<T> extends ColumnProps<T> {
-  editable?: boolean;
+interface IProps {
+  data: PartnerInterface[],
+  onRefreshData: () => void;
 }
-const initialState: State = {
-  data: DATA,
-  editingKey: '',
-  deleteKey: '',
-};
-const columnsProps: Array<ColumnPropsEditable<Object>> = [
-  {
-    title: 'Mã KH',
-    dataIndex: 'code',
-    editable: true,
-  },
-  {
-    title: 'Tên khách hàng',
-    dataIndex: 'name',
-    editable: true,
-    width: "10%",
-  },
-  {
-    title: 'Số điện thoại',
-    dataIndex: 'phone',
-    width: "10%",
-    editable: true,
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-    // width: '40%',
-    editable: true,
-  },
-  {
-    title: 'Địa chỉ',
-    dataIndex: 'address',
-    width: "15%",
-    editable: true,
-  },
-  {
-    title: 'Phòng/ CN/ VP QL',
-    dataIndex: 'room',
-    width: "7%",
-    editable: true,
-  },
-  {
-    title: 'Giám đốc',
-    dataIndex: 'manager',
-    width: "11%",
-    editable: true,
-  },
-  {
-    title: 'Chủ tịch',
-    dataIndex: 'chairman',
-    width: "11%",
-    editable: true,
-  },
-  {
-    title: 'Kế toán trưởng',
-    dataIndex: 'accountant',
-    // width: '40%',
-    editable: true,
-  },
-  {
-    title: '',
-    dataIndex: 'edit',
-  },
-  {
-    title: '',
-    dataIndex: 'delete',
-  },
-];
-const EditableTable = () => {
+const mutationRemovePartner = () => {
+  const [removePartner, { loading }] = useMutation<DeletePartner, DeletePartnerVariables>(REMOVE_PARTNER);
+  return { removePartner, loading };
+}
+const EditableTable: React.FC<IProps> = ({ data, onRefreshData }) => {
+  const initialState: State = {
+    data,
+  }
   const [state, setState] = useState(initialState);
-
-  const handleDelete = key => {
-    let newData = [...state.data].filter(item => item.key !== key);
+  const { removePartner } = mutationRemovePartner();
+  const handleDelete = id => {
+    if (id) {
+      removePartner({ variables: { id } }).then(() => {
+        onRefreshData && onRefreshData();
+      }).catch(() => {
+        ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau!" })
+      })
+    }
+    let newData = [...state.data].filter(item => item.id !== id);
     setState({ data: newData });
   };
-  const linkToComponent = () => (
+  const linkToComponent = (_, record) => (
     <div>
-      <Link to="/customers/edit">
+      <Link to={{
+        pathname: "/customers/edit",
+        state: {
+          partner: record
+        }
+      }}>
         <i style={{ color: '#007BD7' }} className="icon-edit" />
       </Link>
     </div>
   );
   const deleteComponent = (text: string, record: any) => (
     <div>
-      <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+      <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
         <i style={{ color: '#FF4D4F' }} className="icon-delete" />
       </Popconfirm>
     </div>
   );
-  const handleColomnProps = columnsProps.map((item, index) => {
-    if (index == columnsProps.length - 1) {
+  const handleColumnProps = partnerColumnProps.map((item, index) => {
+    if (index == partnerColumnProps.length - 1) {
       return { ...item, render: deleteComponent };
-    } else if (index == columnsProps.length - 2) {
+    } else if (index == partnerColumnProps.length - 2) {
       return { ...item, render: linkToComponent };
     }
     return { ...item };
   });
 
-  return <Table dataSource={state.data} columns={handleColomnProps} />;
+  return <Table dataSource={data} columns={handleColumnProps} />;
 };
 export default EditableTable;

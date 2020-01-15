@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../style.module.less';
+import styles from './style.module.less';
 interface Info {
   type: string;
   content: string;

@@ -6,16 +6,16 @@ query GetPartners( $query:String, $limit: Int!,$skip: Int){
         partners{
             _id
             name
-            code
+            partnerCode
+            projectName
+            projectCode
+            chairmanName
+            ceoName
+            departmentName
+            accountantName
             address
+            email
             phone
-            fax
-            userIds
-            adminUserIds
-            staffUserIds
-            createdBy
-            createdAt
-            updatedAt
         }
     }
 }

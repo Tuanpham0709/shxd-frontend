@@ -3,7 +3,7 @@ import Toolbar from './Toolbar';
 import { Button } from 'antd';
 import styles from './style.module.less';
 import PdfRender from './PdfRender';
-import { AppContext } from '../../../../../contexts/AppContext';
+import { AppContext } from '../../../contexts/AppContext';
 const ShowProject = () => {
   return (
     <AppContext.Consumer>

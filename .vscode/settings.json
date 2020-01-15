@@ -20,8 +20,10 @@
     "comartek",
     "inmemory",
     "ixosoftware",
+    "popconfirm",
+    "refetch",
     "shipitfile",
     "shxd",
     "zoominton"
-]
+  ]
 }
