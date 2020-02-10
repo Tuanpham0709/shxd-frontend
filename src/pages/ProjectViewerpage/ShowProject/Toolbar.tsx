@@ -2,19 +2,25 @@ import React, { useState } from 'react';
 import { Row, Col, Input, Button } from 'antd';
 import styles from './style.module.less';
 import UploadFile from '../components/UploadFile';
-const initialState = {
-  visible: false
+import Note from '../components/NoteModal';
+const useStateVisible = () => {
+  const [isEdit, setIsEdit] = useState(false);
+  const [isAddImageModal, setAddImageModal] = useState(false);
+  const [isAddNoteModal, setAddNoteModal] = useState(false);
+  return {
+    isEdit, isAddImageModal, isAddNoteModal, setIsEdit, setAddImageModal, setAddNoteModal
+  }
 }
 const Toolbar = () => {
-  const [state, setState] = useState(initialState);
-  const showModal = () => {
-    setState({ visible: !state.visible });
+  const { isEdit, isAddImageModal, isAddNoteModal, setIsEdit, setAddImageModal, setAddNoteModal } = useStateVisible();
+  const showAddImageModal = () => {
+    setAddImageModal(!isAddImageModal);
   }
-  const onDismiss = () => {
-    setState({ visible: false })
+  const onEdit = () => {
+    setIsEdit(!isEdit);
   }
-  const onSubmit = () => {
-    setState({ visible: false })
+  const onNote = () => {
+    setAddNoteModal(!isAddNoteModal)
   }
   return (
     <div className={styles.toolbar}>
@@ -49,18 +55,29 @@ const Toolbar = () => {
         <Col xl={4}>
           <div className={styles.btnContainer}>
             <Button
-              onClick={showModal}
+              disabled={!isEdit}
+              onClick={showAddImageModal}
               className={`${styles.imageBtn} ${styles.btnSmall}`} type="primary">
               <i className="icon-image"></i>
             </Button>
-            <Button className={`${styles.fileBtn} ${styles.btnSmall}`} type="default">
+            <Button
+              disabled={!isEdit}
+              onClick={onNote}
+              className={`${styles.fileBtn} ${styles.btnSmall}`} type="default">
               <i className="icon-note"></i>
             </Button>
             <div className={styles.doubleBtn}>
-              <Button className={styles.editBtn} type="default">
+              <Button
+                disabled={isEdit}
+                style={{ backgroundColor: isEdit ? "#CCCCCC" : "#16A085" }}
+                onClick={onEdit}
+                className={styles.editBtn} type="default">
                 <i className="icon-edit"></i>
               </Button>
-              <Button className={styles.completedBtn} disabled type="default">
+              <Button
+                style={{ backgroundColor: isEdit ? "#16A085" : "#CCCCCC" }}
+                onClick={onEdit}
+                className={styles.completedBtn} disabled={!isEdit} type="default">
                 <i className="icon-done"></i>
               </Button>
             </div>
@@ -68,7 +85,8 @@ const Toolbar = () => {
         </Col>
       </Row>
       <div className={styles.docsContainer}></div>
-      <UploadFile onDismiss={onDismiss} onSubmit={onSubmit} visible={state.visible}></UploadFile>
+      <UploadFile onDismiss={showAddImageModal} onSubmit={showAddImageModal} visible={isAddImageModal}></UploadFile>
+      <Note onSubmit={onNote} onDismiss={onNote} visible={isAddNoteModal} />
     </div>
   );
 };

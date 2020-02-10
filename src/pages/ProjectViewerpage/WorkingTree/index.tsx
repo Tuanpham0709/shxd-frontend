@@ -1,7 +1,8 @@
 import React from 'react';
 import { Input, Button } from 'antd';
 import styles from './style.module.less';
-import PdfTree from './PdfTree';
+import { UpdateTreeNode_updateTreeNode_treeNode } from '../../../graphql/types'
+import TreeViewer from './TreeViewer';
 const toolBtnDataProps = [
   { icon: 'icon-them-dau-muc' },
   { icon: 'icon-them-tai-lieu' },
@@ -12,7 +13,14 @@ const toolBtnDataProps = [
   { icon: 'icon-tai-lieu-thieu' },
 ];
 const { Search } = Input;
-const WorkingTree = () => {
+export interface ITreeNode extends UpdateTreeNode_updateTreeNode_treeNode {
+
+}
+interface TreeProps {
+  treeNode: ITreeNode[]
+}
+const WorkingTree: React.FC<TreeProps> = ({ treeNode }) => {
+  console.log("working tre e", treeNode)
   return (
     <div className={styles.filterContainer}>
       <div className={styles.searchContainer}>
@@ -27,7 +35,7 @@ const WorkingTree = () => {
       </div>
       <div>
         <div className={`${styles.treeContainer} ${styles.scrollbar}`}>
-          <PdfTree />
+          <TreeViewer treeNode={treeNode} />
         </div>
       </div>
     </div>

@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
-import { PartnerInterface, ParamsContext } from './type'
+import { PartnerInterface } from './type';
 import { GetCMSUser_cmsGetUsers_users } from '../graphql/types'
-export interface AppContextInterface {
+export interface ParamsContext {
+  pages?: number[];
+  loading?: boolean;
+  partnerContext?: PartnerInterface;
+  staffContext?: GetCMSUser_cmsGetUsers_users;
+  pdfRenderedContext?: any[];
+  loadingUploadFile?: boolean;
+}
+export interface AppContextInterface extends ParamsContext {
   dummy: any;
   collapsedSidebar: boolean;
   onUpdateContext: (params: ParamsContext) => void;
-  pages: number[];
-  loading: boolean;
-  partnerContext: PartnerInterface;
-  staffContext: GetCMSUser_cmsGetUsers_users;
 }
 export const AppContext = React.createContext<AppContextInterface>({
   dummy: null,
@@ -18,6 +22,8 @@ export const AppContext = React.createContext<AppContextInterface>({
   loading: false,
   partnerContext: null,
   staffContext: null,
+  pdfRenderedContext: [],
+  loadingUploadFile: null
 });
 export class AppProvider extends Component {
   onUpdateContext = context => {
@@ -32,6 +38,8 @@ export class AppProvider extends Component {
     loading: false,
     partnerContext: null,
     staffContext: null,
+    pdfRenderedContext: [],
+    loadingUploadFile: null
   };
   render() {
     return <AppContext.Provider value={{ ...this.state }}>{this.props.children}</AppContext.Provider>;

@@ -118,3 +118,58 @@ export const staffColumnProp: Array<ColumnPropsEditable<GetCMSUser_cmsGetUsers_u
     },
 
 ]
+export const documentColumnProps = [
+    {
+        title: 'Mã công trình',
+        dataIndex: 'projectCode',
+        width: "6%",
+    },
+    {
+        title: 'Tên công trình',
+        dataIndex: 'projectName',
+        width: "10%",
+    },
+    {
+        title: 'Tên khách hàng',
+        dataIndex: 'partnerName',
+        width: "9%",
+    },
+    {
+        title: 'Người thực hiện',
+        dataIndex: 'implementer',
+        width: "9%",
+    },
+    {
+        title: 'Người phê duyệt',
+        dataIndex: 'reviewer',
+        width: "9%",
+    },
+    {
+        title: 'Ngày bắt đầu lập Hs',
+        dataIndex: 'createdAt',
+        width: "9%",
+    },
+    {
+        title: 'Ngày gửi duyệt',
+        dataIndex: 'approvalDate',
+        width: "9%",
+    },
+    {
+        title: 'Tình trạng',
+        dataIndex: 'status',
+        width: "9%",
+    },
+    {
+        title: 'Số hóa tài liệu',
+        width: "9%",
+    },
+    {
+        title: 'Hồ sơ tài liệu còn thiếu hoặc tồn tại',
+        width: "9%",
+    },
+    {
+        title: 'Ghi chú',
+        dataIndex: 'note',
+        width: "9%",
+    },
+];

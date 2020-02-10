@@ -20,3 +20,15 @@ query GetPartners( $query:String, $limit: Int!,$skip: Int){
     }
 }
 `
+export const SEARCH_PARTNER_NAME = gql`
+    query SearchPartnerName($query:String, $limit: Int!,$skip: Int) {
+        getPartners(query: $query, limit: $limit, skip: $skip){
+            total 
+            partners {
+                _id
+                name
+                partnerCode
+            }
+        }
+    }
+`

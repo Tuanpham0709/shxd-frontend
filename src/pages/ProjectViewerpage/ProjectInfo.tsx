@@ -17,7 +17,7 @@ const ProjectInfo = (props: any) => {
       <div className={styles.flRight}>
         {infoClient.map((item: Info, index: number) => {
           return (
-            <div key={index + ''} className={styles.col}>
+            <div key={index + ''} className={styles .col}>
               <span className={styles.textInfo}>{item.content}</span>
               <br />
               <span className={styles.textType}>{item.type}</span>

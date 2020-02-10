@@ -29,9 +29,3 @@ export interface StaffInterface {
     relationshipStatus: string;
     level: string;
 }
-export interface ParamsContext {
-    pages?: number[];
-    loading?: boolean;
-    partnerInfo?: PartnerInterface;
-    staffInfo?: StaffInterface;
-}

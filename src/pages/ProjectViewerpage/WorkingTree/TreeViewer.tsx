@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import { Tree, Checkbox, Icon } from 'antd';
-const { TreeNode } = Tree;
-import { AppContext } from '../../../contexts/AppContext';
+// import { AppContext } from '../../../contexts/AppContext';
 import styles from './style.module.less';
 import 'antd/dist/antd.css';
+import { ITreeNode } from './index'
+import FlatToNested from 'flat-to-nested'
+const { TreeNode } = Tree;
 const child = [
-  { title: '1.1. QĐ 783/QĐ-UBND ngày 17/02/2016', key: '0-1', pages: [3, 4, 5] },
+  {
+    title: '1.1. QĐ 783/QĐ-UBND ngày 17/02/2016',
+    subObject: {
+      title: "bacdd",
+      media: {
+        uri: "abcd",
+      }
+    }
+    , key: '0-1', pages: [3, 4, 5]
+  },
   { title: '1.2. QĐ 76/QĐ-UBND ngày 12/03/2016', key: '0-2', pages: [11, 12] },
   { title: '1.3. QĐ 46/QĐ-UBND ngày 19/02/2016', key: '0-3', pages: [1, 2] },
   { title: '1.4. QĐ 873/QĐ-UBND ngày 29/02/2016', key: '0-4', pages: [8, 9] },
@@ -50,8 +61,12 @@ for (let i = 0; i < gData.length; i++) {
   }
 }
 interface NodeObject {
-  title: string;
-  key: string;
+  id?: string;
+  parent?: string;
+  mediaUri?: string;
+  mediaType?: string;
+  title?: string;
+  key?: string;
   children?: Array<NodeObject>;
 }
 interface TreeState {
@@ -59,18 +74,68 @@ interface TreeState {
   expandedKeys: Array<string>;
   checkedKeys: Array<string>;
   isCheckedAll: boolean;
+  treeNode: ITreeNode[];
 }
-class PdfTree extends Component {
+interface IProps {
+  treeNode: ITreeNode[];
+}
+const flatToNested = new FlatToNested({ id: "id", parent: "parent", children: 'children' });
+class TreeViewer extends Component<IProps, TreeState> {
   state: TreeState = {
     gData,
     expandedKeys: ['0-0', '0-0-0', '0-0-0-0'],
     checkedKeys: [],
     isCheckedAll: false,
+    treeNode: []
   };
-  componentDidMount() { }
+  componentWillReceiveProps(nextProps) {
+    console.log("tree node next props next props nex", nextProps.treeNode)
+    console.log("tree node pre rpe pre prr e pre pre ", this.props.treeNode)
+    if (nextProps.treeNode !== this.state.treeNode) {
+      console.log("-------------- - - - - -- -s")
+      this._onHandleTreeData();
+    }
+  }
+  _onHandleTreeData = () => {
+    const { treeNode } = this.props
+
+    console.log("trenoded  - - - - - - - - ", treeNode)
+    let treeNested = flatToNested.convert(treeNode.map((item) => ({ ...item, id: item.key })));
+    if (typeof treeNested !== "object")
+
+      this._onHandleExpandedKeyData(treeNested);
+    console.log("treeNested convert ", treeNested)
+  }
+  _onLoop = (data: any[], parentKey: string) => {
+    return data.map((item, index) => {
+      if (item.children) {
+        return {
+          ...item, children: this._onLoop(item.children, `${parentKey}-${index}`)
+        }
+      }
+      return {
+        ...item, key: `${parentKey}-${index}`
+      }
+    })
+  }
+  _onHandleExpandedKeyData = (treeData: any) => {
+    console.log("------------", treeData)
+    if (!treeData.children) {
+      return;
+    }
+    const newData = treeData.children.map((item, index) => {
+      if (item.children) {
+        return {
+          ...item, key: `0-${index}`, children: this._onLoop(item.children, `0-${index}`)
+        }
+      }
+      return {
+        ...item, key: `0-${index}`
+      }
+    })
+    console.log("data tree handle", newData)
+  }
   _onChecked = (keys: any) => {
-    console.log('checked key', typeof keys);
-    console.log('checked key', keys);
     if (keys.length < gData.length) {
       this.setState((...preState) => ({
         isCheckedAll: false,
@@ -235,40 +300,37 @@ class PdfTree extends Component {
     });
   render() {
     const { gData, checkedKeys, isCheckedAll } = this.state;
+    console.log("gDtaataata-----", gData)
     return (
-      <AppContext.Consumer>
-        {({ onUpdateContext, loading }) => (
-          <div className={styles.treeContainer}>
-            <div className={styles.hozLine}>
-              <div className={styles.chooseAll}>
-                <Checkbox checked={isCheckedAll} onChange={this._onCheckedAll}>
-                  Chọn tất cả
+      <div className={styles.treeContainer}>
+        <div className={styles.hozLine}>
+          <div className={styles.chooseAll}>
+            <Checkbox checked={isCheckedAll} onChange={this._onCheckedAll}>
+              Chọn tất cả
                 </Checkbox>
-              </div>
-            </div>
-            <Tree
-              disabled={loading}
-              showIcon
-              checkable
-              className="draggable-tree"
-              defaultExpandedKeys={this.state.expandedKeys}
-              draggable
-              blockNode
-              defaultSelectedKeys={['0-0']}
-              checkedKeys={checkedKeys}
-              onSelect={item => {
-                this._handleSelectItem(item, onUpdateContext);
-              }}
-              onCheck={this._onChecked}
-              // onDragEnter={this.onDragEnter}
-              onDrop={this._onDrop}
-            >
-              {this._renderTreeNode(gData)}
-            </Tree>
           </div>
-        )}
-      </AppContext.Consumer>
+        </div>
+        <Tree
+          // disabled={loading}
+          showIcon
+          checkable
+          className="draggable-tree"
+          defaultExpandedKeys={this.state.expandedKeys}
+          draggable
+          blockNode
+          defaultSelectedKeys={['0-0']}
+          checkedKeys={checkedKeys}
+          // onSelect={item => {
+          //   this._handleSelectItem(item, onUpdateContext);
+          // }}
+          onCheck={this._onChecked}
+          // onDragEnter={this.onDragEnter}
+          onDrop={this._onDrop}
+        >
+          {this._renderTreeNode(gData)}
+        </Tree>
+      </div>
     );
   }
 }
-export default PdfTree;
+export default TreeViewer;
