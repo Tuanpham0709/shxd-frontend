@@ -4,20 +4,37 @@ interface Info {
   type: string;
   content: string;
 }
-const ProjectInfo = (props: any) => {
-  const infoClient = [
-    { type: 'Mã công trình', content: 'QĐ 783/QĐ-UBND' },
-    { type: 'Tên khách hàng', content: 'UBND phường Thanh Nhàn' },
-    { type: 'Người thực hiện', content: 'Nguyễn Văn B' },
-    { type: 'Ngày bắt đầu lập hồ sơ', content: '03/12/2016' },
-  ];
+interface IProps {
+  document: any
+}
+const ProjectInfo: React.FC<IProps> = ({ document }) => {
+  const infos = () => {
+    let infoPs = [];
+    infoPs.push({
+      type: "Mã công trình",
+      content: document.projectCode
+    })
+    infoPs.push({
+      type: 'Tên khách hàng',
+      content: document.partnerName
+    })
+    infoPs.push({
+      type: 'Người thực hiện',
+      content: document.implementer
+    })
+    infoPs.push({
+      type: 'Ngày bắt đầu lập hồ sơ',
+      content: document.createdAt
+    })
+    return infoPs
+  }
   return (
     <div className={styles.titleContainer}>
-      <span className={styles.title}>HỒ SƠ QUYẾT TOÁN DỰ ÁN HOÀN THÀNH</span>
+      <span className={styles.title}>{document.projectName}</span>
       <div className={styles.flRight}>
-        {infoClient.map((item: Info, index: number) => {
+        {infos().map((item: Info, index: number) => {
           return (
-            <div key={index + ''} className={styles .col}>
+            <div key={index + ''} className={styles.col}>
               <span className={styles.textInfo}>{item.content}</span>
               <br />
               <span className={styles.textType}>{item.type}</span>

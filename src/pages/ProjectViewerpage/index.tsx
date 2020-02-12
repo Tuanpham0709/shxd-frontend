@@ -11,12 +11,6 @@ import { UPDATE_TREE_NODE } from '../../graphql/document/updateTreeNode'
 import EmptyFiles from './components/EmptyFiles';
 import { Col, Row } from 'antd';
 import { AppContext } from '../../contexts/AppContext';
-const infoClient = [
-  { type: 'Mã công trình', content: 'NQ 307 NPCP' },
-  { type: 'Tên khách hàng', content: 'Ban QLDA thành phố Đồng Hới' },
-  { type: 'Người thực hiện', content: 'Nguyễn Văn A' },
-  { type: 'Ngày bắt đầu lập hồ sơ', content: '03/12/2019' },
-];
 interface Node {
   documentName: string;
   nodeMediaId: string;
@@ -80,7 +74,7 @@ const Files = ({ location }) => {
 
   return (
     <div>
-      <ProjectInfo {...infoClient} />
+      <ProjectInfo document={location.state.document} />
       <div className={styles.container}>
         <HeaderBar />
         <div>
