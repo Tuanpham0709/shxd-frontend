@@ -4,7 +4,6 @@ import VisualForm from './VisualForm';
 import { Col, Row } from 'antd';
 import styles from '../style.module.less';
 const EditCustomer = () => {
-
   return (
     <div className={`${styles.bgWhite} ${styles.pd3}`}>
       <Row>

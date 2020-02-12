@@ -18,7 +18,6 @@ const onResetPartnerContext = (onUpdateContext) => {
 const FormEditCustom: React.FC<any> = ({ location }) => {
   const { onUpdateContext } = useContext(AppContext)
   console.log("location", location);
-
   if (location.state) {
     onUpdatePartnerContext(location.state.partner, onUpdateContext);
     return (

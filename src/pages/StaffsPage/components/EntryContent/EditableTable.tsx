@@ -3,10 +3,11 @@ import { Popconfirm, Table } from 'antd';
 import { Link } from 'react-router-dom';
 // import styles from './style.module.less';
 import { staffColumnProp } from '../../../DefinePropsTable'
-import { GetCMSUser_cmsGetUsers_users, RemoveCMSUser, RemoveCMSUserVariables } from '../../../../graphql/types'
+import { GetCMSUser_cmsGetUsers_users, RemoveCMSUser, UserGroup, RemoveCMSUserVariables } from '../../../../graphql/types'
 import { useMutation } from 'react-apollo';
 import { REMOVE_CMS_USER } from '../../../../graphql/cmsUser/removeCMSUser';
 import { ToastSuccess, ToastError } from '../../../../components/Toast';
+import moment from 'moment';
 export const EditableContext = React.createContext({ form: {} });
 interface IProps {
   data: GetCMSUser_cmsGetUsers_users[],
@@ -16,8 +17,15 @@ const useRemoveCMSUser = () => {
   const [removeCMSUser, { loading }] = useMutation<RemoveCMSUser, RemoveCMSUserVariables>(REMOVE_CMS_USER);
   return { removeCMSUser, loading };
 }
+const dateFormat = "DD-MM-YYYY"
 const EditableTable: React.FC<IProps> = ({ data, onRefreshData }) => {
   const { removeCMSUser } = useRemoveCMSUser()
+  const dataConfig = data.map((item) => {
+    const createdAt = moment(item.createdAt).format(dateFormat);
+    const updatedAt = moment(item.updatedAt).format(dateFormat);
+    const group = item.group === UserGroup.STAFF ? "Nhân viên" : "Quản lý";
+    return { ...item, createdAt, updatedAt, group }
+  })
   const linkToComponent = (text: string, record) => (
     <div>
       <Link
@@ -47,7 +55,6 @@ const EditableTable: React.FC<IProps> = ({ data, onRefreshData }) => {
       ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau !" })
     })
   };
-
   const handleColumnProps = staffColumnProp.map((item: any, index: number) => {
     const columnLength = staffColumnProp.length;
     if (index === columnLength - 1) {
@@ -57,6 +64,6 @@ const EditableTable: React.FC<IProps> = ({ data, onRefreshData }) => {
     }
     return { ...item };
   });
-  return <Table dataSource={data} columns={handleColumnProps} />;
+  return <Table dataSource={dataConfig} columns={handleColumnProps} />;
 };
 export default EditableTable;

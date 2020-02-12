@@ -11,7 +11,8 @@ import PageLoading from '../../components/PageLoading'
 const useQueryData = () => {
   const { loading, error, data, refetch } = useQuery<GetCMSUser, GetCMSUserVariables>(GET_CMS_USER, {
     variables: {
-      limit: 20
+      limit: 20,
+      query: ''
     }
   });
   return { loading, error, data, refetch }

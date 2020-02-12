@@ -1,26 +1,43 @@
 import React, { useRef, useEffect } from 'react';
 import styles from './style.module.less';
+// import { AppContext } from '../../../contexts/AppContext';
+import { RenderType } from './PdfRender'
 interface IProps {
   pdf: any;
   pageNum: number;
   scaleProp: number;
-  onLoadSuccess: () => void;
+  // onLoadSuccess: () => void;
+  renderType: RenderType;
   pageSum: number;
   index: number;
+  onUpdatePdfContext: (page: any, index: number) => void;
+  page: any
 }
-
-const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, onLoadSuccess, pageSum, index }) => {
+const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, pageSum, index, onUpdatePdfContext, renderType, page }) => {
+  // const { pdfRendered } = useContext(AppContext);
+  console.log("render type", renderType);
+  console.log("index page", pageNum)
   const canvasRef = useRef(null);
   useEffect(() => {
-    if (pdf) {
-      fetchPdf();
+    if (renderType === RenderType.FIRST_RENDER) {
+      if (pdf) {
+        getPageFromPdf();
+      }
+      return;
     }
+    console.log("page page", page)
+    renderPage(page)
+
   }, [pdf, scaleProp, pageNum]);
-  const fetchPdf = async () => {
+  const getPageFromPdf = async () => {
     const page = await pdf.getPage(pageNum);
     renderPage(page);
+
   };
   const renderPage = async page => {
+    if (renderType === RenderType.FIRST_RENDER) {
+      onUpdatePdfContext(page, index);
+    }
     const viewport = page.getViewport({ scale: scaleProp });
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
@@ -32,15 +49,14 @@ const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, onLoadSuccess, 
     };
     const renderTask = page.render(renderContext);
     console.log("visible");
-    renderTask.promise.then(async () => {
-      if (index > pageSum / 2) {
-        console.log("done");
-
-        onLoadSuccess();
-      }
+    renderTask.promise.then(async (value) => {
+      console.log("value value", value)
     }).catch((err) => console.log("eror", err)
     )
   };
-  return <canvas ref={canvasRef} className={styles.pdfPage} />;
+  return (
+
+    <canvas ref={canvasRef} className={styles.pdfPage} />
+  );
 };
 export default PageCanvas;
