@@ -4,7 +4,6 @@ import pdfjsLib from 'pdfjs-dist/build/pdf';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 import styles from './style.module.less';
 import PageCanvas from './PageCanvas';
-import { PDFJS as PDFJSViewer } from 'pdfjs-dist/web/pdf_viewer.js';
 // import PageLoading from '../../../components/PageLoading/index';
 import { AppContext } from '../../../contexts/AppContext'
 
@@ -22,18 +21,21 @@ interface IRenderingState {
   renderType: RenderType;
   pdf: any;
 }
+interface IProps {
+  uri: string
+}
 const initRendering: IRenderingState = {
   pages: [],
   scale: DEFAULT_SCALE,
   renderType: null,
-  pdf: null
+  pdf: null,
+
 }
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-const PdfRender: React.FC = ({ }) => {
+const PdfRender: React.FC<IProps> = ({ uri }) => {
   let pagesRendered: any[] = [];
   let refContainer = useRef(null);
-  console.log("pdf vew", PDFJSViewer)
   const { onUpdateContext, pdfRenderedContext } = useContext(AppContext);
   const [pagesRendering, setPagesRendering] = useState(initRendering);
   const onPushPageRendered = (page: any, index: number) => {
@@ -47,12 +49,8 @@ const PdfRender: React.FC = ({ }) => {
     }
   }
   const getDocument = async (url: string = URL) => {
-    let obj = {
-      url: null,
-    };
-    obj.url = URL;
     await pdfjsLib
-      .getDocument(URL).promise
+      .getDocument(uri).promise
       .then(pdf => {
         const pagesArr = Array.from(Array(pdf.numPages).keys())
         console.log('so page', pdf.numPages);
@@ -72,11 +70,10 @@ const PdfRender: React.FC = ({ }) => {
   //   })
   // }
   useEffect(() => {
-    console.log("pdfContex", pdfRenderedContext);
-    if (pdfRenderedContext.length === 0) {
+    console.log("uri uri ", uri)
+    if (uri != null) {
       getDocument();
     } else {
-      console.log("exits pdf ", pdfRenderedContext)
       setPagesRendering({
         ...pagesRendering,
         pages: pdfRenderedContext,
@@ -84,7 +81,7 @@ const PdfRender: React.FC = ({ }) => {
       })
     }
 
-  }, []);
+  }, [uri]);
   useEffect(() => {
     return () => {
       pagesRendered = [];
@@ -164,7 +161,7 @@ const PdfRender: React.FC = ({ }) => {
         {/* <div style={{ visibility: loading ? 'visible' : 'hidden' }}>
           <PageLoading />
         </div> */}
-        <div >
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
           {pages.map((item, i) => {
             var index = i + 1;
             return (

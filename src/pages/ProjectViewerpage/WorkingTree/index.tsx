@@ -17,10 +17,12 @@ export interface ITreeNode extends UpdateTreeNode_updateTreeNode_treeNode {
 
 }
 interface TreeProps {
-  treeNode: ITreeNode[]
+  treeNode: ITreeNode[],
+  documentId: string
 }
-const WorkingTree: React.FC<TreeProps> = ({ treeNode }) => {
-  console.log("working tre e", treeNode)
+const WorkingTree: React.FC<TreeProps> = ({ treeNode, documentId }) => {
+  console.log("working tre e", documentId)
+
   return (
     <div className={styles.filterContainer}>
       <div className={styles.searchContainer}>
@@ -35,7 +37,7 @@ const WorkingTree: React.FC<TreeProps> = ({ treeNode }) => {
       </div>
       <div>
         <div className={`${styles.treeContainer} ${styles.scrollbar}`}>
-          <TreeViewer treeNode={treeNode} />
+          <TreeViewer treeNode={treeNode} documentId={documentId} />
         </div>
       </div>
     </div>

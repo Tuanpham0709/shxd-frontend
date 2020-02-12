@@ -1,13 +1,27 @@
 import React, { Component } from 'react';
 import { PartnerInterface } from './type';
 import { GetCMSUser_cmsGetUsers_users } from '../graphql/types'
+import { UpdateTreeNode_updateTreeNode_treeNode } from '../graphql/types'
+interface NodeInfo extends UpdateTreeNode_updateTreeNode_treeNode {
+  children?: Array<NodeInfo>;
+  documentId: string;
+}
+interface NodeBaseInfo {
+  documentName: string;
+  agencyIssued: string;
+  issuedDate: string;
+}
 export interface ParamsContext {
-  pages?: number[];
   loading?: boolean;
   partnerContext?: PartnerInterface;
   staffContext?: GetCMSUser_cmsGetUsers_users;
   pdfRenderedContext?: any[];
   loadingUploadFile?: boolean;
+  nodeInfo?: NodeInfo;
+  treeNode?: UpdateTreeNode_updateTreeNode_treeNode[];
+  nodeChecked?: NodeInfo[];
+  nodeBaseInfo?: NodeBaseInfo;
+  onUpdateTreeNode?: () => void;
 }
 export interface AppContextInterface extends ParamsContext {
   dummy: any;
@@ -18,12 +32,15 @@ export const AppContext = React.createContext<AppContextInterface>({
   dummy: null,
   collapsedSidebar: false,
   onUpdateContext: context => context,
-  pages: [2],
   loading: false,
   partnerContext: null,
   staffContext: null,
   pdfRenderedContext: [],
-  loadingUploadFile: null
+  loadingUploadFile: null,
+  nodeInfo: null,
+  nodeChecked: null,
+  nodeBaseInfo: null,
+  treeNode: null
 });
 export class AppProvider extends Component {
   onUpdateContext = context => {
@@ -34,12 +51,15 @@ export class AppProvider extends Component {
     dummy: null,
     collapsedSidebar: false,
     onUpdateContext: this.onUpdateContext,
-    pages: [2],
+    nodeInfo: null,
     loading: false,
     partnerContext: null,
     staffContext: null,
     pdfRenderedContext: [],
-    loadingUploadFile: null
+    loadingUploadFile: null,
+    nodeChecked: null,
+    nodeBaseInfo: null,
+    treeNode: null
   };
   render() {
     return <AppContext.Provider value={{ ...this.state }}>{this.props.children}</AppContext.Provider>;

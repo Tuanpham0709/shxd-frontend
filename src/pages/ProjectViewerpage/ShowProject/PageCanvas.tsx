@@ -38,7 +38,6 @@ const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, pageSum, index,
     if (renderType === RenderType.FIRST_RENDER) {
       onUpdatePdfContext(page, index);
     }
-
     const viewport = page.getViewport({ scale: scaleProp });
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
@@ -55,6 +54,9 @@ const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, pageSum, index,
     }).catch((err) => console.log("eror", err)
     )
   };
-  return <canvas ref={canvasRef} className={styles.pdfPage} />;
+  return (
+
+    <canvas ref={canvasRef} className={styles.pdfPage} />
+  );
 };
 export default PageCanvas;

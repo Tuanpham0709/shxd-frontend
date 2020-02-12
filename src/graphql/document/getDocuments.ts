@@ -22,29 +22,29 @@ export const GET_DOCUMENTS = gql`
                     fullName
                 }
 
-                # treeNode{
-                #     key
-                #     parent
-  				# 	agencyIssued
-  				# 	issuedDate
-  				# 	documentName
-                #     note
-                #     nodeMediaId
-                #     nodeMedia{
-                #             _id
-                #             uri
-                #             type
-                #         }
-                #     filesPosition{
-                #         filesNote
-                #         filesPositionMediaId
-                #         filesPositionMedia{
-                #             _id
-                #             uri
-                #             type
-                #         }
-                #     }
-                # }
+                treeNode{
+                    key
+                    parent
+  					agencyIssued
+  					issuedDate
+  					documentName
+                    note
+                    nodeMediaId
+                    nodeMedia{
+                            _id
+                            uri
+                            type
+                        }
+                    filesPosition{
+                        filesNote
+                        filesPositionMediaId
+                        filesPositionMedia{
+                            _id
+                            uri
+                            type
+                        }
+                    }
+                }
                 status 
                 createdBy 
                 createdAt 
@@ -52,6 +52,37 @@ export const GET_DOCUMENTS = gql`
                 updatedBy  
                 
             }
+        }
+    }
+`
+export const GET_DOCUMENT = gql`
+    query GetDocument($id: Int!){
+        getDocument(_id: $id){
+            _id 
+            projectName
+            treeNode{
+                    key
+                    parent
+  					agencyIssued
+  					issuedDate
+  					documentName
+                    note
+                    nodeMediaId
+                    nodeMedia{
+                            _id
+                            uri
+                            type
+                        }
+                    filesPosition{
+                        filesNote
+                        filesPositionMediaId
+                        filesPositionMedia{
+                            _id
+                            uri
+                            type
+                        }
+                    }
+                }
         }
     }
 `
