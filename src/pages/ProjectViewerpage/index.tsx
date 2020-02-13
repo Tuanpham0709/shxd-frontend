@@ -15,7 +15,7 @@ interface Node {
   documentName: string;
   nodeMediaId: string;
 }
-const useUpdateTreeNode = () => {
+export const useUpdateTreeNode = () => {
   const [updateTreeNode, { loading, error }] = useMutation<UpdateTreeNode, UpdateTreeNodeVariables>(UPDATE_TREE_NODE);
   return { updateTreeNode, loading, error }
 }
@@ -27,15 +27,24 @@ const useStateDocumentDetail = (initState: GetDocument_getDocument_treeNode[] = 
 }
 const Files = ({ location }) => {
   console.log("location ", location)
-  const { onUpdateContext, treeNode } = useContext(AppContext)
+  const { onUpdateContext, treeNodeEdits } = useContext(AppContext)
   const { updateTreeNode } = useUpdateTreeNode();
 
   // console.log("location", location)
   const { documentDetail, setDocumentDetail } = useStateDocumentDetail(location.state.document.treeNode && location.state.document.treeNode);
-  // console.log("docm ent detai ", documentDetail);
   useEffect(() => {
-    if (treeNode && treeNode.length > 0) {
-      const newData = treeNode.map((item) => {
+    if (location.state.document.treeNode) {
+      setDocumentDetail(location.state.document.treeNode);
+    }
+  }, [location.state.document]);
+  useEffect(() => {
+    return () => {
+      setDocumentDetail(null);
+    }
+  }, [])
+  useEffect(() => {
+    if (treeNodeEdits && treeNodeEdits.length > 0) {
+      const newData = treeNodeEdits.map((item) => {
         return {
           key: item.key,
           parent: item.parent,
@@ -45,7 +54,6 @@ const Files = ({ location }) => {
           note: item.note,
           nodeMediaId: item.nodeMediaId,
           filesPosition: null
-
         }
       })
       updateTreeNode({ variables: { data: { treeNode: newData }, documentId: location.state.document._id } }).then((res) => {
@@ -57,7 +65,7 @@ const Files = ({ location }) => {
       })
     }
 
-  }, [treeNode])
+  }, [treeNodeEdits])
   const onSuccessUpload = (nodes: Node[]) => {
     // console.log("Nodes : : : : :: : : : :", nodes)
     const nodesHandled = nodes.map((item, index) => ({
@@ -83,7 +91,7 @@ const Files = ({ location }) => {
               <WorkingTree documentId={location.state.document._id} treeNode={documentDetail} />
             </Col>
             <Col xl={17}>
-              {documentDetail.length === 0 ? <EmptyFiles onUploadSuccess={onSuccessUpload} /> : <ShowProject uriList={documentDetail.map((item) => (item.nodeMedia.uri))} />}
+              {!documentDetail ? <EmptyFiles onUploadSuccess={onSuccessUpload} /> : <ShowProject uriList={documentDetail.map((item) => (item.nodeMedia.uri))} />}
             </Col>
           </Row>
         </div>

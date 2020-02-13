@@ -3,16 +3,16 @@ import { Row, Col, Input, Button } from 'antd';
 import styles from './style.module.less';
 import UploadFile from '../components/UploadFile';
 import Note from '../components/NoteModal';
-import { useMutation } from '@apollo/react-hooks'
+// import { useMutation } from '@apollo/react-hooks';
 import { UpdateTreeNode_updateTreeNode_treeNode } from '../../../graphql/types'
-import { UpdateTreeNode, UpdateTreeNodeVariables } from '../../../graphql/types';
-import { UPDATE_TREE_NODE } from '../../../graphql/document/updateTreeNode'
+// import { UpdateTreeNode, UpdateTreeNodeVariables } from '../../../graphql/types';
+// import { UPDATE_TREE_NODE } from '../../../graphql/document/updateTreeNode'
 import { AppContext } from '../../../contexts/AppContext'
 
-const useUpdateTreeNode = () => {
-  const [updateTreeNode, { loading, error }] = useMutation<UpdateTreeNode, UpdateTreeNodeVariables>(UPDATE_TREE_NODE);
-  return { updateTreeNode, loading, error }
-}
+// const useUpdateTreeNode = () => {
+//   const [updateTreeNode, { loading, error }] = useMutation<UpdateTreeNode, UpdateTreeNodeVariables>(UPDATE_TREE_NODE);
+//   return { updateTreeNode, loading, error }
+// }
 // const useStateDocumentDetail = (initState: GetDocument_getDocument_treeNode[] = []) => {
 //   const [documentDetail, setDocumentDetail] = useState(initState);
 //   return {
@@ -46,9 +46,9 @@ const useStateVisible = (nodeInfo: NodeInfo) => {
 }
 
 const Toolbar: React.FC = () => {
-  const { nodeInfo, treeNode, onUpdateContext } = useContext(AppContext)
+  const { nodeInfo, treeNodeEdits, onUpdateContext } = useContext(AppContext)
   const { isEdit, isAddImageModal, isAddNoteModal, setIsEdit, setAddImageModal, setAddNoteModal, inputState, setInputState } = useStateVisible(nodeInfo);
-  const { updateTreeNode } = useUpdateTreeNode();
+  // const { updateTreeNode } = useUpdateTreeNode();
 
   const showAddImageModal = () => {
     setAddImageModal(!isAddImageModal);
@@ -65,9 +65,9 @@ const Toolbar: React.FC = () => {
     // note?: string | null;
     // nodeMediaId?: string | null;
     // filesPosition?: FilesPositionInput | null;
-    if (nodeInfo !== null && treeNode !== null) {
+    if (nodeInfo !== null && treeNodeEdits !== null) {
 
-      const newTreeNode = treeNode.map((item) => {
+      const newTreeNode = treeNodeEdits.map((item) => {
         if (item.key === nodeInfo.key) {
           return {
             ...item, ...inputState
@@ -78,20 +78,8 @@ const Toolbar: React.FC = () => {
           ...item
         }
       })
-      onUpdateContext({ treeNode: newTreeNode })
+      onUpdateContext({ treeNodeEdits: newTreeNode })
       console.log("newTreeNode", nodeInfo.documentId);
-      updateTreeNode({
-        variables: {
-          data: {
-            treeNode: newTreeNode
-          },
-          documentId: nodeInfo.documentId
-        }
-      }).then(() => {
-        console.log("sucrss edit")
-      }).catch((error) => {
-        console.log("roror ", error)
-      })
     }
 
     setIsEdit(!isEdit);
@@ -144,7 +132,7 @@ const Toolbar: React.FC = () => {
               className={styles.inputHeight} style={{ marginRight: 10 }}></Input>
           </div>
         </Col>
-        <Col xl={7}>
+        <Col xl={6}>
           <div className={styles.marginRight}>
             <Input
               disabled={!isEdit}
@@ -162,7 +150,7 @@ const Toolbar: React.FC = () => {
               placeholder="Nhập cơ quan ban hành" className={styles.inputHeight}></Input>
           </div>
         </Col>
-        <Col xl={4}>
+        <Col xl={5}>
           <div className={styles.btnContainer}>
             <Button
               disabled={!isEdit}

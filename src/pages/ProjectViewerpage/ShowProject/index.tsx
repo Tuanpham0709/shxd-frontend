@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import Toolbar from './Toolbar';
 import { Button } from 'antd';
 import styles from './style.module.less';
@@ -18,10 +18,21 @@ const useDisplayPdfType = () => {
     displayPdfType, setDisplayPdfType
   }
 }
-
+const checkWidthContainer = () => {
+  const [widthContainer, setWidthContainer] = useState(800);
+  return {
+    widthContainer, setWidthContainer
+  }
+}
 const ShowProject: React.FC<IProps> = ({ uriList }) => {
+  let refPdfContainer = useRef(null);
+  const { widthContainer, setWidthContainer } = checkWidthContainer();
   const { nodeInfo } = useContext(AppContext)
-  console.log("node info", nodeInfo)
+  useEffect(() => {
+    if (refPdfContainer.current) {
+      setWidthContainer(refPdfContainer.current.offsetWidth)
+    }
+  }, [widthContainer])
   const { displayPdfType, setDisplayPdfType } = useDisplayPdfType();
   const onSetDisplayPdfGrid = () => {
     setDisplayPdfType(PdfViewType.gridDisplay);
@@ -29,21 +40,21 @@ const ShowProject: React.FC<IProps> = ({ uriList }) => {
   const onSetDisplayPdfSingle = () => {
     setDisplayPdfType(PdfViewType.singleDisplay);
   }
-  console.log("node info show project", nodeInfo);
+  console.log("node info show project", widthContainer);
   const renderListPdf = () => {
 
     return uriList.map((uri, index) => {
-      return <RenderPdfGridView uri={uri} index={index}></RenderPdfGridView>
+      return <RenderPdfGridView widthContainer={widthContainer} uri={uri} index={index}></RenderPdfGridView>
     })
   }
-  const renderSingleView = () => (<PdfRender uri={nodeInfo && nodeInfo.nodeMedia.uri} />)
+  const renderSingleView = () => (<PdfRender widthContainer={widthContainer} uri={nodeInfo && nodeInfo.nodeMedia.uri} />)
   return (
     <div className={styles.showProject}>
       <Toolbar />
       <div>
         <div style={{ position: 'relative' }}>
           <div>
-            {displayPdfType === PdfViewType.gridDisplay ? <div className={styles.viewer}
+            {displayPdfType === PdfViewType.gridDisplay ? <div ref={refPdfContainer} className={styles.viewer}
               style={{
                 display: "flex", flexWrap: "wrap", flexDirection: "row",
                 overflow: "scroll", backgroundColor: "#e4e4e4", paddingLeft: 40, paddingRight: 30

@@ -18,9 +18,9 @@ export interface ParamsContext {
   pdfRenderedContext?: any[];
   loadingUploadFile?: boolean;
   nodeInfo?: NodeInfo;
-  treeNode?: UpdateTreeNode_updateTreeNode_treeNode[];
+  treeNodeEdits?: UpdateTreeNode_updateTreeNode_treeNode[];
   nodeChecked?: NodeInfo[];
-  nodeBaseInfo?: NodeBaseInfo;
+  nodeEditInfo?: NodeBaseInfo;
   onUpdateTreeNode?: () => void;
 }
 export interface AppContextInterface extends ParamsContext {
@@ -39,8 +39,8 @@ export const AppContext = React.createContext<AppContextInterface>({
   loadingUploadFile: null,
   nodeInfo: null,
   nodeChecked: null,
-  nodeBaseInfo: null,
-  treeNode: null
+  nodeEditInfo: null,
+  treeNodeEdits: null
 });
 export class AppProvider extends Component {
   onUpdateContext = context => {
@@ -58,8 +58,8 @@ export class AppProvider extends Component {
     pdfRenderedContext: [],
     loadingUploadFile: null,
     nodeChecked: null,
-    nodeBaseInfo: null,
-    treeNode: null
+    nodeEditInfo: null,
+    treeNodeEdits: null
   };
   render() {
     return <AppContext.Provider value={{ ...this.state }}>{this.props.children}</AppContext.Provider>;

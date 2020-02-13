@@ -6,7 +6,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 // import { PdfViewType } from './PdfRender'
 interface IProps {
     uri: string,
-    index: number
+    index: number,
+    widthContainer: number
 }
 const initPages: any = null
 const usePagesState = () => {
@@ -15,8 +16,8 @@ const usePagesState = () => {
         pdf, setPdf
     }
 }
-const RenderPdfGridView: React.FC<IProps> = ({ uri, index }) => {
-
+const RenderPdfGridView: React.FC<IProps> = ({ uri, index, widthContainer }) => {
+    console.log("width container", widthContainer)
     const { pdf, setPdf } = usePagesState();
     // let _pages: any[] = [];
 
@@ -33,10 +34,10 @@ const RenderPdfGridView: React.FC<IProps> = ({ uri, index }) => {
 
 
     return (
-        <div key={index + ''} style={{ width: "33%", marginTop: 30, display: "flex", justifyContent: "center" }}><RenderPage pdf={pdf} /></div>
+        <div key={index + ''} style={{ width: "33%", marginTop: 30, display: "flex", justifyContent: "center" }}><RenderPage widthContainer={widthContainer} pdf={pdf} /></div>
     )
 }
-const RenderPage = ({ pdf }) => {
+const RenderPage = ({ pdf, widthContainer }) => {
     const canvasRef = useRef(null);
     useEffect(() => {
         if (pdf) {
@@ -48,7 +49,8 @@ const RenderPage = ({ pdf }) => {
         renderPage(page)
     }
     const renderPage = async page => {
-        const viewport = page.getViewport({ scale: 0.4 });
+        const scale = widthContainer <= 940 ? 0.3 : 0.45
+        const viewport = page.getViewport({ scale });
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
         canvas.height = viewport.height;
@@ -65,7 +67,7 @@ const RenderPage = ({ pdf }) => {
         )
     };
     return (
-        <canvas ref={canvasRef} className={styles.pdfPage} />
+        <canvas ref={canvasRef} className={styles.pdfPageGrid} />
     )
 }
 export default RenderPdfGridView;

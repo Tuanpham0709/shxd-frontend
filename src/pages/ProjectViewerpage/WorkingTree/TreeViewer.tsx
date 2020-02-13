@@ -4,7 +4,7 @@ import { AppContext } from '../../../contexts/AppContext';
 import styles from './style.module.less';
 import 'antd/dist/antd.css';
 import { UpdateTreeNode_updateTreeNode_treeNode } from '../../../graphql/types';
-import { ITreeNode } from './index';
+import { ITreeNode, ParamUpdateNode } from './index';
 import FlatToNested from 'flat-to-nested';
 const { TreeNode } = Tree;
 interface NodeObject extends UpdateTreeNode_updateTreeNode_treeNode {
@@ -22,6 +22,8 @@ interface TreeState {
 interface IProps {
   treeNode: ITreeNode[];
   documentId: string;
+  onUpdateTreeViewer: (params: ParamUpdateNode) => void;
+  onUpdateAfterDrop: (nodes: ITreeNode[]) => void;
 }
 
 const flatToNested = new FlatToNested({ id: "id", parent: "parent", children: 'children' });
@@ -35,7 +37,10 @@ class TreeViewer extends Component<IProps, TreeState> {
   componentWillReceiveProps(nextProps) {
     console.log("this re - - - - - ", nextProps)
     if (nextProps.treeNode !== this.props.treeNode) {
-      this._onHandleTreeData(nextProps.treeNode);
+      if (nextProps.treeNode) {
+        this._onHandleTreeData(nextProps.treeNode);
+      }
+
     }
   }
   componentDidMount() {
@@ -61,6 +66,7 @@ class TreeViewer extends Component<IProps, TreeState> {
       })
     }
     const { gData } = this.state;
+    console.log("gData before", gData);
     gData.map((item) => {
       if (item.children && item.children.length > 0) {
         onCallbackHandleData(item.children);
@@ -85,17 +91,32 @@ class TreeViewer extends Component<IProps, TreeState> {
   }
   _onFindParentKeyCheckedNodes = () => {
     const { checkedKeys } = this.state;
-    const flatData = this._onHandleNestedToFlat();
-    const keys = flatData.map((item, index) => {
-      return item.key
-    })
-    checkedKeys.forEach(item => {
-      const index = keys.indexOf(item);
-      keys.splice(index, 1);
+    const { onUpdateTreeViewer } = this.props;
+    if (checkedKeys.length === 0) {
+      onUpdateTreeViewer({ hasChecked: false });
+      return;
+    }
+    let flatData = this._onHandleNestedToFlat();
+    let nodesChecked = [];
+    checkedKeys.forEach((key) => {
+      const nodeChecked = flatData.find((node) => node.key === key);
+      nodesChecked.push(nodeChecked);
+    });
+    const nodesUnchecked = flatData.filter((item) => {
+      return checkedKeys.find((key) => (item.key === key)) !== item.key
     });
 
-    console.log("unchecked key s", keys);
-
+    let nodesParent = [];
+    nodesChecked.forEach((node) => {
+      const nodeParent = nodesUnchecked.find((nodeUn) => {
+        return (node.parent === nodeUn.key)
+      });
+      if (nodeParent) {
+        nodesParent.push(nodeParent);
+      }
+    })
+    console.log("node checked", nodesChecked)
+    onUpdateTreeViewer({ nodesChecked: nodesChecked, nodesParent: nodesParent[0], hasChecked: true })
   }
   _onHandleExpandedKeyData = (treeData: any) => {
     // console.log("------------", treeData)
@@ -149,17 +170,21 @@ class TreeViewer extends Component<IProps, TreeState> {
     }));
   };
   _onDrop = async info => {
-    console.log("infp ", info)
     const dropKey = info.node.props.eventKey;
     const dragKey = info.dragNode.props.eventKey;
     const dropPos = info.node.props.pos.split("-");
     const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
+    let dragObj = {
+      parent: null
+    };
     const loop = (data, key, callback) => {
+
       data.forEach((item, index, arr) => {
         if (item.key === key) {
           return callback(item, index, arr);
         }
         if (item.children) {
+          dragObj.parent = item.id
           return loop(item.children, key, callback);
         }
       });
@@ -167,7 +192,7 @@ class TreeViewer extends Component<IProps, TreeState> {
     const data = [...this.state.gData];
 
     // Find dragObject
-    let dragObj;
+
     loop(data, dragKey, (item, index, arr) => {
       arr.splice(index, 1);
       dragObj = item;
@@ -205,11 +230,12 @@ class TreeViewer extends Component<IProps, TreeState> {
         ar.splice(i + 1, 0, dragObj);
       }
     }
-    console.log("data", data);
     await this.setState({
       gData: data
     });
-    this._onHandleNestedToFlat();
+    console.log("parent data", data)
+    const newData = this._onHandleNestedToFlat();
+    this.props.onUpdateAfterDrop(newData)
 
   };
   _handleSelectItem = (selectedKeys, event, onUpdateContext) => {
@@ -221,8 +247,6 @@ class TreeViewer extends Component<IProps, TreeState> {
       }
       onUpdateContext({ nodeInfo: nodeInfo, treeNode: flatData });
     }
-    console.log("sleleted keys ...", selectedKeys);
-    console.log("selectedNodes ... ", event);
     // let index = gData.findIndex(item);
   };
   _renderAvatar = item => {
@@ -245,13 +269,13 @@ class TreeViewer extends Component<IProps, TreeState> {
     data.map(item => {
       if (item.children && item.children.length) {
         return (
-          <TreeNode key={item.key} title={item.title}>
+          <TreeNode key={item.key} title={item.documentName}>
             {this._renderTreeNode(item.children)}
           </TreeNode>
         );
       }
       return (
-        <TreeNode style={{ height: 40 }} key={item.key} title={item.title} />
+        <TreeNode style={{ height: 40 }} key={item.key} title={item.documentName} />
         //   {/* <img src={'https://img.icons8.com/plasticine/344/user.png'} style={{ width: 20, height: 20 }}></img>
         // </div> */}
       );
@@ -261,7 +285,8 @@ class TreeViewer extends Component<IProps, TreeState> {
     console.log("checked key  check", checkedKeys);
     return (
       <AppContext.Consumer>
-        {({ onUpdateContext }) => (<div className={styles.treeContainer}>
+        {({ onUpdateContext }) => (<div
+          className={styles.treeContainer}>
           <div className={styles.hozLine}>
             <div className={styles.chooseAll}>
               <Checkbox checked={isCheckedAll} onChange={this._onCheckedAll}>
@@ -276,7 +301,6 @@ class TreeViewer extends Component<IProps, TreeState> {
             className="draggable-tree"
             draggable
             blockNode
-            defaultSelectedKeys={['0-0']}
             checkedKeys={checkedKeys}
             onSelect={(selectedKeys, event) => {
               this._handleSelectItem(selectedKeys, event, onUpdateContext)

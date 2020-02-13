@@ -23,17 +23,17 @@ interface IRenderingState {
 }
 interface IProps {
   uri: string
+  widthContainer: number;
 }
 const initRendering: IRenderingState = {
   pages: [],
   scale: DEFAULT_SCALE,
   renderType: null,
   pdf: null,
-
 }
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-const PdfRender: React.FC<IProps> = ({ uri }) => {
+const PdfRender: React.FC<IProps> = ({ uri, widthContainer }) => {
   let pagesRendered: any[] = [];
   let refContainer = useRef(null);
   const { onUpdateContext, pdfRenderedContext } = useContext(AppContext);
@@ -130,6 +130,16 @@ const PdfRender: React.FC<IProps> = ({ uri }) => {
       renderType: RenderType.RERENDER, scale: newScale
     });
   };
+  const setDefaultScale = () => {
+    const defaultScale = widthContainer <= 1000 ? 0.9 : 1.3;
+    setPagesRendering({
+      ...pagesRendering,
+      scale: defaultScale
+    })
+  }
+  useEffect(() => {
+    setDefaultScale();
+  }, [widthContainer])
   // const onLoadSuccess = () => {
   // setState(
   //     {
@@ -166,6 +176,7 @@ const PdfRender: React.FC<IProps> = ({ uri }) => {
             var index = i + 1;
             return (
               <PageCanvas
+                widthContainer={widthContainer}
                 page={item}
                 pageSum={pages.length}
                 index={i}

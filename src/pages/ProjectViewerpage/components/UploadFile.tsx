@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Modal } from 'antd';
 import styles from './styles.module.less';
 import './styles.module.less';
-import ImageCard from './imageCard'
+import ImageCard from './imageCard';
+import { ToastError } from '../../../components/Toast/index';
+import { useUploadFile } from './EmptyFiles'
 interface IState {
     fileList?: any[],
     fileHandled?: any[],
@@ -18,32 +20,66 @@ const initialState: IState = {
     fileList: [],
     fileHandled: [],
 }
-
+const IMAGE_TYPES = [
+    "image/x-png",
+    "image/gif",
+    "image/jpeg"
+]
 const UploadFile: React.FC<Iprops> = ({ visible, onDismiss, onSubmit }) => {
     let refScroll = null
-    const [state, setState] = useState(initialState)
+    const [state, setState] = useState(initialState);
+    let fileCount = 0;
+    const { uploadFile } = useUploadFile();
     const onImageChange = (e) => {
         e.preventDefault();
-        const file = e.target.files[0];
-        if (!file) {
+        let { files } = e.target;
+        console.log("- - - - -d - - - -  -", files)
+        if (!files) {
             return
         }
-        console.log("file see", file);
-        const newFiles = state.fileList;
-        newFiles.push(file);
-        let reader = new FileReader();
-        reader.onloadend = () => {
-
-            const newFilesHandled = state.fileHandled;
-            newFilesHandled.push(reader.result);
-
-            setState({
-                fileList: newFiles,
-                fileHandled: newFilesHandled
+        let fileList = [...files]
+        fileList.forEach((file, index) => {
+            const indexFile = IMAGE_TYPES.findIndex((type) => type === file.type);
+            if (fileList.length === 1 && indexFile === -1) {
+                ToastError({ message: "Không đúng định dang ảnh!" })
+                return;
+            } else if (indexFile == -1) {
+                fileList.splice(index, 1);
+            }
+        });
+        fileList.forEach((file, index) => {
+            uploadFile({
+                variables: {
+                    dimensions: {
+                        width: 0,
+                        height: 0
+                    },
+                    file: file
+                }
+            }).then((response) => {
+                fileCount++;
+                console.log("response ", response)
+            }).catch((error) => {
+                fileCount++;
             })
-            refScroll.scrollTo(document.body.scrollWidth, document.body.scrollWidth);
-        }
-        reader.readAsDataURL(file)
+        })
+        console.log("file _ + +", fileCount);
+        const newFiles = state.fileList;
+        newFiles.push(files);
+        fileList.forEach(file => {
+            console.log("filefile ", file)
+            let reader = new FileReader();
+            reader.onloadend = () => {
+                const newFilesHandled = state.fileHandled;
+                newFilesHandled.push(reader.result);
+                setState({
+                    fileList: newFiles,
+                    fileHandled: newFilesHandled
+                })
+            }
+            reader.readAsDataURL(file)
+        });
+
     }
     return (
         <Modal
@@ -63,7 +99,7 @@ const UploadFile: React.FC<Iprops> = ({ visible, onDismiss, onSubmit }) => {
                         })}
                         <div>
                             <form className={styles.inputUploadContainer}>
-                                <input onChange={onImageChange} className={styles.inputUpload} type="file" multiple={true} />
+                                <input accept="image/x-png,image/gif,image/jpeg" onChange={onImageChange} className={styles.inputUpload} type="file" multiple={true} />
                                 <p className={styles.addText}>Thêm hình ảnh</p>
                             </form>
                         </div>

@@ -7,7 +7,7 @@ import { UPLOAD_FILE } from '../../../graphql/media/createMedia';
 import { AppContext } from '../../../contexts/AppContext'
 const { Dragger } = Upload;
 
-const useUploadFile = () => {
+export const useUploadFile = () => {
     const [uploadFile, { loading, error, data }] = useMutation<Upload_file, Upload_fileVariables>(UPLOAD_FILE);
     return { uploadFile, loading, error, data }
 }

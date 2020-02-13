@@ -11,9 +11,10 @@ interface IProps {
   pageSum: number;
   index: number;
   onUpdatePdfContext: (page: any, index: number) => void;
-  page: any
+  page: any;
+  widthContainer: number
 }
-const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, pageSum, index, onUpdatePdfContext, renderType, page }) => {
+const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, pageSum, index, onUpdatePdfContext, renderType, page, widthContainer }) => {
   // const { pdfRendered } = useContext(AppContext);
   console.log("render type", renderType);
   console.log("index page", pageNum)
