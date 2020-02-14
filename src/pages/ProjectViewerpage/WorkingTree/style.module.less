@@ -1,0 +1,109 @@
+@import '~antd/es/style/themes/default.less';
+.toolbarRight {
+  float: right;
+  display: flex;
+}
+
+.btnRight {
+  margin-left: 20px;
+}
+
+// :global {
+//   .ant-row {
+//     top: 20px;
+//   }
+// }
+
+.toolbar {
+  background-color: #ffffff;
+  min-height: 70px;
+  max-height: 350px;
+}
+
+.filterContainer {
+  background-color: #ececec;
+}
+.chooseAll {
+  margin-right: 15px;
+}
+.chooseAll > span {
+  margin-right: 10px;
+}
+.hozLine {
+  margin-top: 10px;
+  min-width: 100%;
+  min-height: 30px;
+  margin-bottom: 10px;
+  border-bottom: solid 1px #cfcfcf;
+}
+.btnIcon {
+  background-color: #dfdfdf !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  height: 35px !important;
+  margin-left: 1px;
+  width: 100%;
+  &:first-child {
+    margin-left: 0;
+  }
+  i {
+    color: #808080;
+    margin: 0;
+    font-size: 28px;
+  }
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: #007bd7 !important;
+    i {
+      color: #ffffff;
+    }
+  }
+}
+.btnIcon:hover {
+  background-color: #f6f6f6;
+}
+.btnIcon:active {
+  position: relative;
+  top: 1px;
+}
+
+.miniToolbar {
+  background-color: #ffffff;
+  margin: 10px 0;
+  display: flex;
+}
+.right {
+  float: right;
+}
+.treeContainer {
+  height: 686px;
+  overflow: auto;
+  padding-left: 10px;
+}
+.searchContainer {
+  padding: 0px 10px;
+  padding-top: 10px;
+  width: 100%;
+}
+.workingTree {
+  background-color: #ececec;
+}
+.avatarContainer {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  justify-content: center;
+}
+:global {
+  .ant-input {
+    height: 35px !important;
+  }
+}
+:global {
+  .ant-tree > .ant-tree-treenode-switcher-open > .ant-tree-node-content-wrapper > .ant-tree-title {
+    font: Bold 14px/21px Roboto !important;
+  }
+}

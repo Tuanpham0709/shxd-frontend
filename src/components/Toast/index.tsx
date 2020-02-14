@@ -2,10 +2,10 @@ import { notification } from 'antd';
 
 interface IProps {
   message: string,
-  description: string,
+  description?: string,
 }
 
-export const ToastSuccess = (props: IProps) =>{
+export const ToastSuccess = (props: IProps) => {
   notification.open({
     placement: 'topRight',
     type: 'success',
@@ -14,11 +14,11 @@ export const ToastSuccess = (props: IProps) =>{
   });
 };
 
-export const ToastError = (props: IProps) =>{
+export const ToastError = (props: IProps) => {
   notification.open({
     placement: 'topRight',
     type: 'error',
     message: props.message,
-    description: props.description
+    description: props.description,
   });
 };

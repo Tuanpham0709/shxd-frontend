@@ -8,24 +8,44 @@
   height: 35px;
   font-size: 14px;
   padding: 8px 14px;
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: #007bd7!important;
+  }
 }
 
+.ant-select .ant-select-selection {
+  height: 35px;
+  font-size: 14px;
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: #007bd7!important;
+  }
+}
+.ant-select-selection {
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: #007bd7!important;
+  }
+}
 .ant-btn {
   font-family: inherit;
   height: 48px;
+  padding-left: 40px;
+  padding-right: 40px;
+  box-shadow: none;
   span {
     font-weight: 500;
     font-size: 14px;
+    text-shadow: none;
   }
 }
 
 .ant-form-explain {
   padding-bottom: 15px;
-}
-
-.ant-btn {
-  padding-left: 40px;
-  padding-right: 40px;
 }
 
 .btn--block {
@@ -113,17 +133,10 @@
   line-height: 3;
 }
 
-.ant-btn {
-  box-shadow: none;
-  span {
-    text-shadow: none;
-  }
-}
-
 .ant-modal-title {
   font-size: 16px;
-  color: #555;
-  font-weight: 500;
+  color: #333132;
+  font-weight: Bold;
 }
 
 .ant-modal-close-x {
@@ -131,7 +144,11 @@
 }
 
 .ant-modal-footer {
-  padding: 10px 24px;
+  padding: 0 24px 30px;
+  border: 0;
+  button + button {
+    margin-right: 0;
+  }
 }
 
 .ant-modal-header {
@@ -173,5 +190,81 @@
         padding: 8px 16px;
       }
     }
+  }
+}
+
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
+  padding: 10px;
+}
+.ant-table-thead > tr > th {
+  background-color: #FAFAFA;
+}
+.ant-table-tbody > tr > td {
+  background-color: #FFFFFF;
+}
+.ant-table-tbody > tr:hover > td {
+  background-color: #FAFAFA!important;
+}
+.ant-table-pagination.ant-pagination {
+  margin: 16px;
+}
+
+// button
+.ant-menu.ant-menu-dark .ant-menu-item-selected,
+.ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+  background-color: #3D3D3D;
+}
+.ant-menu-dark .ant-menu-item-selected,
+.ant-menu-dark .ant-menu-item-selected span {
+  color: #FFCF0E;
+}
+
+// paging
+.ant-pagination-item-active {
+  border-color: #FFCF0E;
+  background-color: #FFCF0E;
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: #FFCF0E;
+    background-color: #FFCF0E;
+    a {
+      color: #333132;
+    }
+  }
+  a {
+    color: #333132;
+  }
+}
+.ant-pagination-item {
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: #FFCF0E;
+    background-color: #FFCF0E;
+    a {
+      color: #333132;
+    }
+  }
+}
+
+.ant-tag {
+  border-radius: 0;
+  color: #333132;
+}
+
+.ant-popover-buttons {
+  button {
+    height: 35px !important;
+    &:hover {
+      border: 1px solid #d9d9d9;
+      color: #333132;
+    }
+  }
+  button + button {
+    background-color: #007bd7 !important;
+    color: #ffffff !important;
+    border: 1px solid #007bd7 !important;
   }
 }

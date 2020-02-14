@@ -11,6 +11,7 @@ module.exports = override(
       'btn-height-base': '48px',
       'border-radius-base': '3px',
       'font-size-base': '14px',
+      'item-hover-bg': '#37b5a3'
     },
   }),
   disableEsLint(),

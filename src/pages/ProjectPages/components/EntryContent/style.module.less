@@ -1,6 +1,6 @@
 @import '~antd/es/style/themes/default.less';
 .container {
-  background-color: #f9f9f9;
+  background-color: #ffffff;
 }
 .toolbar {
   background-color: #ffffff;
@@ -14,15 +14,20 @@
 .btnRight {
   float: right;
 }
+
+:global{
+  .ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
+    background-color: rgb(251, 252, 235)!important;
+  }
+  .ant-tag {
+    font-size:  14px !important;
+    font-family: 'Roboto'!important;
+  }
+}
 .missingDocsBtn {
   background-color: #ffcf0e !important;
   color: #333132 !important;
-}
-:global {
-  .ant-btn {
-    border-width: 0 !important;
-    border-radius: 5px !important;
-  }
+  border: 0!important;
 }
 .btnHeight {
   height: 35px !important;
@@ -63,14 +68,11 @@
 .btnSearch {
   height: 33px;
 }
-// .btnLeft {
-//   margin-left: 20px;
-//   background-color: ' #FFCF0E';
-//   border-width: 0;
-//   color: '#000';
-
-//   height: 35;
-//   margin-top: 15;
-//   align-self: 'flex-end';
-//   margin-bottom: 15;
-// }
+.colorLinkBlack {
+  color: #333132;
+  text-decoration: underline;
+  transition: all .3s;
+  &:hover {
+    color: #007bd7;
+  }
+}

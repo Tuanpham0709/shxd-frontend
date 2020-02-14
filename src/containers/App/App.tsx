@@ -78,11 +78,11 @@ const App = React.memo((props: BaseProps) => {
               <Layout style={{ minHeight: '100vh' }}>
                 <Helmet titleTemplate={'Ecoshare Wallet'} defaultTitle={'Home'} meta={[]} />
                 <Sidebar pathname={props.location.pathname} />
-                <Layout style={{ paddingLeft: collapsedSidebar ? 80 : 256, position: 'relative' }}>
+                <Layout style={{ paddingLeft: collapsedSidebar ? 80 : 242, position: 'relative' }}>
                   <StyledHeader style={{ paddingRight: 20, backgroundColor: '#fff' }}>
                     <RightContent />
                   </StyledHeader>
-                  <Content style={{ margin: '24px', paddingTop: 70 }}>{renderRoutes(isLogin)}</Content>
+                  <Content style={{ margin: '24px 24px 0', paddingTop: 70 }}>{renderRoutes(isLogin)}</Content>
                 </Layout>
               </Layout>
             );
@@ -93,7 +93,7 @@ const App = React.memo((props: BaseProps) => {
           return <div>Loading....</div>;
         }}
       </AppContext.Consumer>
-      <Footer style={{ textAlign: 'center' }}>
+      <Footer style={{ textAlign: 'right', padding: '24px' }}>
         CMS SHXD Việt by <strong>Comartek</strong> v0.1
       </Footer>
     </StyledContainer>

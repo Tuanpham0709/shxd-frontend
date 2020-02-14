@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu } from 'antd';
 import styled from 'styled-components';
 import history from '../../history';
 import { AppContext } from '../../contexts/AppContext';
+import styles from './style.module.less';
 
 const { Sider } = Layout;
 
@@ -10,12 +11,10 @@ const { Sider } = Layout;
 
 const StyledLogo = styled.div`
   position: relative;
-  height: 64px;
-  padding-left: 24px;
-  overflow: hidden;
-  line-height: 64px;
-  background: #001529;
+  padding: 30px 15px;
+  margin-bottom: 30px;
   transition: all 0.3s;
+  text-align: center;
   h1 {
     display: inline-block;
     margin: 0 0 0 12px;
@@ -25,9 +24,13 @@ const StyledLogo = styled.div`
     font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
     vertical-align: middle;
   }
+  a {
+    display: inline-block;
+  }
   img {
     display: inline-block;
-    height: 32px;
+    width: 100%;
+    max-wight: 220px;
     vertical-align: middle;
   }
 `;
@@ -61,8 +64,9 @@ const Sidebar = React.memo((props: BaseProps) => {
       <AppContext.Consumer>
         {({ collapsedSidebar, onUpdateContext }) => (
           <Sider
-            width={256}
+            width={242}
             style={{
+              background: '#333132',
               overflow: 'auto',
               height: '100vh',
               zIndex: 100,
@@ -72,11 +76,12 @@ const Sidebar = React.memo((props: BaseProps) => {
           >
             <StyledLogo>
               <a href="/">
-                <img src={require('../../logo.png')} alt="" />
+                <img src={require('../../logo.svg')} alt="" />
               </a>
             </StyledLogo>
             <Menu
-              style={{ marginTop: -5 }}
+              className={styles.FlexAlignItems}
+              style={{ background: '#333132' }}
               defaultSelectedKeys={[props.pathname]}
               mode="inline"
               theme="dark"
@@ -85,71 +90,24 @@ const Sidebar = React.memo((props: BaseProps) => {
               openKeys={activePath}
             >
               <Menu.Item key="/">
-                <Icon type="home" />
+                <i className="icon-home"></i>
                 <span>Trang chủ</span>
               </Menu.Item>
 
               <Menu.Item key="/projects">
-                <Icon type="file-text"></Icon>
+                <i className="icon-file"></i>
                 <span>Quản lý hồ sơ</span>
               </Menu.Item>
 
               <Menu.Item key="/staffs">
-                <Icon type="user" />
+                <i className="icon-user"></i>
                 <span>Quản lý nhân viên</span>
               </Menu.Item>
 
               <Menu.Item key="/customers">
-                <Icon type="user" />
+                <i className="icon-customer"></i>
                 <span>Quản lý khách hàng</span>
               </Menu.Item>
-
-              {/* <SubMenu
-                key="files"
-                title={
-                  <span>
-                    <Icon type="file" />
-                    <span>Quản lý hồ sơ</span>
-                  </span>
-                }
-                onTitleClick={item => setActivePath(['files'])}
-              >
-                <Menu.Item key="/projects">Danh sách hồ sơ</Menu.Item>
-                <Menu.Item key="/projects/create">Thêm hồ sơ</Menu.Item>
-              </SubMenu> */}
-
-              {/* <SubMenu
-                key="users"
-                title={
-                  <span>
-                    <Icon type="user" />
-                    <span>Quản lý người dùng</span>
-                  </span>
-                }
-                onTitleClick={item => setActivePath(['users'])}
-              >
-                <Menu.Item key="/users">Danh sách người dùng</Menu.Item>
-                <Menu.Item key="/users/create">Thêm người dùng</Menu.Item>
-              </SubMenu>
-
-              <SubMenu
-                key="customers"
-                title={
-                  <span>
-                    <Icon type="user" />
-                    <span>Quản lý khách hàng</span>
-                  </span>
-                }
-                onTitleClick={item => setActivePath(['customers'])}
-              >
-                <Menu.Item key="/customers">Danh sách khách hàng</Menu.Item>
-                <Menu.Item key="/customers/create">Thêm khách hàng</Menu.Item>
-              </SubMenu>
-
-              <Menu.Item key="/settings">
-                <Icon type="setting" />
-                <span>Cài đặt hệ thống</span>
-              </Menu.Item> */}
             </Menu>
           </Sider>
         )}
