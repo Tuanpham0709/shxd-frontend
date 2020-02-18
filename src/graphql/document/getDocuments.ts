@@ -56,10 +56,26 @@ export const GET_DOCUMENTS = gql`
     }
 `
 export const GET_DOCUMENT = gql`
-    query GetDocument($id: Int!){
-        getDocument(_id: $id){
+    query GetDocument($_id: ID!){
+        getDocument(_id: $_id){
             _id 
-            projectName
+                partnerName
+                partnerCode 
+                projectCode
+                projectName
+                projectCategory
+                investDecideDepartment
+                investor
+                investorRepresent
+                documentType
+                cmsUserId
+                reviewer{
+                    fullName
+                }
+                cmsUser{
+                    fullName
+                }
+
             treeNode{
                     key
                     parent

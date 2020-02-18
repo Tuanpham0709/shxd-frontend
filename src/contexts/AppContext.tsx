@@ -1,27 +1,40 @@
 import React, { Component } from 'react';
 import { PartnerInterface } from './type';
-import { GetCMSUser_cmsGetUsers_users } from '../graphql/types'
-import { UpdateTreeNode_updateTreeNode_treeNode } from '../graphql/types'
-interface NodeInfo extends UpdateTreeNode_updateTreeNode_treeNode {
-  children?: Array<NodeInfo>;
-  documentId: string;
+import { GetCMSUser_cmsGetUsers_users, GetDocuments_getDocuments_documents_treeNode } from '../graphql/types'
+import { NodeInput } from '../graphql/types'
+interface FilesPosition {
+  filesNote?: (string | null)[] | null;
+  filesPositionMediaId?: (string | null)[] | null;
+  filesPositionMedia?: {
+    _id: string;
+    uri: string;
+  }
 }
-interface NodeBaseInfo {
-  documentName: string;
-  agencyIssued: string;
-  issuedDate: string;
+interface NodeInfo {
+  key?: string | null;
+  parent?: string | null;
+  documentName?: string;
+  agencyIssued?: string | null;
+  issuedDate?: any | null;
+  note?: string | null;
+  filesPosition?: FilesPosition[];
+  nodeMediaId?: string | null;
+  nodeMedia?: {
+    _id: string;
+    uri: string;
+  }
 }
 export interface ParamsContext {
-  loading?: boolean;
   partnerContext?: PartnerInterface;
   staffContext?: GetCMSUser_cmsGetUsers_users;
   pdfRenderedContext?: any[];
   loadingUploadFile?: boolean;
   nodeInfo?: NodeInfo;
-  treeNodeEdits?: UpdateTreeNode_updateTreeNode_treeNode[];
   nodeChecked?: NodeInfo[];
-  nodeEditInfo?: NodeBaseInfo;
-  onUpdateTreeNode?: () => void;
+  treeNode?: GetDocuments_getDocuments_documents_treeNode[];
+  onUpdateTreeNode?: (treeNode: NodeInput[]) => Promise<any>;
+  onUpdateNodeInfo?: (nodeInfo: NodeInput) => void;
+
 }
 export interface AppContextInterface extends ParamsContext {
   dummy: any;
@@ -32,15 +45,13 @@ export const AppContext = React.createContext<AppContextInterface>({
   dummy: null,
   collapsedSidebar: false,
   onUpdateContext: context => context,
-  loading: false,
   partnerContext: null,
   staffContext: null,
   pdfRenderedContext: [],
   loadingUploadFile: null,
   nodeInfo: null,
   nodeChecked: null,
-  nodeEditInfo: null,
-  treeNodeEdits: null
+  treeNode: []
 });
 export class AppProvider extends Component {
   onUpdateContext = context => {
@@ -52,14 +63,12 @@ export class AppProvider extends Component {
     collapsedSidebar: false,
     onUpdateContext: this.onUpdateContext,
     nodeInfo: null,
-    loading: false,
     partnerContext: null,
     staffContext: null,
     pdfRenderedContext: [],
     loadingUploadFile: null,
     nodeChecked: null,
-    nodeEditInfo: null,
-    treeNodeEdits: null
+    treeNode: null
   };
   render() {
     return <AppContext.Provider value={{ ...this.state }}>{this.props.children}</AppContext.Provider>;

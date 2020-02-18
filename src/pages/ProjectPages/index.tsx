@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EntryHeader from './components/EntryHeader';
 import EntryContent from './components/EntryContent/index';
 import EmptyPage from './components/EmptyPage';
@@ -6,6 +6,7 @@ import { useQuery } from '@apollo/react-hooks'
 import PageLoading from '../../components/PageLoading/index'
 import { GET_DOCUMENTS } from '../../graphql/document/getDocuments';
 import { GetDocuments, GetDocumentsVariables } from '../../graphql/types';
+import { ToastError } from '../../components/Toast';
 const useQueryDocument = (limit: number, skip?: number) => {
   const { data, loading, error, refetch } = useQuery<GetDocuments, GetDocumentsVariables>(GET_DOCUMENTS, {
     variables: {
@@ -17,8 +18,16 @@ const useQueryDocument = (limit: number, skip?: number) => {
 const ProjectPages = () => {
   const [visibleModal, setVisibleModal] = useState(false);
   const { data, error, loading, refetch } = useQueryDocument(10);
+  useEffect(() => {
+    refetch();
+  }, [])
   console.log("data documennt", data);
   console.log("er", error);
+  if (error) {
+    ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau !" })
+    console.log("errorr", error)
+    return <div />
+  }
   const onPressOpenModal = () => {
     setVisibleModal(!visibleModal);
   }

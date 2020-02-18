@@ -45,7 +45,6 @@ const PdfRender: React.FC<IProps> = ({ uri, widthContainer }) => {
     // console.log("pagesRendered", pagesRendered)
     if (index === pagesRendering.pages.length - 1) {
       onUpdateContext({ pdfRenderedContext: pagesRendered });
-      console.log("pages rrender")
     }
   }
   const getDocument = async (url: string = URL) => {
@@ -53,7 +52,6 @@ const PdfRender: React.FC<IProps> = ({ uri, widthContainer }) => {
       .getDocument(uri).promise
       .then(pdf => {
         const pagesArr = Array.from(Array(pdf.numPages).keys())
-        console.log('so page', pdf.numPages);
         setPagesRendering({ ...pagesRendering, pages: pagesArr, renderType: RenderType.FIRST_RENDER, pdf });
       })
       .catch(err => console.log('errror ', err));
@@ -73,13 +71,13 @@ const PdfRender: React.FC<IProps> = ({ uri, widthContainer }) => {
     console.log("uri uri ", uri)
     if (uri != null) {
       getDocument();
-    } else {
-      setPagesRendering({
-        ...pagesRendering,
-        pages: pdfRenderedContext,
-        renderType: RenderType.RERENDER
-      })
+      return;
     }
+    setPagesRendering({
+      ...pagesRendering,
+      pages: pdfRenderedContext,
+      renderType: RenderType.RERENDER
+    })
 
   }, [uri]);
   useEffect(() => {

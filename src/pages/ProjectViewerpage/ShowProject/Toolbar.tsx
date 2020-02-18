@@ -1,191 +1,178 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { Row, Col, Input, Button } from 'antd';
+import React, { useState, useContext, createRef, useEffect } from 'react';
+import { Row, Col, Button } from 'antd';
 import styles from './style.module.less';
+import EditNodeInfo from '../components/EditNodeInfo';
 import UploadFile from '../components/UploadFile';
 import Note from '../components/NoteModal';
-// import { useMutation } from '@apollo/react-hooks';
-import { UpdateTreeNode_updateTreeNode_treeNode } from '../../../graphql/types'
-// import { UpdateTreeNode, UpdateTreeNodeVariables } from '../../../graphql/types';
-// import { UPDATE_TREE_NODE } from '../../../graphql/document/updateTreeNode'
+import { FormComponentProps } from 'antd/lib/form';
+import { UpdateTreeNode_updateTreeNode_treeNode } from '../../../graphql/types';
 import { AppContext } from '../../../contexts/AppContext'
+import { ToastSuccess, ToastError } from '../../../components/Toast';
 
-// const useUpdateTreeNode = () => {
-//   const [updateTreeNode, { loading, error }] = useMutation<UpdateTreeNode, UpdateTreeNodeVariables>(UPDATE_TREE_NODE);
-//   return { updateTreeNode, loading, error }
-// }
-// const useStateDocumentDetail = (initState: GetDocument_getDocument_treeNode[] = []) => {
-//   const [documentDetail, setDocumentDetail] = useState(initState);
-//   return {
-//     documentDetail, setDocumentDetail
-//   }
-// }
 interface NodeInfo extends UpdateTreeNode_updateTreeNode_treeNode { };
-interface InputState {
-  documentName: string;
-  agencyIssued: string;
-  issuedDate: string;
-}
 
-
-const useStateVisible = (nodeInfo: NodeInfo) => {
-  console.log("nodeInfoo", nodeInfo)
-  const initNodeInfo: InputState = {
-    documentName: nodeInfo && nodeInfo.documentName,
-    issuedDate: nodeInfo && nodeInfo.issuedDate,
-    agencyIssued: nodeInfo && nodeInfo.agencyIssued
-  }
+const useStateVisible = (nodeInfo: NodeInfo = null) => {
   const [isEdit, setIsEdit] = useState(false);
   const [isAddImageModal, setAddImageModal] = useState(false);
   const [isAddNoteModal, setAddNoteModal] = useState(false);
-  const [inputState, setInputState] = useState(initNodeInfo);
   return {
     isEdit, isAddImageModal, isAddNoteModal,
     setIsEdit, setAddImageModal, setAddNoteModal,
-    inputState, setInputState
   }
 }
 
 const Toolbar: React.FC = () => {
-  const { nodeInfo, treeNodeEdits, onUpdateContext } = useContext(AppContext)
-  const { isEdit, isAddImageModal, isAddNoteModal, setIsEdit, setAddImageModal, setAddNoteModal, inputState, setInputState } = useStateVisible(nodeInfo);
-  // const { updateTreeNode } = useUpdateTreeNode();
-
+  const { treeNode, nodeInfo, onUpdateTreeNode, onUpdateContext } = useContext(AppContext);
+  console.log(" - - - - - -- -  - --  -- - - - -`-`-``-`-`-`-``-`-`-`-`-`", treeNode);
+  const { isEdit, isAddImageModal, isAddNoteModal, setIsEdit, setAddImageModal, setAddNoteModal } = useStateVisible();
+  const formRef = createRef<FormComponentProps>();
   const showAddImageModal = () => {
     setAddImageModal(!isAddImageModal);
   }
   const onEdit = () => {
     setIsEdit(!isEdit);
   }
-  const onUpdateEdit = () => {
-    // key?: string | null;
-    // parent?: string | null;
-    // agencyIssued?: string | null;
-    // issuedDate?: any | null;
-    // documentName: string;
-    // note?: string | null;
-    // nodeMediaId?: string | null;
-    // filesPosition?: FilesPositionInput | null;
-    if (nodeInfo !== null && treeNodeEdits !== null) {
-
-      const newTreeNode = treeNodeEdits.map((item) => {
-        if (item.key === nodeInfo.key) {
+  const onEditDone = () => {
+    const { form } = formRef.current;
+    form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      const nodesUpdate = treeNode.map((item) => {
+        let node = item
+        delete node.nodeMedia
+        if (node.__typename) {
+          delete node.__typename
+        }
+        if (node.filesPosition) {
+          delete node.filesPosition
+        }
+        if (node.key === nodeInfo.key) {
           return {
-            ...item, ...inputState
+            ...node, agencyIssued: values.agencyIssued,
+            issuedDate: values.issuedDate,
+            documentName: values.documentName
           }
-
         }
-        return {
-          ...item
-        }
+        return node;
       })
-      onUpdateContext({ treeNodeEdits: newTreeNode })
-      console.log("newTreeNode", nodeInfo.documentId);
-    }
 
-    setIsEdit(!isEdit);
-
+      onUpdateTreeNode(nodesUpdate).then(() => {
+        ToastSuccess({ message: "Cập nhật thành công!" });
+        onUpdateContext({ nodeInfo: { ...nodeInfo, ...values } })
+        form.resetFields();
+        setIsEdit(false);
+      }).catch(() => {
+        ToastError({ message: "Có lỗi sảy ra, vui lòng thử lại !" })
+      })
+    })
   }
   const onNote = () => {
     setAddNoteModal(!isAddNoteModal)
   }
+  const onNoteSubmit = (note: string) => {
+    const nodesUpdate = treeNode.map((item) => {
+      let node = item
+      delete node.nodeMedia;
+      if (node.__typename) {
+        delete node.__typename;
+      }
+      if (node.filesPosition) {
+        delete node.filesPosition;
+      }
+      if (node.key === nodeInfo.key) {
+        return {
+          ...node, note: note
+        }
+      }
+      return node;
+    });
+    console.log("nodesUpd{{{{{{{{{{{  _ _ _ ate ", note)
+    onUpdateTreeNode(nodesUpdate).then(() => {
+      ToastSuccess({ message: "Cập nhật thành công!" });
+      onUpdateContext({ nodeInfo: { ...nodeInfo, note } })
+      onNote();
+    }).catch(() => {
+      ToastError({ message: "Có lỗi sảy ra, vui lòng thử lại !" })
+    })
+  }
   useEffect(() => {
-    if (nodeInfo) {
-      setInputState(({
-        documentName: nodeInfo.documentName,
-        issuedDate: nodeInfo.issuedDate,
-        agencyIssued: nodeInfo.agencyIssued
-      }))
-    }
-
+    setIsEdit(false);
   }, [nodeInfo])
-  const onChangeAgencyIssued = ({ target: { value } }) => {
-    console.log(value)
-    setInputState({ ...inputState, agencyIssued: value })
+  const nodeBaseInfo = {
+    documentName: nodeInfo && nodeInfo.documentName,
+    agencyIssued: nodeInfo && nodeInfo.agencyIssued,
+    issuedDate: nodeInfo && nodeInfo.issuedDate,
   }
-  const onChangeDocumentName = ({ target: { value } }) => {
-    setInputState({ ...inputState, documentName: value })
+  const onSubmitUploadImage = (mediaIds: string[]) => {
+
   }
-  const onChangeIssuedDate = ({ target: { value } }) => {
-    setInputState({ ...inputState, issuedDate: value })
+
+  if (!nodeInfo) {
+    return <div style={{ height: 100 }} />
   }
   return (
     <div className={styles.toolbar}>
-      <Row>
-        <Col xl={8} lg={8}>
-          <span>Tên văn bản</span>
-        </Col>
-        <Col xl={7} lg={7}>
-          <span>Ký hiệu, ngày tháng năm ban hành</span>
-        </Col>
-        <Col xl={5} lg={5}>
-          <span>Cơ quan ban hành</span>
-        </Col>
-        <Col xl={4} lg={4} />
-      </Row>
       <Row style={{ marginTop: 10 }}>
-        <Col xl={8}>
-          <div className={styles.marginRight}>
-            <Input placeholder="Nhập tên văn bản"
-              disabled={!isEdit}
-              value={inputState.documentName}
-              onChange={onChangeDocumentName}
-              className={styles.inputHeight} style={{ marginRight: 10 }}></Input>
+        <Col xl={19} style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+          <div className={styles.nodeInfoContainer}>
+            <div >
+              <p>Tên văn bản </p>
+              {nodeInfo && <p>{nodeInfo.documentName}</p>}
+            </div>
+            <div >
+              <p>Ký kiệu, ngày tháng năm ban hành</p>
+              {nodeInfo && <p>{nodeInfo.issuedDate}</p>}
+            </div>
+            <div >
+              <p>Cơ quan ban hành</p>
+              {nodeInfo && <p>{nodeInfo.agencyIssued}</p>}
+            </div>
           </div>
-        </Col>
-        <Col xl={6}>
-          <div className={styles.marginRight}>
-            <Input
-              disabled={!isEdit}
-              value={inputState.issuedDate}
-              onChange={onChangeIssuedDate}
-              placeholder="Nhập ký hiệu, ngày tháng năm ban hành" className={styles.inputHeight}></Input>
-          </div>
-        </Col>
-        <Col xl={5}>
-          <div className={styles.marginRight}>
-            <Input
-              disabled={!isEdit}
-              value={inputState.agencyIssued}
-              onChange={onChangeAgencyIssued}
-              placeholder="Nhập cơ quan ban hành" className={styles.inputHeight}></Input>
-          </div>
+
         </Col>
         <Col xl={5}>
+
           <div className={styles.btnContainer}>
+            {!isEdit ? <Button
+              style={{ backgroundColor: "#16A085" }}
+              onClick={onEdit}
+              className={`${styles.editBtn} ${styles.btnSmall}`} >
+              <i className="icon-edit"></i>
+            </Button> :
+              <Button
+                style={{ backgroundColor: "#16A085" }}
+                className={`${styles.editBtn} ${styles.btnSmall}`} type="primary">
+                <i className="icon-done"></i>
+              </Button>
+            }
             <Button
-              disabled={!isEdit}
               onClick={showAddImageModal}
               className={`${styles.imageBtn} ${styles.btnSmall}`} type="primary">
               <i className="icon-image"></i>
             </Button>
             <Button
-              disabled={!isEdit}
               onClick={onNote}
               className={`${styles.fileBtn} ${styles.btnSmall}`} type="default">
               <i className="icon-note"></i>
             </Button>
-            <div className={styles.doubleBtn}>
-              <Button
-                disabled={isEdit}
-                style={{ backgroundColor: isEdit ? "#CCCCCC" : "#16A085" }}
-                onClick={onEdit}
-                className={styles.editBtn} type="default">
-                <i className="icon-edit"></i>
-              </Button>
-              <Button
-                style={{ backgroundColor: isEdit ? "#16A085" : "#CCCCCC" }}
-                onClick={onUpdateEdit}
-                className={styles.completedBtn} disabled={!isEdit} type="default">
-                <i className="icon-done"></i>
-              </Button>
-            </div>
+
           </div>
         </Col>
       </Row>
       <div className={styles.docsContainer}></div>
-      <UploadFile onDismiss={showAddImageModal} onSubmit={showAddImageModal} visible={isAddImageModal}></UploadFile>
-      <Note onSubmit={onNote} onDismiss={onNote} visible={isAddNoteModal} />
+      <UploadFile
+        filesPosition={nodeInfo.filesPosition}
+        onDismiss={showAddImageModal} onSubmit={onSubmitUploadImage} visible={isAddImageModal}></UploadFile>
+      <Note onSubmit={onNoteSubmit} onDismiss={onNote} visible={isAddNoteModal} initValue={nodeInfo.note} />
+      <EditNodeInfo
+        nodeInfo={nodeBaseInfo}
+        onCreate={onEditDone}
+        onCancel={onEdit}
+        visible={isEdit}
+        wrappedComponentRef={formRef}>
+      </EditNodeInfo>
     </div>
   );
-};
+}
 export default Toolbar;

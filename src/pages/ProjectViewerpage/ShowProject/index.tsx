@@ -4,13 +4,17 @@ import { Button } from 'antd';
 import styles from './style.module.less';
 import { AppContext } from '../../../contexts/AppContext';
 import PdfRender from './PdfRender';
-import RenderPdfGridView from './RenderPdfGridView'
+import PdfRenderGridView from './PdfRenderGridView'
 export enum PdfViewType {
   gridDisplay = "gridDisplay",
   singleDisplay = "singleDisplay"
 }
+interface NodeShortened {
+  key: string;
+  uri: string;
+}
 interface IProps {
-  uriList: string[];
+  nodesShortened: NodeShortened[];
 }
 const useDisplayPdfType = () => {
   const [displayPdfType, setDisplayPdfType] = useState(PdfViewType.gridDisplay);
@@ -24,7 +28,8 @@ const checkWidthContainer = () => {
     widthContainer, setWidthContainer
   }
 }
-const ShowProject: React.FC<IProps> = ({ uriList }) => {
+
+const ShowProject: React.FC<IProps> = ({ nodesShortened }) => {
   let refPdfContainer = useRef(null);
   const { widthContainer, setWidthContainer } = checkWidthContainer();
   const { nodeInfo } = useContext(AppContext)
@@ -40,14 +45,14 @@ const ShowProject: React.FC<IProps> = ({ uriList }) => {
   const onSetDisplayPdfSingle = () => {
     setDisplayPdfType(PdfViewType.singleDisplay);
   }
-  console.log("node info show project", widthContainer);
+  const uriSingleRender = (nodeInfo && nodeInfo.nodeMedia) ? nodeInfo.nodeMedia.uri : null;
   const renderListPdf = () => {
 
-    return uriList.map((uri, index) => {
-      return <RenderPdfGridView widthContainer={widthContainer} uri={uri} index={index}></RenderPdfGridView>
+    return nodesShortened.map((item, index) => {
+      return <PdfRenderGridView widthContainer={widthContainer} uri={item.uri} index={index} />
     })
   }
-  const renderSingleView = () => (<PdfRender widthContainer={widthContainer} uri={nodeInfo && nodeInfo.nodeMedia.uri} />)
+  const renderSingleView = () => (<PdfRender widthContainer={widthContainer} uri={uriSingleRender} />)
   return (
     <div className={styles.showProject}>
       <Toolbar />
@@ -57,7 +62,7 @@ const ShowProject: React.FC<IProps> = ({ uriList }) => {
             {displayPdfType === PdfViewType.gridDisplay ? <div ref={refPdfContainer} className={styles.viewer}
               style={{
                 display: "flex", flexWrap: "wrap", flexDirection: "row",
-                overflow: "scroll", backgroundColor: "#e4e4e4", paddingLeft: 40, paddingRight: 30
+                overflow: "scroll", backgroundColor: "#e4e4e4", paddingLeft: 40, paddingRight: 30,
               }}> {renderListPdf()}</div> : renderSingleView()}
           </div>
           <div className={styles.pdfBtnContainer}>

@@ -13,12 +13,9 @@
  .ant-btn> {
     border: 0 !important
   }
-}
-.doubleBtn {
-  float: right;
-  border-radius: 5px;
-  padding: 3.5px;
-  background-color: #cccccc;
+  .ant-col-xl-19 > .ant-btn{
+    padding: 0 !important;  
+  }
 }
 .btnContainer {
   float: right;
@@ -79,9 +76,6 @@
 }
 
 .editBtn {
-  height: 28px !important;
-  width: 28px;
-  
   color: #fff !important;
 }
 .viewer {
@@ -90,7 +84,7 @@
   height: 665px;
   padding-top: 50px;
   padding-bottom: 20px;
-  overflow: scroll;
+  overflow: auto;
 }
 .inputHeight {
   height: 35px !important;
@@ -152,5 +146,12 @@
   width: 100%;
   height: 100%;
   position: relative;
-  overflow: scroll;
+  overflow: auto;
+}
+.nodeInfoContainer{ 
+  width: 100%;
+  display: flex; 
+  overflow: auto;
+  flex-direction: row;
+  justify-content: space-between;
 }

@@ -3,8 +3,9 @@ import styles from './styles.module.less'
 const placeholderProps = "Nhập nội dung..."
 interface ImageProps {
     src?: string;
+    index?: number;
 }
-const ImageCard: React.FC<ImageProps> = ({ src }) => {
+const ImageCard: React.FC<ImageProps> = ({ src, index }) => {
     console.log("src", src);
 
     return (
