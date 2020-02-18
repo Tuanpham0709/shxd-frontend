@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import Homepage from './pages/Homepage';
+// import Homepage from './pages/Homepage';
 import ProjectPagesList from './pages/ProjectPages';
 import Staffs from './pages/StaffsPage';
 import FormEditStaff from './pages/StaffsPage/FormEditStaff';
@@ -40,9 +40,9 @@ export default function renderRoutes(isLogin: boolean) {
   return (
     <Switch>
       <Route exact path="/login" component={LoginPage} />
-      <ProtectedRoute exact path="/" component={Homepage} isLogin={isLogin} />
+      {/* <ProtectedRoute exact path="/" component={Homepage} isLogin={isLogin} /> */}
       <ProtectedRoute exact path="/page-verifies/:type" component={Request} isLogin={isLogin} />
-      <ProtectedRoute exact path="/projects" component={ProjectPagesList} isLogin={isLogin} />
+      <ProtectedRoute exact path="/" component={ProjectPagesList} isLogin={isLogin} />
       <ProtectedRoute exact path="/staffs" component={Staffs} isLogin={isLogin} />
       <ProtectedRoute exact path="/staffs/edit" component={FormEditStaff} isLogin={isLogin} />
       <ProtectedRoute exact path="/customers" component={CustomersPage} isLogin={isLogin} />

@@ -66,6 +66,7 @@ const EmptyFiles: React.FC<IProps> = ({ onUploadSuccess }) => {
             </div>
             <div style={{ visibility: loadingUploadFile ? "hidden" : "visible" }}>
                 <Dragger
+                    accept="application/pdf"
                     customRequest={customRequest}
                     onChange={onChangeInputFiles}
                     multiple

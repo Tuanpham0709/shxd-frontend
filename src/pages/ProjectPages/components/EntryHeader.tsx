@@ -55,7 +55,6 @@ const CollectionsPage: React.FC<IProps> = ({ visibleModal, onHideModal, onRefres
           return;
         } console.log("valuessss", values)
         const documentInput = { ...values, reviewerId, cmsUserId: implementerId };
-        console.log("documentINput", documentInput)
         delete documentInput.implementer
         delete documentInput.approver
         createDocument({ variables: { data: documentInput } }).then(() => {

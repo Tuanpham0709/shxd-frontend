@@ -89,12 +89,12 @@ const Sidebar = React.memo((props: BaseProps) => {
               onOpenChange={item => changePath(item)}
               openKeys={activePath}
             >
-              <Menu.Item key="/">
+              {/* <Menu.Item key="/">
                 <i className="icon-home"></i>
                 <span>Trang chủ</span>
-              </Menu.Item>
+              </Menu.Item> */}
 
-              <Menu.Item key="/projects">
+              <Menu.Item key="/">
                 <i className="icon-file"></i>
                 <span>Quản lý hồ sơ</span>
               </Menu.Item>

@@ -85,13 +85,13 @@ const useStateData = () => {
 }
 const CreateFileInput = forwardRef<Ref, IProps>(({ form, onCreate, onCancel, visible, confirmLoading, onSetImplementerId, onSetReviewerId }: IProps, ref) => {
   useImperativeHandle(ref, () => ({ form }));
-  const { dataPartnerSearch,
+  const {
     setDataPartnerSearch,
     partnerCode, setPartnerCode,
-    dataCmsUserSearch, setDataCmsUserSearch
+    setDataCmsUserSearch
   } = useStateData();
-  const { partnerData, onSearchPartner } = useSearchPartners(10);
-  const { cmsUserData, onSearchCMSUser } = useSearchCmsUser(10);
+  const { partnerData } = useSearchPartners(10);
+  const { cmsUserData } = useSearchCmsUser(10);
   // console.log("data state", dataCmsUserSearch);
   useEffect(() => {
     configDataAutoComplete();
@@ -107,23 +107,23 @@ const CreateFileInput = forwardRef<Ref, IProps>(({ form, onCreate, onCancel, vis
     }
   }
   const { getFieldDecorator } = form;
-  const onInputPartnerChange = (value) => {
-    onSearchPartner({ limit: 10, query: value })
-  }
-  const onInputCMSUserChange = (value) => {
-    onSearchCMSUser({ limit: 10, query: value });
-  }
+  // const onInputPartnerChange = (value) => {
+  //   onSearchPartner({ limit: 10, query: value })
+  // }
+  // const onInputCMSUserChange = (value) => {
+  //   onSearchCMSUser({ limit: 10, query: value });
+  // }
   const onSelectPartnerSearch = (value) => {
-    const partnerCode = partnerData.getPartners.partners.filter((item, index) => value === item.name)[0].partnerCode;
-    setPartnerCode(partnerCode)
+    // const partnerCode = partnerData.getPartners.partners.filter((item, index) => value === item.name)[0].partnerCode;
+    setPartnerCode(value)
   }
   const onFindImplementerId = (value) => {
-    const implementerId = cmsUserData.cmsGetUsers.users.filter((item) => value === item.fullName)[0]._id;
-    onSetImplementerId(implementerId);
+    // const implementerId = cmsUserData.cmsGetUsers.users.filter((item) => value === item.fullName)[0]._id;
+    onSetImplementerId(value);
   }
   const onFindReviewerId = (value) => {
-    const reviewerId = cmsUserData.cmsGetUsers.users.filter((item) => value === item.fullName)[0]._id;
-    onSetReviewerId(reviewerId)
+    // const reviewerId = cmsUserData.cmsGetUsers.users.filter((item) => value === item.fullName)[0]._id;
+    onSetReviewerId(value)
   }
   const onCreateDocument = async () => {
     const response = await onCreate();
@@ -154,11 +154,22 @@ const CreateFileInput = forwardRef<Ref, IProps>(({ form, onCreate, onCancel, vis
                     required: true,
                   },
                 ],
-              })(<AutoComplete
+                // <AutoComplete
+                // onSelect={onSelectPartnerSearch}
+                // onSearch={onInputPartnerChange}
+                // dataSource={dataPartnerSearch}
+                // placeholder="Nhập tên khách hàng" />
+              })(<Select
                 onSelect={onSelectPartnerSearch}
-                onSearch={onInputPartnerChange}
-                dataSource={dataPartnerSearch}
-                placeholder="Nhập tên khách hàng"></AutoComplete>)}
+                placeholder="Chọn loại tài liệu phù hợp với bạn">
+                {partnerData && partnerData.getPartners.partners.map((item) => {
+                  return (<Option value={item.partnerCode}>{item.name}</Option>)
+                })}
+                {/* <Option value="Document">Hồ sơ</Option>
+                <Option value="Decision">Quyết định</Option>
+                <Option value="Circular">Thông tư</Option>
+                <Option value="LawPrinciple">Luật quy định</Option> */}
+              </Select>)}
             </Form.Item>
           </Col>
 
@@ -172,7 +183,9 @@ const CreateFileInput = forwardRef<Ref, IProps>(({ form, onCreate, onCancel, vis
                     required: true,
                   },
                 ],
-              })(<AutoComplete placeholder="Nhập mã khách hàng của bạn" />)}
+              })(<AutoComplete
+                disabled={true}
+                placeholder="Nhập mã khách hàng của bạn" />)}
             </Form.Item>
           </Col>
 
@@ -285,11 +298,17 @@ const CreateFileInput = forwardRef<Ref, IProps>(({ form, onCreate, onCancel, vis
                   },
                 ],
               })(
-                <AutoComplete
+                <Select
                   onSelect={onFindImplementerId}
-                  dataSource={dataCmsUserSearch}
-                  onSearch={onInputCMSUserChange}
-                />,
+                  placeholder="Chọn người thực hiện">
+                  {cmsUserData && cmsUserData.cmsGetUsers.users.map((item) => {
+                    return (<Option value={item._id}>{item.fullName}</Option>)
+                  })}
+                  {/* <Option value="Document">Hồ sơ</Option>
+                <Option value="Decision">Quyết định</Option>
+                <Option value="Circular">Thông tư</Option>
+                <Option value="LawPrinciple">Luật quy định</Option> */}
+                </Select>
               )}
             </Form.Item>
           </Col>
@@ -304,11 +323,17 @@ const CreateFileInput = forwardRef<Ref, IProps>(({ form, onCreate, onCancel, vis
                   },
                 ],
               })(
-                <AutoComplete
+                <Select
                   onSelect={onFindReviewerId}
-                  dataSource={dataCmsUserSearch}
-                  onSearch={onInputCMSUserChange}
-                />,
+                  placeholder="Chọn người phê duyệt">
+                  {cmsUserData && cmsUserData.cmsGetUsers.users.map((item) => {
+                    return (<Option value={item._id}>{item.fullName}</Option>)
+                  })}
+                  {/* <Option value="Document">Hồ sơ</Option>
+                <Option value="Decision">Quyết định</Option>
+                <Option value="Circular">Thông tư</Option>
+                <Option value="LawPrinciple">Luật quy định</Option> */}
+                </Select>,
               )}
             </Form.Item>
           </Col>

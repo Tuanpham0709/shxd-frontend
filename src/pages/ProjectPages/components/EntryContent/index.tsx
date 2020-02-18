@@ -27,7 +27,7 @@ const linkToDetailComponent = (text: string, record: any) => (<Link to={{
     document: record
   }
 }} style={{ textDecoration: "underline", color: "#333132" }}>Xem chi tiết </Link>)
-const missingFileComponent = (text: string, record: any) => (<Link to="/project/detail" style={{ textDecoration: "underline", color: "#333132" }}>Xem chi tiết</Link>)
+const missingFileComponent = (text: string, record: any) => (<Link to="/project" style={{ textDecoration: "underline", color: "#333132" }}>Xem chi tiết</Link>)
 const columnProps = documentColumnProps.map((item, index) => {
   if (index === documentColumnProps.length - 2) return { ...item, render: missingFileComponent };
   if (index === documentColumnProps.length - 3) return { ...item, render: linkToDetailComponent };
@@ -43,6 +43,7 @@ const EditableTable: React.FC<IProps> = ({ data }) => {
       createdAt: moment(dataItem.createdAt).format("DD-MM-YYYY")
     }
   });
+  console.log("handle data", handleData);
   return <Table dataSource={handleData} columns={columnProps} />;
 };
 export default EditableTable;

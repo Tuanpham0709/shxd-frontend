@@ -1,10 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Input, Button } from 'antd';
 import styles from './style.module.less';
-import { UpdateTreeNode_updateTreeNode_treeNode } from '../../../graphql/types'
-import TreeViewer from './TreeViewer';
-import { useUpdateTreeNode } from '../index'
-import FlatToNested from 'flat-to-nested'
+import { UpdateTreeNode_updateTreeNode_treeNode } from '../../../graphql/types';
+
+import 'antd/dist/antd.css';
+import { ITreeNode, ParamUpdateNode } from './index';
+import { _onHandleNestedToFlat } from '../index'
+import { AppContext } from '../../../contexts/AppContext'
+const { TreeNode } = Tree;
+import { Tree, Checkbox } from 'antd';
+const BUTTON_TYPE = {
+  addNode: 0,
+  addMedia: 1,
+  share: 2,
+  message: 3,
+  copy: 4
+}
+
+interface TreeState {
+  checkedKeys: Array<string>;
+  isCheckedAll: boolean;
+}
+
 const toolBtnDataProps = [
   { icon: 'icon-them-dau-muc' },
   { icon: 'icon-them-tai-lieu' },
@@ -15,139 +32,180 @@ const toolBtnDataProps = [
   { icon: 'icon-tai-lieu-thieu' },
 ];
 const { Search } = Input;
-const BUTTON_TYPE = {
-  addNode: 0,
-  addMedia: 1,
-  share: 2,
-  message: 3,
-  copy: 4
-}
-const flatToNested = new FlatToNested({
-  id: 'id',
-  // The name of the property with the parent node id in the flat representation
-  parent: 'parent',
-  // The name of the property that will hold the children nodes in the nested representation
-  children: 'children'
-})
+
 export interface ITreeNode extends UpdateTreeNode_updateTreeNode_treeNode {
 
 }
-const initNodes: ITreeNode[] = []
-const useUpdateState = () => {
-  const [nodes, setNodes] = useState(initNodes)
-  return {
-    nodes, setNodes
-  }
-}
+// const initNodes: ITreeNode[] = []
+// const useUpdateState = () => {
+//   const [nodes, setNodes] = useState(initNodes)
+//   return {
+//     nodes, setNodes
+//   }
+// }
 interface TreeProps {
-  treeNode?: ITreeNode[],
-  documentId: string
-}
-interface CheckedNodes {
-  nodesChecked: ITreeNode[];
-  nodesParent: ITreeNode;
+  gData?: any[];
+  onDrop?: (info) => void;
+  onAddNode: (checkedKeys: string[]) => void;
 }
 export interface ParamUpdateNode {
   nodesChecked?: ITreeNode[];
   nodesParent?: ITreeNode;
   hasChecked: boolean;
 }
-const WorkingTree: React.FC<TreeProps> = ({ treeNode, documentId }) => {
-  let checkedNodes: CheckedNodes;
-  const { nodes, setNodes } = useUpdateState();
-  const { updateTreeNode } = useUpdateTreeNode();
-  useEffect(() => {
-    setNodes(treeNode)
-  }, [treeNode])
-  const onUpdateTreeViewer = (params: ParamUpdateNode) => {
-    if (!params.hasChecked) {
-      checkedNodes = null;
+
+const initTreeData: TreeState = {
+  checkedKeys: [],
+  isCheckedAll: false,
+
+}
+const useTreeViewerState = () => {
+  const [treeState, setTreeState] = useState(initTreeData);
+  return { treeState, setTreeState }
+}
+
+const _renderTreeNode = data => {
+  if (data && data.length > 0) {
+    return (data.map(item => {
+      if (item.children && item.children.length) {
+        return (
+          <TreeNode key={item.key} title={item.documentName}>
+            {_renderTreeNode(item.children)}
+          </TreeNode>
+        );
+      }
+      return (
+        <TreeNode style={{ height: 40 }} key={item.key} title={item.documentName} />
+        //   {/* <img src={'https://img.icons8.com/plasticine/344/user.png'} style={{ width: 20, height: 20 }}></img>
+        // </div> */}
+      );
+    }))
+  }
+
+}
+const WorkingTree: React.FC<TreeProps> = ({ gData, onDrop, onAddNode }) => {
+  const { onUpdateContext } = useContext(AppContext)
+  const { treeState, setTreeState } = useTreeViewerState();
+
+  const onChecked = async (keys: any, event) => {
+    console.log("ventevent check", event)
+    const flatData = _onHandleNestedToFlat(gData);
+    if (keys.length === flatData.length) {
+      setTreeState({
+        ...treeState,
+        isCheckedAll: true,
+        checkedKeys: keys,
+      });
       return;
     }
-    checkedNodes = {
-      nodesChecked: params.nodesChecked,
-      nodesParent: params.nodesParent
+    setTreeState({
+      ...treeState,
+      isCheckedAll: false,
+      checkedKeys: keys,
+    });
+
+    // this._onFindParentKeyCheckedNodes();
+  };
+  const onCheckAll = (event) => {
+    console.log("check ed all ", event);
+    const { checked } = event.target;
+    if (checked) {
+      const flatData = _onHandleNestedToFlat(gData);
+      setTreeState({ ...treeState, checkedKeys: flatData.map((item) => (item.key)), isCheckedAll: true });
+      return;
     }
-  }
-  const onUpdateNodesAfterDrop = (nodes: ITreeNode[]) => {
-    if (nodes) {
-      const newData = nodes.map((item) => {
-        return {
-          key: item.key,
-          parent: item.parent,
-          documentName: item.documentName,
-          agencyIssued: item.agencyIssued,
-          issuedDate: item.issuedDate,
-          note: item.note,
-          nodeMediaId: item.nodeMediaId,
-        }
-      })
-      updateTreeNode({
-        variables: {
-          data: {
-            treeNode: newData
-          },
-          documentId: documentId
-        }
-      }).then((data) => {
-        console.log("updatae sucesnt data", data)
-      }).catch((error) => {
-        console.log(error)
-      })
-    }
+    setTreeState({ ...treeState, checkedKeys: [], isCheckedAll: false });
   }
   const onClickBtnBar = (index) => {
-    if (index === BUTTON_TYPE.addNode) {
-      if (checkedNodes === null) {
-        return;
-      }
-      onAddNodes();
+    if (BUTTON_TYPE === index) {
+      onAddNode(treeState.checkedKeys);
     }
   }
-  const onAddNodes = () => {
-    if (!checkedNodes.nodesParent) {
-      const { nodesChecked } = checkedNodes;
-      nodesChecked.map((nodeChecked) => {
-        const index = nodes.findIndex((node) => nodeChecked.key === node.key);
-        if (index > -1) {
-          nodes.splice(index, 1);
+  const _handleSelectItem = (selectedKeys, event) => {
+    if (event.selected) {
+      const data = _onHandleNestedToFlat(gData);
+      const flattenData = data.map((item) => {
+        let node = item;
+        if (node.children) {
+          delete node.children
         }
+        return node
       })
-
-      const nodesCheckedNested = flatToNested.convert(nodesChecked);
-      const newParentNode = {
-        documentName: "Đầu mục 1",
-        key: `${nodes.length + 1}`,
-        parent: null,
-        children: nodesCheckedNested.children
+      const nodeSelected = flattenData.find((item) => (selectedKeys[0] === item.key));
+      const nodeInfo = {
+        ...nodeSelected
       }
-      console.log("-----------------", nodesCheckedNested);
-      console.log("newParent coe", newParentNode);
+      onUpdateContext({ nodeInfo })
 
+
+      // onUpdateContext({ nodeInfo: nodeInfo, treeNodeEdits: flatData });
     }
-  }
-  console.log(" tre ndoes  ss ", nodes)
+    // let index = gData.findIndex(item);
+  };
   return (
     <div className={styles.filterContainer}>
       <div className={styles.searchContainer}>
         <Search className={styles.search} size="small" />
       </div>
       <div className={styles.miniToolbar}>
-        {toolBtnDataProps.map((item: any, index: number) => (
-          <Button
-            onClick={() => {
-              onClickBtnBar(index)
-            }}
-            key={index + ''} className={styles.btnIcon}>
-            <i className={item.icon}></i>
-          </Button>
-        ))}
+        {toolBtnDataProps.map((item: any, index: number) => {
+          if (index === 1) {
+            return (<div className={styles.btnIcon} style={{ position: "relative", display: "flex", justifyContent: "center" }} >
+              <input
+                type="file"
+                className={styles.inputUpload}
+                // onClick={() => {
+                //   onClickBtnBar(index);
+                // }}s
+                key={index + ''} >
+              </input>
+              <i className={item.icon} style={{ alignSelf: "center" }}></i>
+            </div>
+            )
+          }
+          return (
+            <Button
+              style={{ display: "flex", justifyContent: "center" }}
+              onClick={() => {
+                onClickBtnBar(index)
+              }}
+              key={index + ''} className={styles.btnIcon}>
+              <i className={item.icon} style={{ alignSelf: "center" }}></i>
+            </Button>)
+        })}
       </div>
       <div>
         <div className={`${styles.treeContainer} ${styles.scrollbar}`}>
-          <TreeViewer
-            onUpdateAfterDrop={onUpdateNodesAfterDrop}
-            onUpdateTreeViewer={onUpdateTreeViewer} treeNode={nodes} documentId={documentId} />
+          <div
+            className={styles.treeContainer}>
+            <div className={styles.hozLine}>
+              <div className={styles.chooseAll}>
+                <Checkbox
+                  checked={treeState.isCheckedAll}
+                  onChange={onCheckAll}
+                >
+                  Chọn tất cả
+                </Checkbox>
+              </div>
+            </div>
+            <Tree
+              // disabled={loading}
+              showIcon
+              checkable
+              className="draggable-tree"
+              draggable
+              blockNode
+              checkedKeys={treeState.checkedKeys}
+              onSelect={(selectedKeys, event) => {
+                _handleSelectItem(selectedKeys, event)
+              }}
+              onCheck={onChecked}
+              // onDragEnter={this.onDragEnter}
+              onDrop={onDrop}
+            >
+              {_renderTreeNode(gData)}
+            </Tree>
+          </div>
         </div>
       </div>
     </div>

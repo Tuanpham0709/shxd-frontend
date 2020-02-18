@@ -17,12 +17,12 @@ const usePagesState = () => {
     }
 }
 const RenderPdfGridView: React.FC<IProps> = ({ uri, index, widthContainer }) => {
-    console.log("width container", widthContainer)
     const { pdf, setPdf } = usePagesState();
-    // let _pages: any[] = [];
-
     useEffect(() => {
-        getDocuments(uri);
+        if (uri) {
+            getDocuments(uri);
+        }
+
     }, [uri])
     const getDocuments = async (uri) => {
         pdfjsLib.getDocument(uri)
@@ -34,7 +34,7 @@ const RenderPdfGridView: React.FC<IProps> = ({ uri, index, widthContainer }) => 
 
 
     return (
-        <div key={index + ''} style={{ width: "33%", marginTop: 30, display: "flex", justifyContent: "center" }}><RenderPage widthContainer={widthContainer} pdf={pdf} /></div>
+        <div key={index + ''} style={{ marginTop: 30, display: "flex", justifyContent: "center", width: "33%" }}><RenderPage widthContainer={widthContainer} pdf={pdf} /></div>
     )
 }
 const RenderPage = ({ pdf, widthContainer }) => {
@@ -60,9 +60,7 @@ const RenderPage = ({ pdf, widthContainer }) => {
             viewport: viewport,
         };
         const renderTask = page.render(renderContext);
-        console.log("visible");
         renderTask.promise.then(async (value) => {
-            console.log("value value", value)
         }).catch((err) => console.log("eror", err)
         )
     };

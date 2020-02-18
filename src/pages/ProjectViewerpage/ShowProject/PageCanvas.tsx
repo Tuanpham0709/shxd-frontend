@@ -16,8 +16,6 @@ interface IProps {
 }
 const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, pageSum, index, onUpdatePdfContext, renderType, page, widthContainer }) => {
   // const { pdfRendered } = useContext(AppContext);
-  console.log("render type", renderType);
-  console.log("index page", pageNum)
   const canvasRef = useRef(null);
   useEffect(() => {
     if (renderType === RenderType.FIRST_RENDER) {
@@ -26,7 +24,6 @@ const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, pageSum, index,
       }
       return;
     }
-    console.log("page page", page)
     renderPage(page)
 
   }, [pdf, scaleProp, pageNum]);
