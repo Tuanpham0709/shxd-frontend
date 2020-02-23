@@ -4,28 +4,25 @@ import styles from './styles.module.less';
 import { useMutation } from '@apollo/react-hooks';
 import { Upload_file, Upload_fileVariables } from '../../../graphql/types';
 import { UPLOAD_FILE } from '../../../graphql/media/createMedia';
-import { AppContext } from '../../../contexts/AppContext'
+import { AppContext } from '../../../contexts/AppContext';
 const { Dragger } = Upload;
 
 export const useUploadFile = () => {
     const [uploadFile, { loading, error, data }] = useMutation<Upload_file, Upload_fileVariables>(UPLOAD_FILE);
     return { uploadFile, loading, error, data }
 }
-interface FileUploaded {
-    nodeMediaId: string;
-    documentName: string;
-}
+
 interface IProps {
-    onUploadSuccess: (resData: FileUploaded[]) => void;
+    onUploadSuccess: () => void;
 }
 // const initFileUploaded: FileUploaded[] = [];
 // const useFilesUploaded = () => {
 //     const [filesUploaded, setFilesUploaded] = useState(initFileUploaded);
 //     return { filesUploaded, setFilesUploaded };
 // }
-let filesUploaded: FileUploaded[] = [];
+
 const EmptyFiles: React.FC<IProps> = ({ onUploadSuccess }) => {
-    const { onUpdateContext, loadingUploadFile } = useContext(AppContext)
+    const { onUpdateContext, loadingUploadFile, filesUploaded } = useContext(AppContext)
     const { uploadFile } = useUploadFile();
     const customRequest = ({ file, onSuccess, onError }) => {
         uploadFile({
@@ -42,7 +39,7 @@ const EmptyFiles: React.FC<IProps> = ({ onUploadSuccess }) => {
                 documentName: file.name,
             })
 
-            filesUploaded = files;
+            onUpdateContext({ filesUploaded: files });
             onSuccess("ok")
         }).catch((err) => {
             onError(err);
@@ -51,10 +48,9 @@ const EmptyFiles: React.FC<IProps> = ({ onUploadSuccess }) => {
     const onChangeInputFiles = ({ fileList, file }) => {
         onUpdateContext({ loadingUploadFile: true })
         const { status } = file
-        // console.log("filefile --------------------------__:_::", fileList)
         if (status !== "uploading") {
-            console.log(filesUploaded);
-            onUploadSuccess(filesUploaded);
+            console.log("log log log log log log log log ", filesUploaded);
+            onUploadSuccess();
         }
 
     }

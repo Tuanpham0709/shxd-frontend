@@ -14,7 +14,6 @@ const useChangeText = () => {
     }
 }
 const NoteModal: React.FC<NoteModalProps> = ({ visible, onDismiss, initValue, onSubmit }) => {
-    console.log("initValue ", initValue)
     const { note, setNote } = useChangeText();
     useEffect(() => {
         if (!initValue) {

@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useEffect } from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { Form, Input, Modal } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 
@@ -22,9 +22,9 @@ const EditNodeInfo = forwardRef<Ref, IProps>(({ form, onCreate, onCancel, visibl
     useImperativeHandle(ref, () => ({ form }));
     // console.log("data state", dataCmsUserSearch);
     const { getFieldDecorator } = form;
-    useEffect(() => {
-        form.setFieldsValue({ documentName: nodeInfo.documentName, issuedDate: nodeInfo.issuedDate, agencyIssued: nodeInfo.agencyIssued })
-    }, [nodeInfo])
+    // useEffect(() => {
+    //     form.setFieldsValue({ documentName: nodeInfo.documentName, issuedDate: nodeInfo.issuedDate, agencyIssued: nodeInfo.agencyIssued })
+    // }, [nodeInfo])
     return (
         <Modal
             visible={visible}
@@ -37,6 +37,7 @@ const EditNodeInfo = forwardRef<Ref, IProps>(({ form, onCreate, onCancel, visibl
             <Form>
                 <Form.Item label="Tên văn bản" hasFeedback>
                     {getFieldDecorator('documentName', {
+                        initialValue: nodeInfo.documentName
                     })(
                         <Input
                         />,
@@ -44,6 +45,7 @@ const EditNodeInfo = forwardRef<Ref, IProps>(({ form, onCreate, onCancel, visibl
                 </Form.Item>
                 <Form.Item label="Ký hiệu, ngày tháng năm ban hành" hasFeedback>
                     {getFieldDecorator('issuedDate', {
+                        initialValue: nodeInfo.issuedDate
                     })(
                         <Input
                         />,
@@ -51,6 +53,7 @@ const EditNodeInfo = forwardRef<Ref, IProps>(({ form, onCreate, onCancel, visibl
                 </Form.Item>
                 <Form.Item label="Cơ quan ban hành" hasFeedback>
                     {getFieldDecorator('agencyIssued', {
+                        initialValue: nodeInfo.agencyIssued
                     })(
                         <Input
                         />,

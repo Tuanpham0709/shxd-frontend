@@ -5,7 +5,7 @@ import EditNodeInfo from '../components/EditNodeInfo';
 import UploadFile from '../components/UploadFile';
 import Note from '../components/NoteModal';
 import { FormComponentProps } from 'antd/lib/form';
-import { UpdateTreeNode_updateTreeNode_treeNode } from '../../../graphql/types';
+import { UpdateTreeNode_updateTreeNode_treeNode, FilesPositionInput } from '../../../graphql/types';
 import { AppContext } from '../../../contexts/AppContext'
 import { ToastSuccess, ToastError } from '../../../components/Toast';
 
@@ -22,8 +22,7 @@ const useStateVisible = (nodeInfo: NodeInfo = null) => {
 }
 
 const Toolbar: React.FC = () => {
-  const { treeNode, nodeInfo, onUpdateTreeNode, onUpdateContext } = useContext(AppContext);
-  console.log(" - - - - - -- -  - --  -- - - - -`-`-``-`-`-`-``-`-`-`-`-`", treeNode);
+  const { treeNode, nodeInfo, onUpdateTreeNode, onUpdateContext, filesLocation } = useContext(AppContext);
   const { isEdit, isAddImageModal, isAddNoteModal, setIsEdit, setAddImageModal, setAddNoteModal } = useStateVisible();
   const formRef = createRef<FormComponentProps>();
   const showAddImageModal = () => {
@@ -45,7 +44,10 @@ const Toolbar: React.FC = () => {
           delete node.__typename
         }
         if (node.filesPosition) {
-          delete node.filesPosition
+          node.filesPosition.forEach((item) => {
+            delete item.__typename
+            delete item.filesPositionMedia
+          });
         }
         if (node.key === nodeInfo.key) {
           return {
@@ -56,12 +58,14 @@ const Toolbar: React.FC = () => {
         }
         return node;
       })
-
+      console.log("nodes update ", nodesUpdate)
+      setIsEdit(false);
       onUpdateTreeNode(nodesUpdate).then(() => {
         ToastSuccess({ message: "Cập nhật thành công!" });
         onUpdateContext({ nodeInfo: { ...nodeInfo, ...values } })
+        // form.resetFields();
         form.resetFields();
-        setIsEdit(false);
+
       }).catch(() => {
         ToastError({ message: "Có lỗi sảy ra, vui lòng thử lại !" })
       })
@@ -71,6 +75,7 @@ const Toolbar: React.FC = () => {
     setAddNoteModal(!isAddNoteModal)
   }
   const onNoteSubmit = (note: string) => {
+
     const nodesUpdate = treeNode.map((item) => {
       let node = item
       delete node.nodeMedia;
@@ -78,7 +83,14 @@ const Toolbar: React.FC = () => {
         delete node.__typename;
       }
       if (node.filesPosition) {
-        delete node.filesPosition;
+        node.filesPosition.map((fileP) => {
+          if (fileP.__typename) {
+            delete fileP.__typename;
+          }
+          if (fileP.filesPositionMedia) {
+            delete fileP.filesPositionMedia;
+          }
+        });
       }
       if (node.key === nodeInfo.key) {
         return {
@@ -87,7 +99,7 @@ const Toolbar: React.FC = () => {
       }
       return node;
     });
-    console.log("nodesUpd{{{{{{{{{{{  _ _ _ ate ", note)
+
     onUpdateTreeNode(nodesUpdate).then(() => {
       ToastSuccess({ message: "Cập nhật thành công!" });
       onUpdateContext({ nodeInfo: { ...nodeInfo, note } })
@@ -110,6 +122,50 @@ const Toolbar: React.FC = () => {
 
   if (!nodeInfo) {
     return <div style={{ height: 100 }} />
+  }
+  const onUpload = () => {
+    const filesPosition: FilesPositionInput[] = filesLocation.map((item) => {
+      const node: FilesPositionInput = {
+        filesPositionMediaId: item.mediaId,
+        filesNote: item.note
+      }
+      return node;
+    })
+
+    const nodesUpdate = treeNode.map((item) => {
+      let node = item
+
+      if (node.filesPosition) {
+        node.filesPosition.map((item, index) => {
+          if (item.__typename) {
+            delete item.__typename
+          }
+          if (item.filesPositionMedia) {
+            delete item.filesPositionMedia
+          }
+        })
+      }
+      delete node.nodeMedia;
+      if (node.__typename) {
+        delete node.__typename;
+      }
+
+      if (node.key === nodeInfo.key) {
+        return {
+          ...node, filesPosition: filesPosition
+        }
+      }
+      return node;
+    });
+    console.log("???> > > > > > >  > >", nodesUpdate)
+    onUpdateTreeNode(nodesUpdate).then(() => {
+      showAddImageModal();
+      ToastSuccess({ message: "Cập nhật thành công!" });
+    }).catch(() => {
+      ToastError({ message: "Có lỗi sảy ra, vui lòng thử lại !" })
+    })
+
+
   }
   return (
     <div className={styles.toolbar}>
@@ -162,6 +218,7 @@ const Toolbar: React.FC = () => {
       </Row>
       <div className={styles.docsContainer}></div>
       <UploadFile
+        onUpload={onUpload}
         filesPosition={nodeInfo.filesPosition}
         onDismiss={showAddImageModal} onSubmit={onSubmitUploadImage} visible={isAddImageModal}></UploadFile>
       <Note onSubmit={onNoteSubmit} onDismiss={onNote} visible={isAddNoteModal} initValue={nodeInfo.note} />

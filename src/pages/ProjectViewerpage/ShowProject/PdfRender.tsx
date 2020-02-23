@@ -150,7 +150,7 @@ const PdfRender: React.FC<IProps> = ({ uri, widthContainer }) => {
   // console.log("state rendering", pagesRendering)
   return (
     <div
-      className={styles.viewer}
+      // className={styles.viewer}
       ref={refContainer}
     // onScroll={handlePdfLoadMore}
     >

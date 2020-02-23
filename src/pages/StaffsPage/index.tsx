@@ -26,19 +26,23 @@ const Staffs = () => {
   const onRefreshData = () => {
     refetch();
   }
-  if (loading) {
-    return <PageLoading />
+  const onChangeSearch = (e) => {
+    console.log("return ", e.target.value)
+    refetch({ query: e.target.value, limit: 10 }).then((data) => console.log(data.data.cmsGetUsers.users))
   }
   if (error) {
     ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau !" });
+  }
+  const onSearch = (value) => {
+    console.log("value ", value)
+    refetch({ query: value, limit: 10 })
   }
   return (
     <div style={{ flex: 1 }}>
       <EntryHeader />
       <div className={styles.border}>
-        <HeaderBar />
-        <EditableTable data={data.cmsGetUsers.users} onRefreshData={onRefreshData} />
-      </div>
+        <HeaderBar onChangeSearch={onChangeSearch} onSearch={onSearch} />
+        {loading ? <PageLoading /> : <EditableTable data={data.cmsGetUsers.users} onRefreshData={onRefreshData} />}</div>
     </div>
   );
 };
