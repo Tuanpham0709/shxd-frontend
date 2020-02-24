@@ -64,6 +64,6 @@ const EditableTable: React.FC<IProps> = ({ data, onRefreshData }) => {
     }
     return { ...item };
   });
-  return <Table dataSource={dataConfig} columns={handleColumnProps} />;
+  return <Table dataSource={dataConfig} rowKey={record => record._id} columns={handleColumnProps} />;
 };
 export default EditableTable;

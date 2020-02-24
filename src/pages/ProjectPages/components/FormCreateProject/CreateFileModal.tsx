@@ -23,7 +23,6 @@ interface IProps extends FormComponentProps {
   onSetImplementerId: (implementerId: string) => void;
 }
 type Ref = FormComponentProps;
-
 // eslint-disable-next-line
 const useSearchPartners = (limit: number = 10) => {
   const { data, loading, error, refetch } = useQuery<SearchPartnerName, SearchPartnerNameVariables>(SEARCH_PARTNER_NAME, {

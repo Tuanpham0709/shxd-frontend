@@ -53,7 +53,6 @@ const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, pageSum, index,
     )
   };
   return (
-
     <canvas ref={canvasRef} className={styles.pdfPage} />
   );
 };

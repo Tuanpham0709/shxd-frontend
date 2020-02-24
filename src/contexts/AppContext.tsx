@@ -10,6 +10,11 @@ interface FilesPosition {
     uri: string;
   }
 }
+interface FileLocation {
+  mediaId?: string;
+  note?: string;
+}
+
 interface NodeInfo {
   key?: string | null;
   parent?: string | null;
@@ -24,6 +29,10 @@ interface NodeInfo {
     uri: string;
   }
 }
+interface FileUploaded {
+  nodeMediaId: string;
+  documentName: string;
+}
 export interface ParamsContext {
   partnerContext?: PartnerInterface;
   staffContext?: GetCMSUser_cmsGetUsers_users;
@@ -34,6 +43,8 @@ export interface ParamsContext {
   treeNode?: GetDocuments_getDocuments_documents_treeNode[];
   onUpdateTreeNode?: (treeNode: NodeInput[]) => Promise<any>;
   onUpdateNodeInfo?: (nodeInfo: NodeInput) => void;
+  filesUploaded?: FileUploaded[];
+  filesLocation?: FileLocation[];
 
 }
 export interface AppContextInterface extends ParamsContext {
@@ -51,7 +62,10 @@ export const AppContext = React.createContext<AppContextInterface>({
   loadingUploadFile: null,
   nodeInfo: null,
   nodeChecked: null,
-  treeNode: []
+  treeNode: [],
+  filesLocation: [],
+  filesUploaded: [],
+
 });
 export class AppProvider extends Component {
   onUpdateContext = context => {
@@ -68,7 +82,9 @@ export class AppProvider extends Component {
     pdfRenderedContext: [],
     loadingUploadFile: null,
     nodeChecked: null,
-    treeNode: null
+    treeNode: null,
+    filesLocation: [],
+    filesUploaded: []
   };
   render() {
     return <AppContext.Provider value={{ ...this.state }}>{this.props.children}</AppContext.Provider>;

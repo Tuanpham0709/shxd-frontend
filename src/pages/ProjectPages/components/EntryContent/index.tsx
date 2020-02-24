@@ -31,9 +31,7 @@ const missingFileComponent = (text: string, record: any) => (<Link to="/project"
 const columnProps = documentColumnProps.map((item, index) => {
   if (index === documentColumnProps.length - 2) return { ...item, render: missingFileComponent };
   if (index === documentColumnProps.length - 3) return { ...item, render: linkToDetailComponent };
-  if (index === documentColumnProps.length - 4) {
-    return { ...item, render: statusComponent }
-  }
+  if (index === documentColumnProps.length - 4) { return { ...item, render: statusComponent } };
   return { ...item }
 });
 const EditableTable: React.FC<IProps> = ({ data }) => {
@@ -44,6 +42,6 @@ const EditableTable: React.FC<IProps> = ({ data }) => {
     }
   });
   console.log("handle data", handleData);
-  return <Table dataSource={handleData} columns={columnProps} />;
+  return <Table dataSource={handleData} rowKey={(record) => record._id} columns={columnProps} />;
 };
 export default EditableTable;

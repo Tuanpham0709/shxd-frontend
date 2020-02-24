@@ -5,13 +5,14 @@ import styles from './style.module.less';
 import ProjectInfo from './ProjectInfo';
 import HeaderBar from './HeaderBar';
 import ShowProject from './ShowProject/index';
-import { UpdateTreeNode, UpdateTreeNodeVariables, NodeInput, UpdateTreeNode_updateTreeNode_treeNode } from '../../graphql/types';
+import { UpdateTreeNode, UpdateTreeNodeVariables, NodeInput, UpdateTreeNode_updateTreeNode_treeNode, Upload_file, Upload_fileVariables } from '../../graphql/types';
 import { UPDATE_TREE_NODE } from '../../graphql/document/updateTreeNode'
 // import { GET_DOCUMENT } from '../../graphql/document/getDocuments';
 import EmptyFiles from './components/EmptyFiles';
-import { Col, Row, Tree, Checkbox, Button, Input } from 'antd';
+import { Col, Row, Tree, Checkbox, Button, Input, Spin, Icon } from 'antd';
 import { AppContext } from '../../contexts/AppContext';
 import FlatToNested from 'flat-to-nested';
+import { UPLOAD_FILE } from '../../graphql/media/createMedia';
 const BUTTON_TYPE = {
   addNode: 0,
   addMedia: 1,
@@ -22,6 +23,7 @@ const BUTTON_TYPE = {
 
 const { TreeNode } = Tree;
 export const WITHOUT_URI = "WITHOUT_URI";
+
 export const useUpdateTreeNode = () => {
   const [updateTreeNode, { loading, error }] = useMutation<UpdateTreeNode, UpdateTreeNodeVariables>(UPDATE_TREE_NODE);
   return { updateTreeNode, loading, error }
@@ -46,6 +48,10 @@ const initTreeData: TreeState = {
   gData: [],
   treeNode: []
 
+}
+interface FileUploaded {
+  nodeMediaId: string;
+  documentName: string;
 }
 const useTreeViewerState = () => {
   const [treeState, setTreeState] = useState(initTreeData);
@@ -86,16 +92,15 @@ const _onHandleNodesUpdate = (flatenData) => {
 
 const handleTreeData = (treeData) => {
   let nestedData = flatToNested.convert(treeData);
-  console.log("converter  ", nestedData)
   if (!Array.isArray(nestedData)) {
     if (nestedData.children && nestedData.key) {
-      console.log("handle cte + + ++ + + + + ", nestedData)
       return [nestedData];
     }
-    console.log("handle cte + + ++ + + + + ", nestedData)
-    return nestedData.children;
+    if (nestedData.children && !nestedData.key) {
+      return nestedData.children
+    }
+    return [nestedData];
   }
-  console.log("handle cte + + ++ + + + + ", nestedData)
   return nestedData;
 }
 export const _onHandleNestedToFlat = (gData: Array<NodeObject>) => {
@@ -178,7 +183,7 @@ const _onHandleDrop = (info: any, gData: Array<NodeObject>) => {
 
     data.forEach((item, index, arr) => {
       if (item.key === key) {
-        console.log("item taco can", item)
+
 
         return callback(item, index, arr);
       }
@@ -257,13 +262,18 @@ const toolBtnDataProps = [
   { icon: 'icon-tai-lieu-thieu' },
 ];
 const { Search } = Input;
-
+const useUploadFile = () => {
+  const [uploadFile, { loading, error, data }] = useMutation<Upload_file, Upload_fileVariables>(UPLOAD_FILE);
+  return { uploadFile, loading, error, data }
+}
 const flatToNested = new FlatToNested({ id: "key", parent: "parent", children: 'children' });
 const Files = ({ location }) => {
   console.log("location ", location)
+  const { uploadFile } = useUploadFile();
   const { treeState, setTreeState } = useTreeViewerState();
-  const { onUpdateContext } = useContext(AppContext)
+  const { onUpdateContext, filesUploaded } = useContext(AppContext)
   const { updateTreeNode } = useUpdateTreeNode();
+  const [addMoreLoading, setAddMoreLoading] = useState(false);
   useEffect(() => {
     if (location.state.document.treeNode) {
       const { treeNode } = location.state.document;
@@ -282,15 +292,15 @@ const Files = ({ location }) => {
         return node;
       });
       const nestedData = handleTreeData(newTreeNode);
-      setTreeState({ ...treeState, gData: nestedData })
-      onUpdateContext({ onUpdateTreeNode: onUpdateDocument })
+      setTreeState({ ...treeState, gData: nestedData, treeNode: treeNode })
+      onUpdateContext({ onUpdateTreeNode: onUpdateDocument, treeNode: treeNode })
     }
     return () => {
       setTreeState({ ...treeState, gData: null, treeNode: [] })
       onUpdateContext({ onUpdateTreeNode: null, treeNode: null })
     }
   }, [location.state.document]);
-  console.log(" > > > > > > >> > > > ", treeState.gData);
+
   // const onRefetchDocument = () => {
   //   refetch();
   // }
@@ -308,15 +318,22 @@ const Files = ({ location }) => {
   //   }
   // }, [data])
   const onUpdateDocument = (treeNode: any[]) => {
-    console.log("tree Ndoe update  ? ? ? ? ? ? > > > >  ", treeNode);
     return new Promise((resolve, reject) => {
       if (treeNode && treeNode.length > 0) {
         updateTreeNode({ variables: { data: { treeNode }, documentId: location.state.document._id } }).then((res) => {
-          const nestedData = handleTreeData(res.data.updateTreeNode.treeNode);
-          console.log("adat achar cho bo ve ", res.data.updateTreeNode.treeNode)
-          onUpdateContext({ treeNode: res.data.updateTreeNode.treeNode })
-          setTreeState({ ...treeState, treeNode: res.data.updateTreeNode.treeNode, gData: nestedData });
           resolve();
+          const nestedData = handleTreeData(res.data.updateTreeNode.treeNode);
+          const nestedToFlat = _onHandleNestedToFlat(nestedData);
+          const flattenData = nestedToFlat.map((item) => {
+            let node = item;
+            if (node.children) {
+              delete node.children
+            }
+            return node;
+          })
+          onUpdateContext({ treeNode: flattenData })
+          setTreeState({ ...treeState, treeNode: flattenData, gData: nestedData });
+
         }).catch((error) => {
           reject();
           console.log("error update tree node", error);
@@ -328,7 +345,6 @@ const Files = ({ location }) => {
   const onAddNode = (checkedKeys) => {
     if (checkedKeys.length > 0) {
       const { nodesChecked, nodesParent } = _onFindParentKeyCheckedNodes(checkedKeys, treeState.gData);
-      console.log("tree  > > > > > > > >> > > > > > > ", treeState.gData)
       let flatData = _onHandleNestedToFlat(treeState.gData);
       const newKey = flatData.length + 1
       const newNode = {
@@ -361,22 +377,21 @@ const Files = ({ location }) => {
 
 
       const newFlattenData = [...flatData, ...newNodesChecked];
-      console.log("newNodesCheckd ", newFlattenData);
       const nodesUpdate = _onHandleNodesUpdate(newFlattenData);
       onUpdateDocument(nodesUpdate);
     }
   }
-  const onSuccessUpload = (nodes: NodeInput[]) => {
+  const onSuccessUpload = () => {
     // console.log("Nodes : : : : :: : : : :", nodes)
-    const nodesHandled = nodes.map((item, index) => ({
+    const nodesHandled = filesUploaded.map((item, index) => ({
       ...item, key: `${index}`
     }))
     updateTreeNode({ variables: { data: { treeNode: nodesHandled }, documentId: location.state.document._id } }).then((res) => {
       const nestedData = handleTreeData(res.data.updateTreeNode.treeNode);
       setTreeState({ ...treeState, treeNode: res.data.updateTreeNode.treeNode, gData: nestedData });
-      onUpdateContext({ loadingUploadFile: false });
+      onUpdateContext({ loadingUploadFile: false, filesUploaded: [] });
     }).catch((error) => {
-      console.log("error update tree node", error);
+      onUpdateContext({ loadingUploadFile: false, filesUploaded: [] });
     })
   }
   const onDropNode = (info) => {
@@ -389,7 +404,6 @@ const Files = ({ location }) => {
   }
 
   const onCheckAll = (event) => {
-    console.log("check ed all ", event);
     const { checked } = event.target;
     if (checked) {
       const flatData = _onHandleNestedToFlat(treeState.gData);
@@ -406,25 +420,24 @@ const Files = ({ location }) => {
   const _handleSelectItem = (selectedKeys, event) => {
     if (event.selected) {
       const data = _onHandleNestedToFlat(treeState.gData);
-      console.log(">> >> > > > ", treeState.gData);
+
       const flattenData = data.map((item) => {
         let node = item;
         if (node.children) {
           delete node.children
         }
-        return node
+        return node;
       })
-      const nodeSelected = flattenData.find((item) => (selectedKeys[0] === item.key));
+      let nodeSelected = flattenData.find((item) => (selectedKeys[0] === item.key));
+      if (nodeSelected.children) {
+        delete nodeSelected.children
+      }
       const nodeInfo = nodeSelected;
-      onUpdateContext({ nodeInfo, treeNode: flattenData })
-
-
-      // onUpdateContext({ nodeInfo: nodeInfo, treeNodeEdits: flatData });
+      onUpdateContext({ nodeInfo, treeNode: flattenData });
     }
     // let index = gData.findIndex(item);
   };
   const onChecked = async (keys: any, event) => {
-    console.log("ventevent check", event)
     const flatData = _onHandleNestedToFlat(treeState.gData);
     if (keys.length === flatData.length) {
       setTreeState({
@@ -440,7 +453,7 @@ const Files = ({ location }) => {
       checkedKeys: keys,
     });
   };
-  const nodesShortened = location.state.document.treeNode && location.state.document.treeNode.map((item) => {
+  const nodesShortened = treeState.treeNode && treeState.treeNode.map((item) => {
     if (item.nodeMedia) {
       return {
         key: item.key,
@@ -452,6 +465,76 @@ const Files = ({ location }) => {
       uri: null
     }
   })
+  const onHandleAddMoreNodes = (nodes: FileUploaded[]) => {
+    if (!nodes || nodes.length === 0) {
+      return;
+    }
+    const { treeNode } = treeState;
+    const nodesInput = treeNode.map((item) => {
+      let node = item
+      if (node.filesPosition) {
+        node.filesPosition.map((item, index) => {
+          if (item.__typename) {
+            delete item.__typename
+          }
+          if (item.filesPositionMedia) {
+            delete item.filesPositionMedia
+          }
+        })
+      }
+      delete node.nodeMedia;
+      if (node.__typename) {
+        delete node.__typename;
+      }
+      return node;
+    });
+    const totalNodes = treeNode.length;
+    const newNodes = nodes.map((item, index) => {
+      return {
+        ...item, key: `${totalNodes + index}`
+      }
+    })
+    const newTreeNode = [...nodesInput, ...newNodes];
+    console.log("log new trendoe ", newTreeNode);
+    onUpdateDocument(newTreeNode).then(() => {
+      setAddMoreLoading(false);
+    }).catch(() => {
+      setAddMoreLoading(false);
+    })
+  }
+  const onAddMoreFile = (e) => {
+    let fileCount = 0;
+    let { files } = e.target;
+    if (!files) return;
+    let filesList = [...files];
+    let fileNodeInput: FileUploaded[] = []
+    setAddMoreLoading(true);
+    console.log("fuke.keng", filesList.length)
+    filesList.forEach((file, index) => {
+      console.log("+>>+>>+>++>++>>+++>+>+", file)
+      uploadFile({
+        variables: {
+          dimensions: {
+            width: 0, height: 0
+          },
+          file
+        }
+      }).then((response) => {
+        fileCount++;
+        fileNodeInput.push({ nodeMediaId: response.data.uploadPhoto._id, documentName: file.name });
+        if (fileCount === files.length) {
+          onHandleAddMoreNodes(fileNodeInput)
+          console.log(">> > > > > > >", fileNodeInput)
+        }
+      }).catch((err) => {
+        fileCount++;
+        if (fileCount === files.length) {
+          onHandleAddMoreNodes(fileNodeInput)
+        }
+      })
+    })
+
+  }
   return (
     <div>
       <ProjectInfo document={location.state.document} />
@@ -467,16 +550,17 @@ const Files = ({ location }) => {
                 <div className={styles.miniToolbar}>
                   {toolBtnDataProps.map((item: any, index: number) => {
                     if (index === 1) {
-                      return (<div className={styles.btnIcon} style={{ position: "relative", display: "flex", justifyContent: "center" }} >
-                        <input
+                      return (<div className={styles.btnIcon} key={index + ''} style={{ position: "relative", display: "flex", justifyContent: "center" }} >
+                        {addMoreLoading ? <Spin style={{ alignSelf: "center" }} indicator={<Icon type="loading" style={{ fontSize: 20, color: "#007BD7" }} spin />} /> : (<div style={{ position: "relative", display: "flex", justifyContent: "center" }}>   <input
+                          multiple
                           type="file"
+                          accept="application/pdf"
                           className={styles.inputUpload}
-                          // onClick={() => {
-                          //   onClickBtnBar(index);
-                          // }}s
+                          onChange={onAddMoreFile}
                           key={index + ''} >
                         </input>
-                        <i className={item.icon} style={{ alignSelf: "center" }}></i>
+                          <i className={item.icon} style={{ alignSelf: "center" }}></i></div>)}
+
                       </div>
                       )
                     }
@@ -528,7 +612,7 @@ const Files = ({ location }) => {
               </div>
             </Col>
             <Col xl={17}>
-              {!location.state.document.treeNode || location.state.document.treeNode.length === 0 ? <EmptyFiles onUploadSuccess={onSuccessUpload} /> : <ShowProject nodesShortened={nodesShortened} />}
+              {!treeState.treeNode || treeState.treeNode.length === 0 ? <EmptyFiles onUploadSuccess={onSuccessUpload} /> : <ShowProject nodesShortened={nodesShortened} />}
             </Col>
           </Row>
         </div>
