@@ -554,6 +554,7 @@ const Files = ({ location }) => {
                         {addMoreLoading ? <Spin style={{ alignSelf: "center" }} indicator={<Icon type="loading" style={{ fontSize: 20, color: "#007BD7" }} spin />} /> : (<div style={{ position: "relative", display: "flex", justifyContent: "center" }}>   <input
                           multiple
                           type="file"
+                          accept="application/pdf"
                           className={styles.inputUpload}
                           onChange={onAddMoreFile}
                           key={index + ''} >
