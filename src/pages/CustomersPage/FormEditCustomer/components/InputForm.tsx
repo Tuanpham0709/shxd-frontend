@@ -6,14 +6,13 @@ import styles from '../style.module.less';
 import { useMutation } from '@apollo/react-hooks';
 import {
   CreatePartner, CreatePartnerVariables,
-  UpdatePartner, UpdatePartnerVariables,
-  CreatePartnerInput, UpdatePartnerInput
+  UpdatePartner, UpdatePartnerVariables, CreatePartnerInput
 } from '../../../../graphql/types';
 import { CREATE_PARTNER } from '../../../../graphql/partner/createPartner'
 import { AppContext } from '../../../../contexts/AppContext';
 import { UPDATE_PARTNER } from '../../../../graphql/partner/updatePartner';
 import history from '../../../../history'
-import { ToastError } from '../../../../components/Toast/index'
+import { ToastError, ToastSuccess } from '../../../../components/Toast/index'
 // import { any } from 'prop-types';
 
 const TitleForm = styled.div`
@@ -28,52 +27,52 @@ enum MutationType {
 }
 const phoneRegExp = new RegExp(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im);
 
-const handleCreatePartnerInput = (value) => {
-  if (!value) {
-    return null;
-  }
-  const partner: CreatePartnerInput = {
-    name: value.name,
-    partnerCode: value.code,
-    projectName: value.projectName,
-    projectCode: value.projectCode,
-    chairmanName: value.chairman,
-    ceoName: value.manager,
-    departmentName: value.room,
-    accountantName: value.accountant,
-    address: value.address,
-    phone: value.phone,
-    fax: value.room,
-    email: value.email,
-    admin: {
-      adminName: value.username,
-      adminPhoneNumber: value.phone,
-      adminPassword: value.password
-    }
-  }
-  return { partner };
-}
-const handleUpdatePartnerInput = (value, _id: string) => {
-  console.log("value .code ", value.code);
-  const partner: UpdatePartnerInput = {
-    _id,
-    name: value.name,
-    partnerCode: value.code,
-    projectName: value.projectName,
-    projectCode: value.projectCode,
-    chairmanName: value.chairman,
-    ceoName: value.manager,
-    departmentName: value.room,
-    accountantName: value.accountant,
-    address: value.address,
-    phone: value.phone,
-    fax: value.room,
-    email: value.email,
-  }
-  console.log("parnet ", partner);
+// const handleCreatePartnerInput = (value) => {
+//   if (!value) {
+//     return null;
+//   }
+//   const partner: CreatePartnerInput = {
+//     name: value.name,
+//     partnerCode: value.code,
+//     projectName: value.projectName,
+//     projectCode: value.projectCode,
+//     chairmanName: value.chairman,
+//     ceoName: value.manager,
+//     departmentName: value.room,
+//     accountantName: value.accountant,
+//     address: value.address,
+//     phone: value.phone,
+//     fax: value.room,
+//     email: value.email,
+//     admin: {
+//       adminName: value.username,
+//       adminPhoneNumber: value.phone,
+//       adminPassword: value.password
+//     }
+//   }
+//   return { partner };
+// }
+// const handleUpdatePartnerInput = (value, _id: string) => {
+//   console.log("value .code ", value.code);
+//   const partner: UpdatePartnerInput = {
+//     _id,
+//     name: value.name,
+//     partnerCode: value.code,
+//     projectName: value.projectName,
+//     projectCode: value.projectCode,
+//     chairmanName: value.chairman,
+//     ceoName: value.manager,
+//     departmentName: value.room,
+//     accountantName: value.accountant,
+//     address: value.address,
+//     phone: value.phone,
+//     fax: value.room,
+//     email: value.email,
+//   }
+//   console.log("parnet ", partner);
 
-  return { partner };
-}
+//   return { partner };
+// }
 const handleMutationAPI = (mutationType: MutationType) => {
   let requestPartner: any;
   let loading: boolean;
@@ -99,7 +98,7 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
 
   let mutationType: MutationType = MutationType.add;
   const { partnerContext } = useContext(AppContext);
-
+  console.log("partner contex", partnerContext);
   if (partnerContext) {
     mutationType = MutationType.edit
   }
@@ -109,21 +108,44 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
   };
   const checkAndRequest = () => {
     form.validateFieldsAndScroll((err, value) => {
+      let updateData: CreatePartnerInput = {
+        name: value.name,
+        partnerCode: value.partnerCode,
+        projectName: value.projectName,
+        projectCode: value.projectCode,
+        chairmanName: value.chairmanName,
+        ceoName: value.ceoName,
+        departmentName: value.departmentName,
+        accountantName: value.accountantName,
+        address: value.address,
+        phone: value.phone,
+        fax: value.phone,
+        email: value.email,
+        admin: {
+          adminPhoneNumber: value.phone,
+          adminName: value.username,
+          adminPassword: value.password
+        }
+      }
       if (!err) {
         if (mutationType === MutationType.add) {
-          const { partner } = handleCreatePartnerInput(value);
-          requestPartner({ variables: { data: partner } })
-            .then((data) => { handleReset() })
-            .catch((error) => { ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau" }) });
+          requestPartner({ variables: { data: updateData } })
+            .then((data) => {
+              ToastSuccess({ message: "Tạo khách hàng thành công !" })
+              handleReset()
+            })
+            .catch((error) => { ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau !" }) });
           return;
         }
-        const { partner } = handleUpdatePartnerInput(value, partnerContext.id);
-        requestPartner({ variables: { data: partner } })
+        console.log("dataa > > ? ? ?? ? // // / / ", updateData);
+        delete updateData.admin;
+        requestPartner({ variables: { data: { ...updateData, _id: partnerContext._id } } })
           .then((data) => {
+            ToastSuccess({ message: "Cập nhật khách hàng thành công !" })
             history.goBack();
           })
           .catch((error) => {
-            ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau" });
+            ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau !" });
           });
       }
     });
@@ -157,8 +179,8 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
 
           <Col md={12} className={styles.pl1}>
             <Form.Item label="Mã khách hàng">
-              {getFieldDecorator('code', {
-                initialValue: partnerContext && partnerContext.code,
+              {getFieldDecorator('partnerCode', {
+                initialValue: partnerContext && partnerContext.partnerCode,
                 rules: [
                   {
                     message: 'Nhập mã khách hàng của bạn',
@@ -199,8 +221,8 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
 
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Chủ tịch">
-              {getFieldDecorator('chairman', {
-                initialValue: partnerContext && partnerContext.chairman,
+              {getFieldDecorator('chairmanName', {
+                initialValue: partnerContext && partnerContext.chairmanName,
                 rules: [
                   {
                     message: 'Nhập tên chủ tịch',
@@ -213,8 +235,8 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
 
           <Col md={12} className={styles.pl1}>
             <Form.Item label="Giám đốc">
-              {getFieldDecorator('manager', {
-                initialValue: partnerContext && partnerContext.manager,
+              {getFieldDecorator('ceoName', {
+                initialValue: partnerContext && partnerContext.ceoName,
                 rules: [
                   {
                     message: 'Nhập tên giám đốc',
@@ -227,8 +249,8 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
 
           <Col md={12} className={styles.pr1}>
             <Form.Item label="Phòng/CN/VP QL">
-              {getFieldDecorator('room', {
-                initialValue: partnerContext && partnerContext.room,
+              {getFieldDecorator('departmentName', {
+                initialValue: partnerContext && partnerContext.departmentName,
                 rules: [
                   {
                     message: 'Nhập tên Phòng/CN/VP QL',
@@ -241,8 +263,8 @@ const ModalForm: React.FC<FormComponentProps> = ({ form }) => {
 
           <Col md={12} className={styles.pl1}>
             <Form.Item label="Kế toán trưởng">
-              {getFieldDecorator('accountant', {
-                initialValue: partnerContext && partnerContext.accountant,
+              {getFieldDecorator('accountantName', {
+                initialValue: partnerContext && partnerContext.accountantName,
                 rules: [
                   {
                     message: 'Nhập tên Kế toán trưởng',

@@ -11,7 +11,7 @@ import PageLoading from '../../components/PageLoading'
 const useQueryData = () => {
   const { loading, error, data, refetch } = useQuery<GetCMSUser, GetCMSUserVariables>(GET_CMS_USER, {
     variables: {
-      limit: 20,
+      limit: 50,
       query: ''
     }
   });
@@ -27,14 +27,12 @@ const Staffs = () => {
     refetch();
   }
   const onChangeSearch = (e) => {
-    console.log("return ", e.target.value)
-    refetch({ query: e.target.value, limit: 10 }).then((data) => console.log(data.data.cmsGetUsers.users))
+    refetch({ query: e.target.value, limit: 10 });
   }
   if (error) {
     ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau !" });
   }
   const onSearch = (value) => {
-    console.log("value ", value)
     refetch({ query: value, limit: 10 })
   }
   return (

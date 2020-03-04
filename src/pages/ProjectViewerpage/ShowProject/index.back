@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import Toolbar from './Toolbar';
-import { Button, Spin, Icon } from 'antd';
+import { Button } from 'antd';
 import styles from './style.module.less';
 import { AppContext } from '../../../contexts/AppContext';
 import PdfRender from './PdfRender';
@@ -19,21 +19,10 @@ interface NodeShortened {
 interface IProps {
   nodesShortened: NodeShortened[];
 }
-interface RenderStyles {
-  styles: any,
-  singleRender: boolean;
-}
-const initRenderStyles: RenderStyles = {
-  styles: {
-    visibility: "visible"
-  },
-  singleRender: true
-}
 const useDisplayPdfType = () => {
-  const [stylesRender, setStyles] = useState(initRenderStyles)
+  const [displayPdfType, setDisplayPdfType] = useState(PdfViewType.gridDisplay);
   return {
-    stylesRender,
-    setStyles
+    displayPdfType, setDisplayPdfType
   }
 }
 const checkWidthContainer = () => {
@@ -45,8 +34,7 @@ const checkWidthContainer = () => {
 interface ResolveType {
   pdf: any;
   arrPages: any[]
-};
-const initPdfState: ResolveType = {
+}const initPdfState: ResolveType = {
   pdf: null,
   arrPages: []
 };
@@ -72,11 +60,10 @@ const getDocument = (url: string): Promise<ResolveType> => {
   })
 
 };
-
 const ShowProject: React.FC<IProps> = ({ nodesShortened }) => {
   let refPdfContainer = useRef(null);
   const { widthContainer, setWidthContainer } = checkWidthContainer();
-  const { mediaUri, onUpdateContext } = useContext(AppContext);
+  const { nodeInfo } = useContext(AppContext);
   const { pdfState, setPdfState } = usePdf();
   useEffect(() => {
     if (refPdfContainer.current) {
@@ -84,96 +71,59 @@ const ShowProject: React.FC<IProps> = ({ nodesShortened }) => {
     }
   }, [widthContainer]);
   useEffect(() => {
-    if (mediaUri) {
+    if (nodeInfo) {
       getPdfFromUri();
     }
-    return () => {
-      onUpdateContext({ mediaUri: null });
-      setPdfState({
-        pdf: null,
-        arrPages: [],
-      });
 
-    }
-
-  }, [mediaUri]);
-
-
+  }, [nodeInfo])
   const getPdfFromUri = async () => {
-    if (mediaUri) {
-      const pdfResolve = await getDocument(mediaUri);
-      setPdfState(pdfResolve)
-    }
-
+    const pdfResolve = await getDocument(nodeInfo.nodeMedia.uri);
+    setPdfState(pdfResolve)
   }
-
-
-  const { stylesRender, setStyles } = useDisplayPdfType();
-
+  const { displayPdfType, setDisplayPdfType } = useDisplayPdfType();
   const onSetDisplayPdfGrid = () => {
-    setStyles({
-      styles: {
-        overflow: "hidden",
-        visibility: "hidden"
-      },
-      singleRender: false
-    })
+    setDisplayPdfType(PdfViewType.gridDisplay);
   }
-
   const onSetDisplayPdfSingle = () => {
-    setStyles({
-      styles: {
-        overflow: "auto",
-        visibility: "visible"
-      },
-      singleRender: true
-    })
+    setDisplayPdfType(PdfViewType.singleDisplay);
   }
   // const uriSingleRender = (nodeInfo && nodeInfo.nodeMedia) ? nodeInfo.nodeMedia.uri : null;
-  // const renderSingleView = (nodeInfo: any, widthContainer: number) => {
+  const renderSingleView = (nodeInfo: any, widthContainer: number) => {
+    if (pdfState && nodeInfo) {
+      console.log(" pdfState", pdfState);
+      return <PdfRender pdf={pdfState.pdf} widthContainer={widthContainer} nodeKey={nodeInfo.key} arrPages={pdfState.arrPages} pdfViewType={displayPdfType} />
+    }
+    return <div />
 
-  //   return <div />
 
+  }
+  const renderListPdf = () => {
 
-  // }
-  // const renderListPdf = () => {
-
-  //   return nodesShortened.map((item, index) => {
-  //     if (!item.uri) {
-  //       return null;
-  //     }
-  //     return <div></div>
-  //     // return <PdfRenderGridView key={index + ''} widthContainer={widthContainer} uri={item.uri} index={index} />
-  //   })
-  // }
+    return nodesShortened.map((item, index) => {
+      if (!item.uri) {
+        return null;
+      }
+      return <div></div>
+      // return <PdfRenderGridView key={index + ''} widthContainer={widthContainer} uri={item.uri} index={index} />
+    })
+  } 
   return (
     <div className={styles.showProject}>
-      <div style={{ maxHeight: 140 }}>
-        <Toolbar />
-      </div>
+      <Toolbar />
+
       <div style={{ position: 'relative' }}>
-        <div
-          // className={styles.viewer}
-          style={{ visibility: stylesRender.singleRender ? "hidden" : "visible" }}>
+        <div>
+          {displayPdfType === PdfViewType.gridDisplay ? <div ref={refPdfContainer} className={styles.viewer}
+            style={{
+              display: "flex", flexWrap: "wrap", flexDirection: "row",
+              overflow: "scroll", backgroundColor: "#e4e4e4", paddingLeft: 40, paddingRight: 30,
+            }}> {renderListPdf()}</div> : <div className={styles.viewer}> {renderSingleView(nodeInfo, widthContainer)}</div>}
         </div>
-
-        <div
-          style={{
-            display: "flex", flexWrap: "wrap", flexDirection: "column",
-            height: 665,
-            backgroundColor: "#e4e4e4",
-            visibility: stylesRender.styles.visibility,
-            justifyContent: "center"
-          }}>
-          {pdfState.pdf && <PdfRender renderStyles={stylesRender} pdf={pdfState.pdf} widthContainer={widthContainer} arrPages={pdfState.arrPages} />}
-          {!pdfState.pdf && stylesRender.singleRender && <Spin style={{ alignSelf: "center" }} indicator={<Icon type="loading" style={{ fontSize: 50, color: "#007BD7" }} spin />} />}
-        </div>
-
         <div className={styles.pdfBtnContainer}>
           <Button
             onClick={onSetDisplayPdfGrid}
             type="primary"
-            style={{ marginTop: 25, marginLeft: 25, padding: 0, opacity: stylesRender.singleRender ? 1 : 0.5 }}
+            style={{ marginTop: 25, marginLeft: 25, padding: 0, opacity: displayPdfType === PdfViewType.singleDisplay ? 1 : 0.5 }}
             size="small"
             className={styles.btn}
           >
@@ -183,7 +133,7 @@ const ShowProject: React.FC<IProps> = ({ nodesShortened }) => {
           <Button
             onClick={onSetDisplayPdfSingle}
             type="primary"
-            style={{ marginTop: 25, marginLeft: 25, padding: 0, opacity: stylesRender.singleRender ? 0.5 : 1 }}
+            style={{ marginTop: 15, marginLeft: 25, padding: 0, opacity: displayPdfType === PdfViewType.singleDisplay ? 0.5 : 1 }}
             size="small"
             className={styles.btn}
           >

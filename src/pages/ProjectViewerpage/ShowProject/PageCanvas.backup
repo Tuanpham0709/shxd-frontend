@@ -48,7 +48,7 @@ const PageCanvas: React.FC<IProps> = ({ pdf, pageNum, scaleProp, pageSum, index,
     const renderTask = page.render(renderContext);
     console.log("visible");
     renderTask.promise.then(async (value) => {
-      console.log("value value", value)
+      console.log("value value", value);
     }).catch((err) => console.log("eror", err)
     )
   };

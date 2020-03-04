@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { PartnerInterface } from './type';
-import { GetCMSUser_cmsGetUsers_users, GetDocuments_getDocuments_documents_treeNode } from '../graphql/types'
+// import { PartnerInterface } from './type';
+import { GetCMSUser_cmsGetUsers_users, GetDocuments_getDocuments_documents_treeNode, GetPartners_getPartners_partners } from '../graphql/types'
 import { NodeInput } from '../graphql/types'
 interface FilesPosition {
   filesNote?: (string | null)[] | null;
@@ -33,10 +33,14 @@ interface FileUploaded {
   nodeMediaId: string;
   documentName: string;
 }
+interface PDF {
+  pdf: any;
+  uri: string;
+}
 export interface ParamsContext {
-  partnerContext?: PartnerInterface;
+  partnerContext?: GetPartners_getPartners_partners;
   staffContext?: GetCMSUser_cmsGetUsers_users;
-  pdfRenderedContext?: any[];
+  mediaUri?: string
   loadingUploadFile?: boolean;
   nodeInfo?: NodeInfo;
   nodeChecked?: NodeInfo[];
@@ -45,7 +49,7 @@ export interface ParamsContext {
   onUpdateNodeInfo?: (nodeInfo: NodeInput) => void;
   filesUploaded?: FileUploaded[];
   filesLocation?: FileLocation[];
-
+  urisLoaded?: PDF[]
 }
 export interface AppContextInterface extends ParamsContext {
   dummy: any;
@@ -58,14 +62,14 @@ export const AppContext = React.createContext<AppContextInterface>({
   onUpdateContext: context => context,
   partnerContext: null,
   staffContext: null,
-  pdfRenderedContext: [],
+  mediaUri: null,
   loadingUploadFile: null,
   nodeInfo: null,
   nodeChecked: null,
   treeNode: [],
   filesLocation: [],
   filesUploaded: [],
-
+  urisLoaded: null
 });
 export class AppProvider extends Component {
   onUpdateContext = context => {
@@ -79,12 +83,13 @@ export class AppProvider extends Component {
     nodeInfo: null,
     partnerContext: null,
     staffContext: null,
-    pdfRenderedContext: [],
+    mediaUri: null,
     loadingUploadFile: null,
     nodeChecked: null,
     treeNode: null,
     filesLocation: [],
-    filesUploaded: []
+    filesUploaded: [],
+    urisLoaded: null
   };
   render() {
     return <AppContext.Provider value={{ ...this.state }}>{this.props.children}</AppContext.Provider>;

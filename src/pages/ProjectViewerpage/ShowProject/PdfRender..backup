@@ -1,0 +1,256 @@
+import React, { useRef, RefObject, useContext, useEffect } from 'react';
+import { Button } from 'antd';
+import pdfjsLib from 'pdfjs-dist/build/pdf';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+import styles from './style.module.less';
+// import viewer from 'pdf.js'
+// import PageLoading from '../../../components/PageLoading/index';
+import { AppContext } from '../../../contexts/AppContext'
+
+// const DEFAULT_SCALE = 1.4;
+// const MAX_SCALE = 2.4;
+// const MIN_SCALE = 0.2;
+// const URL = '/dummy.pdf';
+export enum RenderType {
+  FIRST_RENDER = "FIRST_RENDER",
+  RERENDER = "RERENDER"
+}
+// interface IRenderingState {
+//   arrPages: any[];
+// // }
+interface IProps {
+  widthContainer: number;
+  nodeKey: string;
+  pdf: any;
+  arrPages: any[];
+}
+interface IPDFPages {
+  pages: any[];
+  nodeKey: string;
+  total: number;
+}
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+const LIMIT_PAGES = 10;
+let refList: RefObject<any>[] = []
+const PdfRender: React.FC<IProps> = ({ widthContainer, pdf, nodeKey, arrPages }) => {
+  var indexPage: number = 0;
+  let scale: number = 1;
+  let refContainer = useRef(null);
+  let pagesPdf: any = [];
+  const { pdfRenderedContext, onUpdateContext, pdfCurrentRefs } = useContext(AppContext);
+  const onPushRef = (ref) => {
+    refList.push(ref);
+    if (refList.length === arrPages.length) {
+      onUpdateContext({ pdfCurrentRefs: refList });
+    }
+  }
+  const onRenderPages = (pages: any[]) => {
+    console.log("pages pages ", pages);
+    console.log("ref list <><><><><><>", pdfCurrentRefs);
+    const newPages = pages.map((page, index) => {
+      return {
+        page,
+        ref: pdfCurrentRefs[index]
+      }
+    });
+    pagesPdf = newPages;
+    if (indexPage === newPages.length - 1) return;
+    renderPageCanvas(pagesPdf[indexPage].page, pagesPdf[indexPage].ref, scale);
+  };
+  useEffect(() => {
+    return () => {
+      refList = []
+      onUpdateContext({ pdfCurrentRefs: [] })
+    }
+  })
+  const renderPageCanvas = async (page: any, canvasRef, scale: number = 1) => {
+    if (canvasRef) {
+      console.log("scale ", scale)
+      var viewport = page.getViewport({ scale: scale, });
+      const canvas = canvasRef;
+
+      const context = canvas.getContext('2d');
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport,
+      };
+      const renderTask = page.render(renderContext);
+      renderTask.promise.then(async (value) => {
+        indexPage++;
+        renderPageCanvas(pagesPdf[indexPage].page, pagesPdf[indexPage].ref, scale);
+      }).catch((err) => console.log("eror", err)
+      )
+    }
+
+  };
+  const onZoomIn = () => {
+    scale = scale + 0.2;
+    indexPage = 0;
+    renderPageCanvas(pagesPdf[indexPage].page, pagesPdf[indexPage].ref, scale);
+  };
+  const onZoomOut = () => {
+    scale = scale - 0.2;
+    indexPage = 0;
+    renderPageCanvas(pagesPdf[indexPage].page, pagesPdf[indexPage].ref, scale);
+  }
+  // const getPageFromPdf = async (pdf: any, pageNum: number) => {
+
+  // }
+  useEffect(() => {
+    if (pdf) {
+      const indexExist = pdfRenderedContext.findIndex((item) => item.nodeKey === nodeKey);
+      if (indexExist > -1 && pdfRenderedContext[indexExist].pages.length > 0) {
+        onRenderPages(pdfRenderedContext[indexExist].pages);
+      } else {
+        onUpdatePagesContext(pdf, arrPages);
+      }
+
+    }
+  }, [pdf])
+  const getPagesFromPdf = async (pdf: any, index: number): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      if (index) {
+        pdf.getPage(index).then((page) => {
+          resolve(page);
+        }).catch((err) => {
+          reject(err)
+        })
+      }
+    })
+
+  }
+  const onNotExitsPages = (pdf: any, arrPages: any[]) => {
+    // let pdfRendered = pdfRenderedContext ? pdfRenderedContext : [];
+    let currentPages = [];
+    arrPages.forEach(async (item, index) => {
+      let currentPdfRenderedContext = [...pdfRenderedContext];
+      if (index <= LIMIT_PAGES) {
+        const page = await getPagesFromPdf(pdf, index);
+        currentPages.push(page);
+        if (currentPages.length === LIMIT_PAGES) {
+          console.log("current pages ", currentPages.length);
+          const pdfPages: IPDFPages = {
+            nodeKey,
+            pages: currentPages,
+            total: arrPages.length
+          }
+          currentPdfRenderedContext.push(pdfPages);
+          await onUpdateContext({ pdfRenderedContext: currentPdfRenderedContext }).then(() => {
+            console.log(" > > > >  > >>  > >> > > > >> >  > > > >> > > > > > > ", pdfRenderedContext);
+            onRenderPages(pdfPages.pages);
+
+          })
+        }
+      }
+    });
+  }
+  const onExitsPages = async (pdf: any, pdfPages: IPDFPages) => {
+    const currentPagesLength = pdfPages.pages.length;
+    if (currentPagesLength >= pdfPages.total) {
+      return;
+    }
+
+    if (pdfPages.total - currentPagesLength > LIMIT_PAGES) {
+      let tempPdfRendered = [...pdfRenderedContext]
+      let currentPages = [...pdfPages.pages];
+
+      for (let i = currentPagesLength; i < pdfPages.total; i++) {
+        const page = await getPagesFromPdf(pdf, i);
+        currentPages.push(page);
+
+        if (currentPages.length === (currentPagesLength + LIMIT_PAGES)) {
+          let tempPdfPages = { ...pdfPages };
+
+          tempPdfPages.pages = currentPages;
+
+          tempPdfRendered.push(tempPdfPages);
+
+          onUpdateContext({ pdfRenderedContext: tempPdfRendered });
+        }
+      }
+    } else {
+      let tempPdfRendered = [...pdfRenderedContext]
+      let currentPages = [...pdfPages.pages];
+      for (let i = currentPagesLength; i < pdfPages.total; i++) {
+        getPagesFromPdf(pdf, i).then((page) => {
+          currentPages.push(page);
+          let tempPdfPages = { ...pdfPages };
+          tempPdfPages.pages = currentPages;
+          tempPdfRendered.push(tempPdfPages);
+          if (tempPdfRendered.length === pdfPages.total)
+            onUpdateContext({ pdfRenderedContext: tempPdfRendered });
+        })
+      }
+    }
+  }
+  const onUpdatePagesContext = (pdf: any, arrPages: any[]) => {
+    console.log("opdf ", pdf);
+    console.log(" arrpages ", arrPages);
+    let pdfRendered = pdfRenderedContext ? pdfRenderedContext : [];
+    const indexExist = pdfRendered.findIndex((item) => item.nodeKey === nodeKey);
+    if (indexExist === -1) {
+      onNotExitsPages(pdf, arrPages);
+      return;
+    }
+    onExitsPages(pdf, pdfRendered[indexExist]);
+  }
+
+
+  // const initRender = () => {
+
+  // }
+
+
+  // const handlePdfLoadMore = (event) => {
+  //   const offsetHeight = refContainer.current.offsetHeight;
+  //   const scrollTop = refContainer.current.scrollTop;
+  //   // if (scrollTop >= currentScroll) {
+  //   //   console.log("scoll down");
+  //   //   currentScroll = scrollTop
+  //   // }
+  //   // if (currentScroll >= preRender + 200) {
+
+  //   // }
+  //   // console.log("offsetHeight", offsetHeight);
+  //   // // console.log("scrollTop", scrollTop);
+  //   // console.log("scrollTop", scrollTop);
+  //   // pageNum++;
+  //   // console.log("page Num", pageNum)
+  //   // if (pageNum < pagesRendering.pages.length) {
+  //   //   pageNum++;
+  //   // }
+  // }
+
+  // console.log("state rendering", pagesRendering)
+  return (
+    <div
+      // className={styles.viewer}
+      ref={refContainer}
+    // onScroll={handlePdfLoadMore}
+    >
+      <div style={{ position: 'absolute', bottom: 40, right: 40 }}>
+        <Button
+          icon="zoom-in"
+          className={styles.btn}
+          onClick={onZoomIn}
+          style={{ marginBottom: 20 }}
+          size="small"
+        />
+        <br />
+        <Button onClick={onZoomOut} icon="zoom-out" className={styles.btn} size="small" />
+      </div>
+      <div className={styles.pdf_container}>
+        {arrPages.map((item, i) => {
+          var index = i + 1;
+          return (
+            <canvas id={`pdf-${index}`} key={index + ''} ref={(ref) => onPushRef(ref)} style={{ margin: "auto", marginTop: 30, }} />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+export default PdfRender;

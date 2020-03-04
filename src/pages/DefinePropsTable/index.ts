@@ -1,13 +1,12 @@
 import { ColumnProps } from 'antd/lib/table';
-import { PartnerInterface } from '../../contexts/type'
-import { GetCMSUser_cmsGetUsers_users } from '../../graphql/types'
+import { GetCMSUser_cmsGetUsers_users, GetPartners_getPartners_partners } from '../../graphql/types'
 interface ColumnPropsEditable<T> extends ColumnProps<T> {
     editable?: boolean;
 }
-export const partnerColumnProps: Array<ColumnPropsEditable<PartnerInterface>> = [
+export const partnerColumnProps: Array<ColumnPropsEditable<GetPartners_getPartners_partners>> = [
     {
         title: 'Mã KH',
-        dataIndex: 'code',
+        dataIndex: 'partnerCode',
         editable: true,
     },
     {
@@ -36,25 +35,25 @@ export const partnerColumnProps: Array<ColumnPropsEditable<PartnerInterface>> = 
     },
     {
         title: 'Phòng/ CN/ VP QL',
-        dataIndex: 'room',
+        dataIndex: 'departmentName',
         width: "7%",
         editable: true,
     },
     {
         title: 'Giám đốc',
-        dataIndex: 'manager',
+        dataIndex: 'ceoName',
         width: "11%",
         editable: true,
     },
     {
         title: 'Chủ tịch',
-        dataIndex: 'chairman',
+        dataIndex: 'chairmanName',
         width: "11%",
         editable: true,
     },
     {
         title: 'Kế toán trưởng',
-        dataIndex: 'accountant',
+        dataIndex: 'accountantName',
         // width: '40%',
         editable: true,
     },

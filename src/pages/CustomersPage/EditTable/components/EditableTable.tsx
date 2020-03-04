@@ -5,16 +5,15 @@ import { Link } from 'react-router-dom';
 import { partnerColumnProps } from '../../../DefinePropsTable'
 import { useMutation } from '@apollo/react-hooks';
 import { REMOVE_PARTNER } from '../../../../graphql/partner/removePartner';
-import { DeletePartner, DeletePartnerVariables } from '../../../../graphql/types'
-import { PartnerInterface } from '../../../../contexts/type';
+import { DeletePartner, DeletePartnerVariables, GetPartners_getPartners_partners } from '../../../../graphql/types'
 import { ToastError } from '../../../../components/Toast'
 interface State {
-  data?: Array<PartnerInterface>;
+  data?: Array<GetPartners_getPartners_partners>;
   editingKey?: string;
   deleteKey?: string;
 }
 interface IProps {
-  data: PartnerInterface[],
+  data: GetPartners_getPartners_partners[],
   onRefreshData: () => void;
 }
 const mutationRemovePartner = () => {
@@ -35,7 +34,7 @@ const EditableTable: React.FC<IProps> = ({ data, onRefreshData }) => {
         ToastError({ message: "Có lỗi xảy ra, vui lòng thử lại sau!" })
       })
     }
-    let newData = [...state.data].filter(item => item.id !== id);
+    let newData = [...state.data].filter(item => item._id !== id);
     setState({ data: newData });
   };
   const linkToComponent = (_, record) => (
@@ -52,7 +51,7 @@ const EditableTable: React.FC<IProps> = ({ data, onRefreshData }) => {
   );
   const deleteComponent = (text: string, record: any) => (
     <div>
-      <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
+      <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record._id)}>
         <i style={{ color: '#FF4D4F' }} className="icon-delete" />
       </Popconfirm>
     </div>
@@ -66,6 +65,6 @@ const EditableTable: React.FC<IProps> = ({ data, onRefreshData }) => {
     return { ...item };
   });
 
-  return <Table dataSource={data} rowKey={record => record.id} columns={handleColumnProps} />;
+  return <Table dataSource={data} rowKey={record => record._id} columns={handleColumnProps} />;
 };
 export default EditableTable;

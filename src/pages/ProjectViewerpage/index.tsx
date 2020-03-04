@@ -293,7 +293,7 @@ const Files = ({ location }) => {
       });
       const nestedData = handleTreeData(newTreeNode);
       setTreeState({ ...treeState, gData: nestedData, treeNode: treeNode })
-      onUpdateContext({ onUpdateTreeNode: onUpdateDocument, treeNode: treeNode })
+      onUpdateContext({ onUpdateTreeNode: onUpdateDocument, treeNode: treeNode, mediaUri: newTreeNode[0].nodeMedia.uri, nodeInfo: newTreeNode[0] })
     }
     return () => {
       setTreeState({ ...treeState, gData: null, treeNode: [] })
@@ -433,7 +433,7 @@ const Files = ({ location }) => {
         delete nodeSelected.children
       }
       const nodeInfo = nodeSelected;
-      onUpdateContext({ nodeInfo, treeNode: flattenData });
+      onUpdateContext({ nodeInfo, treeNode: flattenData, mediaUri: nodeInfo.nodeMedia && nodeInfo.nodeMedia.uri });
     }
     // let index = gData.findIndex(item);
   };
@@ -509,9 +509,7 @@ const Files = ({ location }) => {
     let filesList = [...files];
     let fileNodeInput: FileUploaded[] = []
     setAddMoreLoading(true);
-    console.log("fuke.keng", filesList.length)
     filesList.forEach((file, index) => {
-      console.log("+>>+>>+>++>++>>+++>+>+", file)
       uploadFile({
         variables: {
           dimensions: {
@@ -524,7 +522,6 @@ const Files = ({ location }) => {
         fileNodeInput.push({ nodeMediaId: response.data.uploadPhoto._id, documentName: file.name });
         if (fileCount === files.length) {
           onHandleAddMoreNodes(fileNodeInput)
-          console.log(">> > > > > > >", fileNodeInput)
         }
       }).catch((err) => {
         fileCount++;
@@ -551,15 +548,15 @@ const Files = ({ location }) => {
                   {toolBtnDataProps.map((item: any, index: number) => {
                     if (index === 1) {
                       return (<div className={styles.btnIcon} key={index + ''} style={{ position: "relative", display: "flex", justifyContent: "center" }} >
-                        {addMoreLoading ? <Spin style={{ alignSelf: "center" }} indicator={<Icon type="loading" style={{ fontSize: 20, color: "#007BD7" }} spin />} /> : (<div style={{ position: "relative", display: "flex", justifyContent: "center" }}>   <input
-                          multiple
-                          type="file"
-                          accept="application/pdf"
-                          className={styles.inputUpload}
-                          onChange={onAddMoreFile}
-                          key={index + ''} >
-                        </input>
-                          <i className={item.icon} style={{ alignSelf: "center" }}></i></div>)}
+                        {addMoreLoading ? <Spin style={{ alignSelf: "center" }} indicator={<Icon type="loading" style={{ fontSize: 20, color: "#007BD7" }} spin />} /> :
+                          (<div style={{ position: "relative", display: "flex", justifyContent: "center", flex: 1 }}>   <input
+                            multiple
+                            type="file"
+                            accept="application/pdf"
+                            className={styles.inputUpload}
+                            onChange={onAddMoreFile}
+                            key={index + ''} />
+                            <i className={item.icon} style={{ alignSelf: "center" }}></i></div>)}
 
                       </div>
                       )

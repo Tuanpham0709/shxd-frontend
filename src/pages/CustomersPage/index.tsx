@@ -8,11 +8,10 @@ import { GET_PARTNERS } from '../../graphql/partner/getPartners'
 import PageLoading from '../../components/PageLoading'
 import styles from './style.module.less'
 import { ToastError } from '../../components/Toast/index'
-import { PartnerInterface } from '../../contexts/type';
 const useQueryData = () => {
   const { loading, error, data, refetch } = useQuery<GetPartners, GetPartnersVariables>(GET_PARTNERS, {
     variables: {
-      limit: 20
+      limit: 50
     }
   });
   return { loading, error, data, refetch }
@@ -26,34 +25,28 @@ const Customers = () => {
   const onRefreshData = () => {
     refetch();
   }
-  if (loading) return <PageLoading />;
+  const onChangeSearch = (e) => {
+    const { value } = e.target;
+    refetch({ limit: 10, query: value });
+  }
+  const onSearch = (value) => {
+    refetch({ limit: 10, query: value });
+  }
+
   if (error) {
     ToastError({ message: "Có lỗi xảy ra, vui lòng thử lái sau" });
     return <div></div>
   }
-  const { partners } = data.getPartners
-  const partnersProp: PartnerInterface[] = partners.map((partner, index) => (
-    {
-      id: partner._id,
-      code: partner.partnerCode,
-      name: partner.name,
-      phone: partner.phone,
-      email: partner.email,
-      address: partner.address,
-      room: partner.departmentName,
-      manager: partner.ceoName,
-      chairman: partner.chairmanName,
-      accountant: partner.accountantName,
-      projectName: partner.projectName,
-      projectCode: partner.projectCode,
-    })
-  )
+
   return (
     <div>
       <EntryHeader />
       <div className={styles.border} >
-        <HeaderBar />
-        <EditTable onRefreshData={onRefreshData} data={partnersProp} />
+        <HeaderBar
+          onSearch={onSearch}
+          onChangeSearch={onChangeSearch}
+        />
+        {loading ? <PageLoading /> : <EditTable onRefreshData={onRefreshData} data={data.getPartners.partners} />}
       </div>
     </div >
   );
