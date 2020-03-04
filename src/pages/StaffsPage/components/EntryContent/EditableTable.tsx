@@ -48,6 +48,7 @@ const EditableTable: React.FC<IProps> = ({ data, onRefreshData }) => {
     </div>
   );
   const handleDelete = userId => {
+    console.log("login user id ", userId);
     removeCMSUser({ variables: { id: userId } }).then(() => {
       onRefreshData && onRefreshData();
       ToastSuccess({ message: "Xoá người dùng thành công" });

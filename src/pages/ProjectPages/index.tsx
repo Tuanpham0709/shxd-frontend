@@ -12,7 +12,7 @@ import { ToastError } from '../../components/Toast';
 const useQueryDocument = (limit: number, skip?: number) => {
   const { data, loading, error, refetch } = useQuery<GetDocuments, GetDocumentsVariables>(GET_DOCUMENTS, {
     variables: {
-      limit: 10,
+      limit: 50,
     }
   });
   return { data, loading, error, refetch }

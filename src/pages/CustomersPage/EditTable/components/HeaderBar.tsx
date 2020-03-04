@@ -15,14 +15,21 @@ interface OptionProps {
   keyword: string;
   value: string;
 }
+interface IProps {
+  onChangeSearch: (e) => void;
+  onSearch: (value) => void;
+}
 const { Search } = Input;
-const HeaderBarCustomer = () => {
+const HeaderBarCustomer: React.FC<IProps> = ({ onSearch, onChangeSearch }) => {
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
         <Row>
           <Col md={7}>
-            <Search size="small" placeholder="Tìm kiếm" />
+            <Search
+              onSearch={onSearch}
+              onChange={onChangeSearch}
+              size="small" placeholder="Tìm kiếm" />
           </Col>
           <Col md={10}></Col>
           <Col md={7}>

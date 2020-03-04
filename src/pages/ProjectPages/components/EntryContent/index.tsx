@@ -37,7 +37,7 @@ const columnProps = documentColumnProps.map((item, index) => {
 const EditableTable: React.FC<IProps> = ({ data }) => {
   const handleData = data.map((dataItem, index) => {
     return {
-      ...dataItem, reviewer: dataItem.reviewer.fullName, implementer: dataItem.cmsUser.fullName,
+      ...dataItem, reviewer: dataItem.reviewer && dataItem.reviewer.fullName, implementer: dataItem.cmsUser && dataItem.cmsUser.fullName,
       createdAt: moment(dataItem.createdAt).format("DD-MM-YYYY")
     }
   });

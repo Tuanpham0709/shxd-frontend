@@ -134,7 +134,6 @@ const Toolbar: React.FC = () => {
 
     const nodesUpdate = treeNode.map((item) => {
       let node = item
-
       if (node.filesPosition) {
         node.filesPosition.map((item, index) => {
           if (item.__typename) {
@@ -188,7 +187,6 @@ const Toolbar: React.FC = () => {
 
         </Col>
         <Col xl={5}>
-
           <div className={styles.btnContainer}>
             {!isEdit ? <Button
               style={{ backgroundColor: "#16A085" }}

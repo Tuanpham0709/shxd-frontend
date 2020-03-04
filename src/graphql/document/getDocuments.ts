@@ -21,7 +21,6 @@ export const GET_DOCUMENTS = gql`
                 cmsUser{
                     fullName
                 }
-
                 treeNode{
                     key
                     parent
